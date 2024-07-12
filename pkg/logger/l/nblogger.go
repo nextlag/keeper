@@ -14,7 +14,7 @@ import (
 
 	"github.com/fatih/color"
 
-	"github.com/nextlag/concurrency/internal/configuration"
+	"github.com/nextlag/keeper/configuration"
 )
 
 type LoggerOptions struct {

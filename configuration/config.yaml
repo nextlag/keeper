@@ -1,0 +1,12 @@
+config_path: "config.yaml"
+logging:
+  level: "debug"
+  project_path: ""
+  log_to_file: false
+  log_path: ""
+postgres:
+  docker_image: "postgres:14-alpine"
+  docker_container: "keeper"
+  postgres_pass: ""
+  postgres_user: "postgres"
+  postgres_port: "5432:5432"
