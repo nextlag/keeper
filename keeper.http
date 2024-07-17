@@ -1,0 +1,14 @@
+### POST request
+< {%
+    const email = $random.alphabetic(4).toLowerCase()
+    const password = $random.alphanumeric(8)
+    request.variables.set("email", email)
+    request.variables.set("password", password)
+%}
+
+POST localhost:8080/auth/register
+
+{
+  "email": "{{email}}@mail.ru",
+  "password": "{{alias}}"
+}
