@@ -24,5 +24,5 @@ func main() {
 	if srv.Run(ctx); err != nil {
 		log.Fatal(err)
 	}
-
+	<-ctx.Done()
 }

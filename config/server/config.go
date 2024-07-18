@@ -30,12 +30,12 @@ type (
 	}
 
 	Network struct {
-		Host  string `yaml:"host" env:"HOST"`
+		Host  string `yaml:"host"`
 		HTTPS bool   `yaml:"https"`
 	}
 
 	Logging struct {
-		Level       slog.Level `yaml:"level" env:"LOG_LEVEL"`
+		Level       slog.Level `yaml:"level"`
 		ProjectPath string     `yaml:"project_path" env:"PROJECT_PATH"`
 		LogToFile   bool       `yaml:"log_to_file" env:"LOG_TO_FILE"`
 		LogPath     string     `yaml:"log_path" env:"LOG_PATH"`

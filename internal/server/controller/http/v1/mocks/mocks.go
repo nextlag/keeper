@@ -65,6 +65,20 @@ func (mr *MockUseCaseMockRecorder) CheckAccessToken(arg0, arg1 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckAccessToken", reflect.TypeOf((*MockUseCase)(nil).CheckAccessToken), arg0, arg1)
 }
 
+// GetDomainName mocks base method.
+func (m *MockUseCase) GetDomainName() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDomainName")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetDomainName indicates an expected call of GetDomainName.
+func (mr *MockUseCaseMockRecorder) GetDomainName() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDomainName", reflect.TypeOf((*MockUseCase)(nil).GetDomainName))
+}
+
 // HealthCheck mocks base method.
 func (m *MockUseCase) HealthCheck() error {
 	m.ctrl.T.Helper()
@@ -77,6 +91,21 @@ func (m *MockUseCase) HealthCheck() error {
 func (mr *MockUseCaseMockRecorder) HealthCheck() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HealthCheck", reflect.TypeOf((*MockUseCase)(nil).HealthCheck))
+}
+
+// RefreshAccessToken mocks base method.
+func (m *MockUseCase) RefreshAccessToken(arg0 context.Context, arg1 string) (entity.JWT, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RefreshAccessToken", arg0, arg1)
+	ret0, _ := ret[0].(entity.JWT)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RefreshAccessToken indicates an expected call of RefreshAccessToken.
+func (mr *MockUseCaseMockRecorder) RefreshAccessToken(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshAccessToken", reflect.TypeOf((*MockUseCase)(nil).RefreshAccessToken), arg0, arg1)
 }
 
 // SignInUser mocks base method.

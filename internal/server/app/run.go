@@ -3,41 +3,37 @@ package app
 import (
 	"context"
 	"errors"
-	"log"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 	"time"
 )
 
 const shutdown = time.Second * 15
 
+// Run starts the HTTP server and handles graceful shutdown
 func (a *App) Run(ctx context.Context) {
 	defer a.repo.ShutDown()
-	srv := a.ctrl.NewServer(a.router)
-	a.router.Mount("/", srv.Handler)
 
-	sigint := make(chan os.Signal, 1)
-	signal.Notify(sigint, os.Interrupt, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	srv := &http.Server{
+		Addr:    a.cfg.Network.Host,
+		Handler: a.ctrl.NewServer(a.router).Handler,
+	}
 
 	go func() {
-		<-sigint
-		a.log.Info("Shutting down server...")
-
-		shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdown)
-		defer cancel()
-
-		if err := srv.Shutdown(shutdownCtx); err != nil {
-			log.Fatal("HTTP server Shutdown:", err)
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			a.log.Error("HTTP server ListenAndServe:", err)
 		}
 	}()
 
-	if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
-		log.Fatal("HTTP server ListenAndServe:", err)
-	}
-
 	<-ctx.Done()
 
-	a.log.Info("Server Shutdown gracefully")
+	a.log.Debug("Starting graceful shutdown...")
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdown)
+	defer cancel()
+
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		a.log.Error("HTTP server Shutdown:", err)
+	}
+
+	a.log.Info("Server shutdown gracefully")
 }

@@ -16,6 +16,7 @@ import (
 )
 
 // UseCase defines the interface for the business logic operations used by the controller.
+//go:generate mockgen -destination=mocks/mocks.go -package=mocks github.com/nextlag/keeper/internal/server/controller/http/v1 UseCase
 type UseCase interface {
 	HealthCheck() error
 	AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
