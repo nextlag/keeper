@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/nextlag/keeper/internal/utils/errs"
 	"github.com/nextlag/keeper/pkg/logger/l"
@@ -174,43 +175,37 @@ func (c *Controller) RefreshAccessToken(w http.ResponseWriter, r *http.Request) 
 
 // LogoutUser - handler for logging out the current user by clearing the access, refresh, and logged_in cookies.
 // This method invalidates the user's session by setting the cookies to expire immediately.
-func (c *Controller) LogoutUser(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) LogoutUser(w http.ResponseWriter, _ *http.Request) {
 	domainName := c.uc.GetDomainName()
 
-	// Clear the access token cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:     "access_token",
 		Value:    "",
 		Path:     "/",
 		Domain:   domainName,
-		MaxAge:   -1,
+		Expires:  time.Now().Add(-24 * time.Hour),
 		HttpOnly: true,
 		Secure:   c.cfg.Network.HTTPS,
-		SameSite: http.SameSiteNoneMode,
 	})
 
-	// Clear the refresh token cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:     "refresh_token",
 		Value:    "",
 		Path:     "/",
 		Domain:   domainName,
-		MaxAge:   -1,
+		Expires:  time.Now().Add(-24 * time.Hour),
 		HttpOnly: true,
 		Secure:   c.cfg.Network.HTTPS,
-		SameSite: http.SameSiteNoneMode,
 	})
 
-	// Clear the logged_in cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:     "logged_in",
 		Value:    "",
 		Path:     "/",
 		Domain:   domainName,
-		MaxAge:   -1,
+		Expires:  time.Now().Add(-24 * time.Hour),
 		HttpOnly: false,
 		Secure:   c.cfg.Network.HTTPS,
-		SameSite: http.SameSiteNoneMode,
 	})
 
 	w.Header().Set("Content-Type", "application/json")
