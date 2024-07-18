@@ -15,7 +15,7 @@ var errToken = errors.New("tokenError")
 // CreateToken creates a JWT token with the specified TTL (time to live), payload, and RSA private key.
 // It encodes the payload into the token and signs it using the RSA private key provided as base64 encoded `privateKey`.
 // Returns the signed JWT token as a string or an error if any operation fails.
-func CreateToken(ttl time.Duration, payload interface{}, privateKey string) (string, error) {
+func CreateToken(ttl time.Duration, payload any, privateKey string) (string, error) {
 	decodedPrivateKey, err := base64.StdEncoding.DecodeString(privateKey)
 	if err != nil {
 		return "", fmt.Errorf("could not decode key: %w", err)

@@ -9,6 +9,35 @@ db_create:
 db_uuid:
 	docker exec -it keeper psql -U postgres -d keeper -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
 
+# Key constant
+KEY := key.pem
+BASE64 := key_base64
+INLINE := key_base64_inline
+
+PUBLIC := public_key.pem
+PUBLIC_BASE64 := public_key_base64
+PUBLIC_INLINE := public_key_base64_inline
+
+collectKeys:
+	$(MAKE) key_pem && sleep 1 && $(MAKE) base64 && sleep 1 && $(MAKE) inline && sleep 1 && $(MAKE) public_pem && sleep 1 && \
+	$(MAKE) public_base64 && sleep 1 && $(MAKE) public_inline && sleep 1 && $(MAKE) base64
+
+key_pem:
+	openssl genpkey -algorithm RSA -out $(KEY)
+base64:
+	openssl base64 -in $(KEY) -out $(BASE64)
+inline:
+	cat $(BASE64) | tr -d '\n' > $(INLINE)
+public_pem:
+	openssl rsa -in $(KEY) -pubout -out $(PUBLIC)
+public_base64:
+	openssl base64 -in $(PUBLIC) -out $(PUBLIC_BASE64)
+public_inline:
+	cat $(PUBLIC_BASE64) | tr -d '\n' > $(PUBLIC_INLINE)
+
+clean:
+	rm -f $(KEY) $(BASE64) $(INLINE) $(PUBLIC) $(PUBLIC_BASE64) $(PUBLIC_INLINE)
+
 # Linter constants
 LINTER := golangci-lint
 lint:
@@ -27,4 +56,4 @@ reload_postgres:
 test:
 	go test ./...
 
-.PHONY: db_create db_uuid postgres lint generate reload_postgres test
+.PHONY: db_create db_uuid postgres lint generate reload_postgres test key_pem base64 inline public_pem public_base64 public_inline collectKeys clean

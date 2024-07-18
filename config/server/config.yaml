@@ -12,8 +12,8 @@ security:
   domain: 'localhost'
   access_token_expired_in: '60m'
   access_token_maxage: 60
-  refresh_token_expired_in: '60m'
-  refresh_token_maxage: 60
+  refresh_token_expired_in: '1000m'
+  refresh_token_maxage: 1000
 
 postgres:
   pool_max: 2

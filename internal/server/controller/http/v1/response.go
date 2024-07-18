@@ -7,7 +7,7 @@ func jsonError(err error) string {
 	return string(response)
 }
 
-func jsonResponse() string {
-	response, _ := json.Marshal(map[string]string{"status": "connected"})
+func jsonResponse(message string) string {
+	response, _ := json.Marshal(map[string]string{"status": message})
 	return string(response)
 }

@@ -1,4 +1,8 @@
-### POST request
+### GET ping
+GET localhost:8080/ping
+
+
+### POST registration random user
 < {%
     const email = $random.alphabetic(4).toLowerCase()
     const password = $random.alphanumeric(8)
@@ -11,4 +15,53 @@ POST localhost:8080/auth/register
 {
   "email": "{{email}}@mail.ru",
   "password": "{{alias}}"
+}
+
+### POST registration
+POST localhost:8080/auth/register
+
+{
+  "email": "example@mail.ru",
+  "password": "12345"
+}
+
+### POST authentication
+POST localhost:8080/auth/login
+
+{
+  "email": "example@mail.ru",
+  "password": "12345"
+}
+
+### GET refresh token
+GET localhost:8080/auth/refresh
+Cookie: refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEzMzE2NDEsImlhdCI6MTcyMTMyODA0MSwibmJmIjoxNzIxMzI4MDQxLCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.j-KX-CgSVCZV5NpFScyTrnxSFAGefvhzWjMhWsymyKvcsfzaSWhRsJVxE6yb3GXcxbJ2vJTssXeXTuy0KsgxDoxrYxYCZe_ChKFIfNkiWedUKlUFzAmRLfd1hM7XVmXHJWryf9uKc1goZknO23TtzxiPYMUD4oBtTal26lBchGZ2suZBR8TJPHShfQLTwNuUhvJAQc-JsL8dtC12IwZNs3WdNCNPlmQINInehepb5ZPtgd9roRUTpdaz_ig8nvBeVXkCbIMZlACNuR7ZFoJkjIjUKsvDVy2ePTnJ4SUMimakIO3ni6hMGZe2cmYc0NIfNeWnq0JCzZeD4om0u_LW9w
+
+### GET user/me
+GET localhost:8080/auth/logout
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEzMzE2NDEsImlhdCI6MTcyMTMyODA0MSwibmJmIjoxNzIxMzI4MDQxLCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.FQzL1xFUAbu4yTDn0JLxuS36wDXLAbpIncStvg0gElcElV2Amyy4leT4JA7kEfa7ps2kcXmVbElSoHfbY2es6xvYDFhvZ7vBtSJXe4cciooKS10WNolQQo6l1TTgCqP4a0wTUHPi2JO4hqwicytPTgHxwMTMsxUIp31AFW1YOlmVuuzslUy1IhZEvJxWtx640KxFoVW7uYnIGOv0tJ0_aIsBESqi2hX8IO2zZJQpr9cjFmoySgZxdIaQvwKUL4PSO29w0QiKthxJUrKh3s1AnQGpa_mECLSWpI9d3n7rU1KcnIWfTm523pVoP2R7417Ew5gEkAJJyU6m3MVPtGY12g
+
+### GET user/me
+GET localhost:8080/user/me
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEzMzE2NDEsImlhdCI6MTcyMTMyODA0MSwibmJmIjoxNzIxMzI4MDQxLCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.FQzL1xFUAbu4yTDn0JLxuS36wDXLAbpIncStvg0gElcElV2Amyy4leT4JA7kEfa7ps2kcXmVbElSoHfbY2es6xvYDFhvZ7vBtSJXe4cciooKS10WNolQQo6l1TTgCqP4a0wTUHPi2JO4hqwicytPTgHxwMTMsxUIp31AFW1YOlmVuuzslUy1IhZEvJxWtx640KxFoVW7uYnIGOv0tJ0_aIsBESqi2hX8IO2zZJQpr9cjFmoySgZxdIaQvwKUL4PSO29w0QiKthxJUrKh3s1AnQGpa_mECLSWpI9d3n7rU1KcnIWfTm523pVoP2R7417Ew5gEkAJJyU6m3MVPtGY12g
+
+### POST user/login
+POST localhost:8080/user/login
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEzMzE2NDEsImlhdCI6MTcyMTMyODA0MSwibmJmIjoxNzIxMzI4MDQxLCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.FQzL1xFUAbu4yTDn0JLxuS36wDXLAbpIncStvg0gElcElV2Amyy4leT4JA7kEfa7ps2kcXmVbElSoHfbY2es6xvYDFhvZ7vBtSJXe4cciooKS10WNolQQo6l1TTgCqP4a0wTUHPi2JO4hqwicytPTgHxwMTMsxUIp31AFW1YOlmVuuzslUy1IhZEvJxWtx640KxFoVW7uYnIGOv0tJ0_aIsBESqi2hX8IO2zZJQpr9cjFmoySgZxdIaQvwKUL4PSO29w0QiKthxJUrKh3s1AnQGpa_mECLSWpI9d3n7rU1KcnIWfTm523pVoP2R7417Ew5gEkAJJyU6m3MVPtGY12g
+
+{
+  "name": "yandex.practicum",
+  "login": "example",
+  "password": "12345",
+  "uri": "https://yandex.practicum.ru",
+  "meta": [
+    {
+      "name": "GO",
+      "value": "base"
+    },
+    {
+      "name": "GO",
+      "value": "advance"
+    }
+  ]
 }

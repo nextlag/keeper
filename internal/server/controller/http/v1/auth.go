@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/nextlag/keeper/internal/utils/errs"
+	"github.com/nextlag/keeper/pkg/logger/l"
 )
 
 type loginPayload struct {
@@ -13,6 +14,13 @@ type loginPayload struct {
 	Password string `json:"password"`
 }
 
+// SignUpUser handles the HTTP request to sign up a new user.
+// It decodes the JSON payload from the request body into a loginPayload struct.
+// If decoding fails, it responds with a HTTP 400 Bad Request error.
+// It then calls the SignUpUser method of the use case (uc) to create a new user.
+// If an error occurs during sign-up, it responds with a HTTP 500 Internal Server Error and logs the error.
+// If the error is due to a wrong email format or a duplicate email, it responds with a HTTP 400 Bad Request error.
+// If sign-up is successful, it responds with a HTTP 201 Created status and JSON representation of the user.
 func (c *Controller) SignUpUser(w http.ResponseWriter, r *http.Request) {
 	var payload *loginPayload
 
@@ -45,6 +53,14 @@ func (c *Controller) SignUpUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// SignInUser handles the HTTP request to sign in a user.
+// It decodes the JSON payload from the request body into a loginPayload struct.
+// If decoding fails, it responds with a HTTP 400 Bad Request error.
+// It then calls the SignInUser method of the use case (uc) to authenticate the user and generate JWT tokens.
+// If authentication fails due to wrong credentials, it responds with a HTTP 400 Bad Request error.
+// For other errors during sign-in, it responds with a HTTP 500 Internal Server Error and logs the error.
+// If sign-in is successful, it sets HTTP cookies for access_token, refresh_token, and a logged_in flag.
+// It responds with a HTTP 200 OK status and JSON representation of the JWT tokens.
 func (c *Controller) SignInUser(w http.ResponseWriter, r *http.Request) {
 	var payload loginPayload
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
@@ -100,6 +116,106 @@ func (c *Controller) SignInUser(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(jwtToken)
 	if err != nil {
 		http.Error(w, jsonError(err), http.StatusInternalServerError)
+		return
+	}
+}
+
+// RefreshAccessToken - handler for refreshing the access token using the provided refresh token in cookies.
+// This method reads the refresh token from the "refresh_token" cookie, attempts to refresh the access token,
+// and sets the new access token and "logged_in" cookie. If the refresh token is not found or invalid,
+// an error response is returned.
+func (c *Controller) RefreshAccessToken(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	refreshToken, err := r.Cookie("refresh_token")
+	if err != nil {
+		c.log.Error("RefreshAccessToken: refresh token not found", l.ErrAttr(err))
+		http.Error(w, "refresh token has not been found", http.StatusBadRequest)
+		return
+	}
+
+	jwt, err := c.uc.RefreshAccessToken(ctx, refreshToken.Value)
+	if err != nil {
+		c.log.Error("RefreshAccessToken: unable to refresh access token", l.ErrAttr(err))
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "access_token",
+		Value:    jwt.AccessToken,
+		MaxAge:   jwt.AccessTokenMaxAge,
+		Path:     "/",
+		Domain:   jwt.Domain,
+		HttpOnly: true,
+		Secure:   c.cfg.Network.HTTPS,
+		SameSite: http.SameSiteNoneMode,
+	})
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "logged_in",
+		Value:    "true",
+		MaxAge:   jwt.AccessTokenMaxAge,
+		Path:     "/",
+		Domain:   jwt.Domain,
+		HttpOnly: false,
+		Secure:   c.cfg.Network.HTTPS,
+		SameSite: http.SameSiteNoneMode,
+	})
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err = json.NewEncoder(w).Encode(jwt); err != nil {
+		c.log.Error("RefreshAccessToken: unable to encode response", l.ErrAttr(err))
+		http.Error(w, "unable to encode response", http.StatusInternalServerError)
+		return
+	}
+}
+
+// LogoutUser - handler for logging out the current user by clearing the access, refresh, and logged_in cookies.
+// This method invalidates the user's session by setting the cookies to expire immediately.
+func (c *Controller) LogoutUser(w http.ResponseWriter, r *http.Request) {
+	domainName := c.uc.GetDomainName()
+
+	// Clear the access token cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:     "access_token",
+		Value:    "",
+		Path:     "/",
+		Domain:   domainName,
+		MaxAge:   -1,
+		HttpOnly: true,
+		Secure:   c.cfg.Network.HTTPS,
+		SameSite: http.SameSiteNoneMode,
+	})
+
+	// Clear the refresh token cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:     "refresh_token",
+		Value:    "",
+		Path:     "/",
+		Domain:   domainName,
+		MaxAge:   -1,
+		HttpOnly: true,
+		Secure:   c.cfg.Network.HTTPS,
+		SameSite: http.SameSiteNoneMode,
+	})
+
+	// Clear the logged_in cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:     "logged_in",
+		Value:    "",
+		Path:     "/",
+		Domain:   domainName,
+		MaxAge:   -1,
+		HttpOnly: false,
+		Secure:   c.cfg.Network.HTTPS,
+		SameSite: http.SameSiteNoneMode,
+	})
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if _, err := w.Write([]byte(jsonResponse("success"))); err != nil {
 		return
 	}
 }

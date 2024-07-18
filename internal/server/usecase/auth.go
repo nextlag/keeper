@@ -108,3 +108,34 @@ func (uc *UseCase) CheckAccessToken(ctx context.Context, accessToken string) (en
 
 	return user, nil
 }
+
+// RefreshAccessToken validates the provided refresh token, retrieves the corresponding user,
+// and generates a new access token.
+func (uc *UseCase) RefreshAccessToken(ctx context.Context, refreshToken string) (token entity.JWT, err error) {
+	userID, err := utils.ValidToken(refreshToken, uc.cfg.Security.RefreshTokenPublicKey)
+	if err != nil {
+		err = errs.ErrTokenValidation
+		return
+	}
+
+	user, err := uc.repo.GetUserByID(ctx, fmt.Sprint(userID))
+	if err != nil {
+		err = errs.ErrTokenValidation
+		return
+	}
+
+	token.RefreshToken = refreshToken
+	token.AccessToken, err = utils.CreateToken(
+		uc.cfg.Security.AccessTokenExpiresIn,
+		user.ID,
+		uc.cfg.Security.AccessTokenPrivateKey)
+
+	if err != nil {
+		return
+	}
+
+	token.AccessTokenMaxAge = uc.cfg.Security.AccessTokenMaxAge * minutesPerHour
+	token.RefreshTokenMaxAge = uc.cfg.Security.RefreshTokenMaxAge * minutesPerHour
+	token.Domain = uc.cfg.Security.Domain
+	return
+}

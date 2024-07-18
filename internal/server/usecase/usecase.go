@@ -31,3 +31,9 @@ func New(r repository.Repository, cfg *config.Config, cache c.Cacher, log *l.Log
 func (uc *UseCase) HealthCheck() error {
 	return uc.repo.DBHealthCheck()
 }
+
+// GetDomainName - retrieves the domain name configured for the application.
+// This domain name is used for setting cookies and other domain-specific configurations.
+func (uc *UseCase) GetDomainName() string {
+	return uc.cfg.Security.Domain
+}

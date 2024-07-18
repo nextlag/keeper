@@ -2,8 +2,11 @@ package v1
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
+
+	"github.com/nextlag/keeper/pkg/logger/l"
 )
 
 type contextKey string
@@ -27,6 +30,7 @@ func (c *Controller) MwAuth() func(next http.Handler) http.Handler {
 				accessToken = accessTokenFromCookie.Value
 			}
 
+			c.log.Debug(fmt.Sprintf("Received token: %s", accessToken))
 			if accessToken == "" {
 				http.Error(w, "You are not logged in", http.StatusUnauthorized)
 				return
@@ -34,6 +38,7 @@ func (c *Controller) MwAuth() func(next http.Handler) http.Handler {
 
 			user, err := c.uc.CheckAccessToken(r.Context(), accessToken)
 			if err != nil {
+				c.log.Error("Failed to validate token", l.ErrAttr(err))
 				http.Error(w, "Unauthorized", http.StatusUnauthorized)
 				return
 			}

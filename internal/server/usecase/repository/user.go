@@ -50,7 +50,6 @@ func (r *Repo) GetUserByID(ctx context.Context, id string) (user entity.User, er
 
 	user.ID = userFromDB.ID
 	user.Email = userFromDB.Email
-
 	return
 }
 
