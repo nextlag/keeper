@@ -31,6 +31,12 @@ type Repository interface {
 	DelCard(ctx context.Context, cardUUID, userID uuid.UUID) error
 	UpdateCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
 	IsCardOwner(ctx context.Context, cardUUID, userID uuid.UUID) bool
+
+	GetNotes(ctx context.Context, user entity.User) ([]entity.SecretNote, error)
+	AddNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
+	DelNote(ctx context.Context, noteID, userID uuid.UUID) error
+	UpdateNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
+	IsNoteOwner(ctx context.Context, noteID, userID uuid.UUID) bool
 }
 
 // Repo implements the Repository interface and provides methods for database operations.

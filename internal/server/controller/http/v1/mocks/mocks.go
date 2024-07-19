@@ -36,6 +36,20 @@ func (m *MockUseCase) EXPECT() *MockUseCaseMockRecorder {
 	return m.recorder
 }
 
+// AddCard mocks base method.
+func (m *MockUseCase) AddCard(arg0 context.Context, arg1 *entity.Card, arg2 uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddCard", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddCard indicates an expected call of AddCard.
+func (mr *MockUseCaseMockRecorder) AddCard(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCard", reflect.TypeOf((*MockUseCase)(nil).AddCard), arg0, arg1, arg2)
+}
+
 // AddLogin mocks base method.
 func (m *MockUseCase) AddLogin(arg0 context.Context, arg1 *entity.Login, arg2 uuid.UUID) error {
 	m.ctrl.T.Helper()
@@ -48,6 +62,20 @@ func (m *MockUseCase) AddLogin(arg0 context.Context, arg1 *entity.Login, arg2 uu
 func (mr *MockUseCaseMockRecorder) AddLogin(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddLogin", reflect.TypeOf((*MockUseCase)(nil).AddLogin), arg0, arg1, arg2)
+}
+
+// AddNote mocks base method.
+func (m *MockUseCase) AddNote(arg0 context.Context, arg1 *entity.SecretNote, arg2 uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddNote", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddNote indicates an expected call of AddNote.
+func (mr *MockUseCaseMockRecorder) AddNote(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddNote", reflect.TypeOf((*MockUseCase)(nil).AddNote), arg0, arg1, arg2)
 }
 
 // CheckAccessToken mocks base method.
@@ -65,6 +93,63 @@ func (mr *MockUseCaseMockRecorder) CheckAccessToken(arg0, arg1 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckAccessToken", reflect.TypeOf((*MockUseCase)(nil).CheckAccessToken), arg0, arg1)
 }
 
+// DelCard mocks base method.
+func (m *MockUseCase) DelCard(arg0 context.Context, arg1, arg2 uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DelCard", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DelCard indicates an expected call of DelCard.
+func (mr *MockUseCaseMockRecorder) DelCard(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelCard", reflect.TypeOf((*MockUseCase)(nil).DelCard), arg0, arg1, arg2)
+}
+
+// DelLogin mocks base method.
+func (m *MockUseCase) DelLogin(arg0 context.Context, arg1, arg2 uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DelLogin", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DelLogin indicates an expected call of DelLogin.
+func (mr *MockUseCaseMockRecorder) DelLogin(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelLogin", reflect.TypeOf((*MockUseCase)(nil).DelLogin), arg0, arg1, arg2)
+}
+
+// DelNote mocks base method.
+func (m *MockUseCase) DelNote(arg0 context.Context, arg1, arg2 uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DelNote", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DelNote indicates an expected call of DelNote.
+func (mr *MockUseCaseMockRecorder) DelNote(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelNote", reflect.TypeOf((*MockUseCase)(nil).DelNote), arg0, arg1, arg2)
+}
+
+// GetCards mocks base method.
+func (m *MockUseCase) GetCards(arg0 context.Context, arg1 entity.User) ([]entity.Card, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCards", arg0, arg1)
+	ret0, _ := ret[0].([]entity.Card)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCards indicates an expected call of GetCards.
+func (mr *MockUseCaseMockRecorder) GetCards(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCards", reflect.TypeOf((*MockUseCase)(nil).GetCards), arg0, arg1)
+}
+
 // GetDomainName mocks base method.
 func (m *MockUseCase) GetDomainName() string {
 	m.ctrl.T.Helper()
@@ -77,6 +162,36 @@ func (m *MockUseCase) GetDomainName() string {
 func (mr *MockUseCaseMockRecorder) GetDomainName() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDomainName", reflect.TypeOf((*MockUseCase)(nil).GetDomainName))
+}
+
+// GetLogins mocks base method.
+func (m *MockUseCase) GetLogins(arg0 context.Context, arg1 entity.User) ([]entity.Login, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetLogins", arg0, arg1)
+	ret0, _ := ret[0].([]entity.Login)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetLogins indicates an expected call of GetLogins.
+func (mr *MockUseCaseMockRecorder) GetLogins(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLogins", reflect.TypeOf((*MockUseCase)(nil).GetLogins), arg0, arg1)
+}
+
+// GetNotes mocks base method.
+func (m *MockUseCase) GetNotes(arg0 context.Context, arg1 entity.User) ([]entity.SecretNote, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetNotes", arg0, arg1)
+	ret0, _ := ret[0].([]entity.SecretNote)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetNotes indicates an expected call of GetNotes.
+func (mr *MockUseCaseMockRecorder) GetNotes(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNotes", reflect.TypeOf((*MockUseCase)(nil).GetNotes), arg0, arg1)
 }
 
 // HealthCheck mocks base method.
@@ -136,4 +251,46 @@ func (m *MockUseCase) SignUpUser(arg0 context.Context, arg1, arg2 string) (entit
 func (mr *MockUseCaseMockRecorder) SignUpUser(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SignUpUser", reflect.TypeOf((*MockUseCase)(nil).SignUpUser), arg0, arg1, arg2)
+}
+
+// UpdateCard mocks base method.
+func (m *MockUseCase) UpdateCard(arg0 context.Context, arg1 *entity.Card, arg2 uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCard", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateCard indicates an expected call of UpdateCard.
+func (mr *MockUseCaseMockRecorder) UpdateCard(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCard", reflect.TypeOf((*MockUseCase)(nil).UpdateCard), arg0, arg1, arg2)
+}
+
+// UpdateLogin mocks base method.
+func (m *MockUseCase) UpdateLogin(arg0 context.Context, arg1 *entity.Login, arg2 uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateLogin", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateLogin indicates an expected call of UpdateLogin.
+func (mr *MockUseCaseMockRecorder) UpdateLogin(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLogin", reflect.TypeOf((*MockUseCase)(nil).UpdateLogin), arg0, arg1, arg2)
+}
+
+// UpdateNote mocks base method.
+func (m *MockUseCase) UpdateNote(arg0 context.Context, arg1 *entity.SecretNote, arg2 uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateNote", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateNote indicates an expected call of UpdateNote.
+func (mr *MockUseCaseMockRecorder) UpdateNote(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateNote", reflect.TypeOf((*MockUseCase)(nil).UpdateNote), arg0, arg1, arg2)
 }

@@ -1,5 +1,5 @@
-@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEzOTQ3OTIsImlhdCI6MTcyMTM5MTE5MiwibmJmIjoxNzIxMzkxMTkyLCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.RUCi1mc-Xnlv-sKltDZY4lurRBXESvUtyI2MjtCuapc4gee6DJ8kRzRzd6tpzgCEeF7ZTlD6-ASFzV4zMfy3OPd1eKKfcv2XzaZJnKJOmHaDODqpMiqC4xUHs9PxmAnVkSTqiEJbGy-CSqddXzjkXyCAUyWMshq24z-AQ_RhKHHOEN3uVGEBML_qqikye9NMqrpU2eg68iWW_j1TBr_ET-Qtz7TnxMJQ-jaK4dG6ZeQmOPpwqhMH0k0-E3dqKLYsEiCS4IHnjMNXptdew07YgoS-DWMRmyZmoLhpJJpzCUUtC5aCSqFfe6AQzwdpYhc2EEdORLiin7wq6mhYQcDNrA
-@refresh_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEzOTkxNDQsImlhdCI6MTcyMTMzOTE0NCwibmJmIjoxNzIxMzM5MTQ0LCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.enIifKnigrsVXiHuOq8ccYGKHz475XxREvhJtg6UA0-W_LdLbHKHzDok0wdTLHKbfH_F4PyWPq5JNF51ZwsrRIXDivrAP2-4_cy1xfdtV905-k-r9U5h2MbDf57ov2bpan6M-bzWO6H_oXtSn5DlCGLMzN8QO56_ZdHN7PSqRTA_edUlUsu_0sfgxQWoN5fEhPLKSI26cvwmrj91TjlE8q6SSR45cFI9H8RSlBFAWhdB23jOBJpRCY1zSc0lq38WvZQTjzFBBwhC0HbabkJde2LU1lLznIuRPS4o2EmSSdpN5a-vj-svmPuORPZNhbD6K9H72iZ4dyvQ6sCCzmyeIg
+@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjE0MzYwODQsImlhdCI6MTcyMTQwMDA4NCwibmJmIjoxNzIxNDAwMDg0LCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.JjJ14XrSHxDK2b1DiCQMWFlTzY3H76h3Ia_7mUXfvPAau8u_xLUccH-fZDWkvj-GpwmfG_PePo74D51aRp5gcWvYEBc1XPGe_Y6B6lvXzVHfsMwZ22fo81tG5pGkayz5yT5pPJTaBHlenDu5jo74Ah1rDlHqf5P1JJvfw5jIEKGY8OGdC2dhXH2CV50LaXvrYi8hee7ptc33uQBV5eT-pafdycHVElBgOpK6AZ867K2WMVElRk8eTXROn1OfxLR4IpxOHkJ7qZFM79W2677sfbZDMrHGzVkdjbB6Ng09WFYUwHmd4P396OYnqHOPUfwtC1hQkGfQruqg9ZSK9_7RkA
+@refresh_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjE3NjAwODQsImlhdCI6MTcyMTQwMDA4NCwibmJmIjoxNzIxNDAwMDg0LCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.Q1qDd3-IW62ITNeqCgpJt2DCn4Cc-Fq3AZpwqAcK43qgO9Pna8aU3KXejQh3KavVFjPy5rFQB_4jiCznvXGIF_wtk2oIw3HVAiYQRlE8Sv8N-5VHJpzq82i4B0eG1YzFxES7jQShomFkdwYlSYOijGYUxQTpd9DW3uyh9hylMI58WJKMqELAjf_91SG2ONDjwUmVt47-Lf-ve9oZsJ8Kl6iWvEYn9KQvyc1ULAVFMpxUKbq_u7n8m0jY4g-80THDVFD0T92xbiKdxrGQVF_vL1_L6xSKZo1lJoJRSf_sMHz46ITrfxrePYsyFO04JC7743AhfMq5NtqojCvf1VXamw
 
 ### GET ping
 GET localhost:8080/ping
@@ -139,3 +139,44 @@ Authorization: Bearer {{access_token}}
 ### DELETE user/cards
 DELETE localhost:8080/user/cards/18fc4d61-aa94-421d-9baf-78ea5d50e90d
 Authorization: Bearer {{access_token}}
+
+
+### ================================ NOTES ====================================###
+
+### POST user/notes
+POST localhost:8080/user/notes
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "Text",
+  "note": "Content",
+  "meta": [
+    {
+      "name": "GO",
+      "value": "base"
+    },
+    {
+      "name": "GO",
+      "value": "advance"
+    }
+  ]
+}
+
+### GET user/notes
+GET localhost:8080/user/notes
+Authorization: Bearer {{access_token}}
+
+### PATCH user/notes
+PATCH localhost:8080/user/notes/3fa710d3-2571-4013-a741-a51f6b34f724
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "TEXT",
+  "note": "Content"
+}
+
+
+### DELETE user/notes
+DELETE localhost:8080/user/notes/3fa710d3-2571-4013-a741-a51f6b34f724
+Authorization: Bearer {{access_token}}
+

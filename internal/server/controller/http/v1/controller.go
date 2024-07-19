@@ -35,6 +35,11 @@ type UseCase interface {
 	AddCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
 	DelCard(ctx context.Context, cardUUID, userID uuid.UUID) error
 	UpdateCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
+
+	GetNotes(ctx context.Context, user entity.User) ([]entity.SecretNote, error)
+	AddNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
+	DelNote(ctx context.Context, noteID, userID uuid.UUID) error
+	UpdateNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
 }
 
 // Controller represents the HTTP handlers controller.
@@ -80,6 +85,11 @@ func (c *Controller) NewServer(handler *chi.Mux) *http.Server {
 		r.Post("/cards", c.AddCard)
 		r.Delete("/cards/{id}", c.DelCard)
 		r.Patch("/cards/{id}", c.UpdateCard)
+
+		r.Get("/notes", c.GetNotes)
+		r.Post("/notes", c.AddNote)
+		r.Delete("/notes/{id}", c.DelNote)
+		r.Patch("/notes/{id}", c.UpdateNote)
 
 	})
 
