@@ -93,9 +93,6 @@ func (c *Controller) DelLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 // UpdateLogin handles the update of a login by its UUID.
-// It extracts the login UUID from the URL parameters, gets the current user from the context,
-// parses the JSON payload from the request body, and calls the use case to update the login.
-// It responds with the appropriate HTTP status code.
 func (c *Controller) UpdateLogin(w http.ResponseWriter, r *http.Request) {
 	loginUUID, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {

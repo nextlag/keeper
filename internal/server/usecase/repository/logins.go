@@ -82,10 +82,8 @@ func (r *Repo) GetLogins(ctx context.Context, user entity.User) ([]entity.Login,
 				Value: meta.Value,
 			})
 		}
-
 		logins[i] = login
 	}
-
 	return logins, nil
 }
 
@@ -135,7 +133,6 @@ func (r *Repo) UpdateLogin(ctx context.Context, login *entity.Login, userID uuid
 				return err
 			}
 		}
-
 		return nil
 	})
 }

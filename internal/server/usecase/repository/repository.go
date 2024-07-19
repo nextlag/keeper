@@ -25,6 +25,12 @@ type Repository interface {
 	DelLogin(ctx context.Context, loginID, userID uuid.UUID) error
 	UpdateLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
 	IsLoginOwner(ctx context.Context, loginID, userID uuid.UUID) bool
+
+	GetCards(ctx context.Context, user entity.User) ([]entity.Card, error)
+	AddCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
+	DelCard(ctx context.Context, cardUUID, userID uuid.UUID) error
+	UpdateCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
+	IsCardOwner(ctx context.Context, cardUUID, userID uuid.UUID) bool
 }
 
 // Repo implements the Repository interface and provides methods for database operations.

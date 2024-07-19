@@ -1,4 +1,4 @@
-@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEzODgzODUsImlhdCI6MTcyMTM4NDc4NSwibmJmIjoxNzIxMzg0Nzg1LCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.dqOwpaXyHJ7q7YuWo2lvu6aVdP3oyjJeJ7SU4F4egKeGWMAytjWtZ-tBNZYRuVMckfNmf8jH2NIrWFOegt43I2uIBKy-ixkF0VUqPoAyjp_UGtVFwJLsW3A6UDoEGItIcBRCnszLNYQret-fV-ym93xB0fLL3u_GN888tn24Qk5mUwhvSRAWyclbBj1rN8ctKezVQaIA4pLb9mRCzxF35pB-RUoKJCK8bslZNfJQjsFZKJ2gVpsoF7fO4_f4oblvaL5eoNABDJ8EvtEieYSYkjKqTuQCQnFzoxdIJ1rNpYPSGPIlsRzF-ExdRA5unve6l2OWk6yhwEZAI51Im9GKgA
+@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEzOTQ3OTIsImlhdCI6MTcyMTM5MTE5MiwibmJmIjoxNzIxMzkxMTkyLCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.RUCi1mc-Xnlv-sKltDZY4lurRBXESvUtyI2MjtCuapc4gee6DJ8kRzRzd6tpzgCEeF7ZTlD6-ASFzV4zMfy3OPd1eKKfcv2XzaZJnKJOmHaDODqpMiqC4xUHs9PxmAnVkSTqiEJbGy-CSqddXzjkXyCAUyWMshq24z-AQ_RhKHHOEN3uVGEBML_qqikye9NMqrpU2eg68iWW_j1TBr_ET-Qtz7TnxMJQ-jaK4dG6ZeQmOPpwqhMH0k0-E3dqKLYsEiCS4IHnjMNXptdew07YgoS-DWMRmyZmoLhpJJpzCUUtC5aCSqFfe6AQzwdpYhc2EEdORLiin7wq6mhYQcDNrA
 @refresh_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEzOTkxNDQsImlhdCI6MTcyMTMzOTE0NCwibmJmIjoxNzIxMzM5MTQ0LCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.enIifKnigrsVXiHuOq8ccYGKHz475XxREvhJtg6UA0-W_LdLbHKHzDok0wdTLHKbfH_F4PyWPq5JNF51ZwsrRIXDivrAP2-4_cy1xfdtV905-k-r9U5h2MbDf57ov2bpan6M-bzWO6H_oXtSn5DlCGLMzN8QO56_ZdHN7PSqRTA_edUlUsu_0sfgxQWoN5fEhPLKSI26cvwmrj91TjlE8q6SSR45cFI9H8RSlBFAWhdB23jOBJpRCY1zSc0lq38WvZQTjzFBBwhC0HbabkJde2LU1lLznIuRPS4o2EmSSdpN5a-vj-svmPuORPZNhbD6K9H72iZ4dyvQ6sCCzmyeIg
 
 ### GET ping
@@ -88,4 +88,54 @@ Authorization: Bearer {{access_token}}
 
 ### DELETE user/logins
 DELETE localhost:8080/user/logins/0068b7b7-e501-4b8a-85de-d892da6e43aa
+Authorization: Bearer {{access_token}}
+
+
+### ================================ CARDS ====================================###
+
+### POST user/cards
+POST localhost:8080/user/cards
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "GOLD",
+  "card_holder_hame": "DIGIT",
+  "number": "1123 1234 1000 1234",
+  "brand": "MIR",
+  "expiration_month": "07",
+  "expiration_year": "2024",
+  "security_code": "003",
+  "meta": [
+    {
+      "name": "GO",
+      "value": "base"
+    },
+    {
+      "name": "GO",
+      "value": "advance"
+    }
+  ]
+}
+
+### GET user/cards
+GET localhost:8080/user/cards
+Authorization: Bearer {{access_token}}
+
+### PATCH user/cards
+PATCH localhost:8080/user/cards/18fc4d61-aa94-421d-9baf-78ea5d50e90d
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "Green",
+  "card_holder_hame": "DIGIT",
+  "number": "1123123410001234",
+  "brand": "MIR",
+  "expiration_month": "07",
+  "expiration_year": "2024",
+  "security_code": "003"
+}
+
+
+### DELETE user/cards
+DELETE localhost:8080/user/cards/18fc4d61-aa94-421d-9baf-78ea5d50e90d
 Authorization: Bearer {{access_token}}

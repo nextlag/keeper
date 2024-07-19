@@ -30,6 +30,11 @@ type UseCase interface {
 	AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
 	DelLogin(ctx context.Context, loginID, userID uuid.UUID) error
 	UpdateLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
+
+	GetCards(ctx context.Context, user entity.User) ([]entity.Card, error)
+	AddCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
+	DelCard(ctx context.Context, cardUUID, userID uuid.UUID) error
+	UpdateCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
 }
 
 // Controller represents the HTTP handlers controller.
@@ -51,25 +56,31 @@ func (c *Controller) NewServer(handler *chi.Mux) *http.Server {
 	handler.Use(gzip.MwGzip())
 	handler.Use(middleware.Recoverer)
 
-	// Routes for health check
 	handler.Get("/ping", c.HealthCheck) // Endpoint for health check
 
 	// Routes for authentication
 	handler.Route("/auth", func(r chi.Router) {
-		r.Post("/register", c.SignUpUser)       // Endpoint for user registration
-		r.Post("/login", c.SignInUser)          // Endpoint for user authentication
-		r.Get("/refresh", c.RefreshAccessToken) // Endpoint for refresh token
-		r.Get("/logout", c.LogoutUser)          // Endpoint for logout user
+		r.Post("/register", c.SignUpUser)
+		r.Post("/login", c.SignInUser)
+		r.Get("/refresh", c.RefreshAccessToken)
+		r.Get("/logout", c.LogoutUser)
 	})
 
 	// Routes for user operations.
 	handler.Route("/user", func(r chi.Router) {
-		r.Use(c.MwAuth())                      // Middleware for user authentication
-		r.Get("/me", c.UserInfo)               // Endpoint for retrieving current user information
-		r.Post("/logins", c.AddLogin)          // Endpoint for adding login credentials for the current user
-		r.Get("/logins", c.GetLogins)          // Endpoint for retrieving login credentials for the current user
-		r.Delete("/logins/{id}", c.DelLogin)   // Endpoint for deleting a specific login credential
-		r.Patch("/logins/{id}", c.UpdateLogin) // Endpoint for updating a specific login credential
+		r.Use(c.MwAuth())        // Middleware for user authentication
+		r.Get("/me", c.UserInfo) // Endpoint for retrieving current user information
+
+		r.Post("/logins", c.AddLogin)
+		r.Get("/logins", c.GetLogins)
+		r.Delete("/logins/{id}", c.DelLogin)
+		r.Patch("/logins/{id}", c.UpdateLogin)
+
+		r.Get("/cards", c.GetCards)
+		r.Post("/cards", c.AddCard)
+		r.Delete("/cards/{id}", c.DelCard)
+		r.Patch("/cards/{id}", c.UpdateCard)
+
 	})
 
 	return &http.Server{
