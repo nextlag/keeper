@@ -1,4 +1,4 @@
-@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEzNDI3NDQsImlhdCI6MTcyMTMzOTE0NCwibmJmIjoxNzIxMzM5MTQ0LCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.M6RQTt6EKsj-3AwV98ktXogPE-ySNTEDX60vHpAly_xBmw9jVezOJUUQNDmE1Fo62wajiBX4aiwR7XOcHC0OsLp8x8lENh1-HqV318fHwECoAlT3IHlzdhteMZWTDyr0IpTYFWyiFX-7V37VTF--gjO6Z_VSRfEfES__11eMKsMFYnfDkIiyfDmgCVXxdQOG6lqeUebhLCmsLZZqKxEZJVD7_QmwMtHshDB4eo4UzyZVsa_m0LGqr5vD57tsr1zWxy8UO9Y5gJ4b7h_0HpZV0YULsU0Ow7dFmW2Wvccz47NnPSwGsvRtzhKtk1mWZiUmSb7XUIlb7LX1Jgbdsf4ajA
+@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEzODgzODUsImlhdCI6MTcyMTM4NDc4NSwibmJmIjoxNzIxMzg0Nzg1LCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.dqOwpaXyHJ7q7YuWo2lvu6aVdP3oyjJeJ7SU4F4egKeGWMAytjWtZ-tBNZYRuVMckfNmf8jH2NIrWFOegt43I2uIBKy-ixkF0VUqPoAyjp_UGtVFwJLsW3A6UDoEGItIcBRCnszLNYQret-fV-ym93xB0fLL3u_GN888tn24Qk5mUwhvSRAWyclbBj1rN8ctKezVQaIA4pLb9mRCzxF35pB-RUoKJCK8bslZNfJQjsFZKJ2gVpsoF7fO4_f4oblvaL5eoNABDJ8EvtEieYSYkjKqTuQCQnFzoxdIJ1rNpYPSGPIlsRzF-ExdRA5unve6l2OWk6yhwEZAI51Im9GKgA
 @refresh_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjEzOTkxNDQsImlhdCI6MTcyMTMzOTE0NCwibmJmIjoxNzIxMzM5MTQ0LCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.enIifKnigrsVXiHuOq8ccYGKHz475XxREvhJtg6UA0-W_LdLbHKHzDok0wdTLHKbfH_F4PyWPq5JNF51ZwsrRIXDivrAP2-4_cy1xfdtV905-k-r9U5h2MbDf57ov2bpan6M-bzWO6H_oXtSn5DlCGLMzN8QO56_ZdHN7PSqRTA_edUlUsu_0sfgxQWoN5fEhPLKSI26cvwmrj91TjlE8q6SSR45cFI9H8RSlBFAWhdB23jOBJpRCY1zSc0lq38WvZQTjzFBBwhC0HbabkJde2LU1lLznIuRPS4o2EmSSdpN5a-vj-svmPuORPZNhbD6K9H72iZ4dyvQ6sCCzmyeIg
 
 ### GET ping
@@ -46,8 +46,11 @@ GET localhost:8080/auth/logout
 GET localhost:8080/user/me
 Authorization: Bearer {{access_token}}
 
-### POST user/login
-POST localhost:8080/user/login
+
+### ================================ LOGINS ====================================###
+
+### POST user/logins
+POST localhost:8080/user/logins
 Authorization: Bearer {{access_token}}
 
 {
@@ -66,3 +69,23 @@ Authorization: Bearer {{access_token}}
     }
   ]
 }
+
+### GET user/logins
+GET localhost:8080/user/logins
+Authorization: Bearer {{access_token}}
+
+### PATCH user/logins
+PATCH localhost:8080/user/logins/7f20ba0a-35db-41ca-9835-d2b0ee721530
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "yandex.practicum",
+  "login": "example_yandex",
+  "password": "543210",
+  "uri": "https://yandex.practicum.com",
+}
+
+
+### DELETE user/logins
+DELETE localhost:8080/user/logins/0068b7b7-e501-4b8a-85de-d892da6e43aa
+Authorization: Bearer {{access_token}}

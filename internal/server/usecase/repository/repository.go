@@ -16,10 +16,15 @@ import (
 // Repository interface defines methods for interacting with the database.
 type Repository interface {
 	DBHealthCheck() error
-	AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
 	AddUser(ctx context.Context, email, hashedPassword string) (entity.User, error)
 	GetUserByEmail(ctx context.Context, email, hashedPassword string) (entity.User, error)
 	GetUserByID(ctx context.Context, id string) (entity.User, error)
+
+	GetLogins(ctx context.Context, user entity.User) ([]entity.Login, error)
+	AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
+	DelLogin(ctx context.Context, loginID, userID uuid.UUID) error
+	UpdateLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
+	IsLoginOwner(ctx context.Context, loginID, userID uuid.UUID) bool
 }
 
 // Repo implements the Repository interface and provides methods for database operations.

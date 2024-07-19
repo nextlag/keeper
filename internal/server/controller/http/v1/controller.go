@@ -16,15 +16,20 @@ import (
 )
 
 // UseCase defines the interface for the business logic operations used by the controller.
+//
 //go:generate mockgen -destination=mocks/mocks.go -package=mocks github.com/nextlag/keeper/internal/server/controller/http/v1 UseCase
 type UseCase interface {
 	HealthCheck() error
-	AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
 	SignUpUser(ctx context.Context, email, password string) (entity.User, error)
 	SignInUser(ctx context.Context, email, password string) (entity.JWT, error)
 	RefreshAccessToken(ctx context.Context, refreshToken string) (entity.JWT, error)
 	GetDomainName() string
 	CheckAccessToken(ctx context.Context, accessToken string) (entity.User, error)
+
+	GetLogins(ctx context.Context, user entity.User) ([]entity.Login, error)
+	AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
+	DelLogin(ctx context.Context, loginID, userID uuid.UUID) error
+	UpdateLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
 }
 
 // Controller represents the HTTP handlers controller.
@@ -59,9 +64,12 @@ func (c *Controller) NewServer(handler *chi.Mux) *http.Server {
 
 	// Routes for user operations.
 	handler.Route("/user", func(r chi.Router) {
-		r.Use(c.MwAuth())            // Middleware for user authentication
-		r.Get("/me", c.UserInfo)     // Endpoint for retrieving current user information
-		r.Post("/login", c.AddLogin) // Endpoint for adding login credentials for the current user
+		r.Use(c.MwAuth())                      // Middleware for user authentication
+		r.Get("/me", c.UserInfo)               // Endpoint for retrieving current user information
+		r.Post("/logins", c.AddLogin)          // Endpoint for adding login credentials for the current user
+		r.Get("/logins", c.GetLogins)          // Endpoint for retrieving login credentials for the current user
+		r.Delete("/logins/{id}", c.DelLogin)   // Endpoint for deleting a specific login credential
+		r.Patch("/logins/{id}", c.UpdateLogin) // Endpoint for updating a specific login credential
 	})
 
 	return &http.Server{
