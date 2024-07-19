@@ -10,10 +10,10 @@ logging:
 
 security:
   domain: 'localhost'
-  access_token_expired_in: '60m'
-  access_token_maxage: 60
-  refresh_token_expired_in: '1000m'
-  refresh_token_maxage: 1000
+  access_token_expired_in: '600m'
+  access_token_maxage: 600
+  refresh_token_expired_in: '6000m'
+  refresh_token_maxage: 6000
 
 postgres:
   pool_max: 2

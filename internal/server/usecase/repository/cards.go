@@ -11,6 +11,9 @@ import (
 	"github.com/nextlag/keeper/internal/utils/errs"
 )
 
+// GetCards retrieves all cards associated with the given user from the database.
+// It loads card details and their associated meta information.
+// Returns a slice of entity.Card and an error if any occurred during the operation.
 func (r *Repo) GetCards(ctx context.Context, user entity.User) ([]entity.Card, error) {
 	var cardsFromDB []models.Card
 
@@ -41,6 +44,10 @@ func (r *Repo) GetCards(ctx context.Context, user entity.User) ([]entity.Card, e
 	return cards, nil
 }
 
+// AddCard adds a new card to the database for the specified user.
+// It creates a new card entry and associated meta information within a database transaction.
+// If the card is successfully added, it updates the provided card entity with the new card ID.
+// Returns an error if any occurred during the operation.
 func (r *Repo) AddCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error {
 	return r.db.Transaction(func(tx *gorm.DB) error {
 		cardToDB := models.Card{
@@ -75,6 +82,8 @@ func (r *Repo) AddCard(ctx context.Context, card *entity.Card, userID uuid.UUID)
 	})
 }
 
+// IsCardOwner checks if the given user is the owner of the specified card.
+// Returns true if the user is the owner of the card, false otherwise.
 func (r *Repo) IsCardOwner(ctx context.Context, cardUUID, userID uuid.UUID) bool {
 	var cardFromDB models.Card
 
@@ -83,6 +92,9 @@ func (r *Repo) IsCardOwner(ctx context.Context, cardUUID, userID uuid.UUID) bool
 	return cardFromDB.UserID == userID
 }
 
+// DelCard deletes the specified card from the database if the user is the owner.
+// It ensures the user has the right to delete the card by calling IsCardOwner.
+// Returns an error if the user is not the owner or if any error occurred during deletion.
 func (r *Repo) DelCard(ctx context.Context, cardUUID, userID uuid.UUID) error {
 	if !r.IsCardOwner(ctx, cardUUID, userID) {
 		return errs.ErrWrongOwnerOrNotFound
@@ -91,6 +103,9 @@ func (r *Repo) DelCard(ctx context.Context, cardUUID, userID uuid.UUID) error {
 	return r.db.WithContext(ctx).Delete(&models.Card{}, cardUUID).Error
 }
 
+// UpdateCard updates the details of the specified card in the database if the user is the owner.
+// It performs the update within a database transaction, including updating associated meta information.
+// Returns an error if the user is not the owner or if any error occurred during the update.
 func (r *Repo) UpdateCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error {
 	if !r.IsCardOwner(ctx, card.ID, userID) {
 		return errs.ErrWrongOwnerOrNotFound
