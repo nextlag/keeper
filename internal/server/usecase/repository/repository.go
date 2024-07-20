@@ -37,6 +37,12 @@ type Repository interface {
 	DelNote(ctx context.Context, noteID, userID uuid.UUID) error
 	UpdateNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
 	IsNoteOwner(ctx context.Context, noteID, userID uuid.UUID) bool
+
+	GetBinaries(ctx context.Context, user entity.User) ([]entity.Binary, error)
+	AddBinary(ctx context.Context, binary *entity.Binary, userID uuid.UUID) error
+	GetBinary(ctx context.Context, binaryID, userID uuid.UUID) (*entity.Binary, error)
+	DelUserBinary(ctx context.Context, currentUser *entity.User, binaryUUID uuid.UUID) error
+	AddBinaryMeta(ctx context.Context, currentUser *entity.User, binaryUUID uuid.UUID, meta []entity.Meta) (*entity.Binary, error)
 }
 
 // Repo implements the Repository interface and provides methods for database operations.

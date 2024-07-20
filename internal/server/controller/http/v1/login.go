@@ -16,7 +16,7 @@ import (
 func (c *Controller) AddLogin(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
-		c.log.Error("getUserFromCtx", l.ErrAttr(err))
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -24,11 +24,13 @@ func (c *Controller) AddLogin(w http.ResponseWriter, r *http.Request) {
 	var payloadLogin entity.Login
 
 	if err = json.NewDecoder(r.Body).Decode(&payloadLogin); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	if err = c.uc.AddLogin(r.Context(), &payloadLogin, currentUser.ID); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

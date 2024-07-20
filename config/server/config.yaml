@@ -21,3 +21,6 @@ postgres:
 cache:
   default_expiration: 5
   cleanup_interval: 10
+
+files_storage:
+  location: 'data'

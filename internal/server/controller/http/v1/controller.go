@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"mime/multipart"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -40,6 +41,12 @@ type UseCase interface {
 	AddNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
 	DelNote(ctx context.Context, noteID, userID uuid.UUID) error
 	UpdateNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
+
+	GetBinaries(ctx context.Context, user entity.User) ([]entity.Binary, error)
+	AddBinary(ctx context.Context, binary *entity.Binary, file *multipart.FileHeader, userID uuid.UUID) error
+	GetUserBinary(ctx context.Context, currentUser *entity.User, binaryUUID uuid.UUID) (string, error)
+	DelUserBinary(ctx context.Context, currentUser *entity.User, binaryUUID uuid.UUID) error
+	AddBinaryMeta(ctx context.Context, currentUser *entity.User, binaryUUID uuid.UUID, meta []entity.Meta) (*entity.Binary, error)
 }
 
 // Controller represents the HTTP handlers controller.
@@ -81,15 +88,21 @@ func (c *Controller) NewServer(handler *chi.Mux) *http.Server {
 		r.Delete("/logins/{id}", c.DelLogin)
 		r.Patch("/logins/{id}", c.UpdateLogin)
 
-		r.Get("/cards", c.GetCards)
 		r.Post("/cards", c.AddCard)
+		r.Get("/cards", c.GetCards)
 		r.Delete("/cards/{id}", c.DelCard)
 		r.Patch("/cards/{id}", c.UpdateCard)
 
-		r.Get("/notes", c.GetNotes)
 		r.Post("/notes", c.AddNote)
+		r.Get("/notes", c.GetNotes)
 		r.Delete("/notes/{id}", c.DelNote)
 		r.Patch("/notes/{id}", c.UpdateNote)
+
+		r.Post("/binary", c.AddBinary)
+		r.Post("/binary/{id}/meta", c.AddBinaryMeta)
+		r.Get("/binary", c.GetBinaries)
+		r.Get("/binary/{id}", c.DownloadBinary)
+		r.Delete("/binary/{id}", c.DelBinary)
 
 	})
 

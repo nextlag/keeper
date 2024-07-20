@@ -46,7 +46,7 @@ lint:
 	$(LINTER) cache clean && $(LINTER) run
 
 generate:
-	${GO} generate ./...
+	go generate ./...
 
 reload_postgres:
 	docker stop keeper > /dev/null
@@ -56,4 +56,20 @@ reload_postgres:
 test:
 	go test ./...
 
-.PHONY: db_create db_uuid postgres lint generate reload_postgres test key_pem base64 inline public_pem public_base64 public_inline collectKeys clean
+
+# Download files
+URL := http://localhost:8080/auth/login
+EMAIL := example@mail.ru
+PASSWORD := 12345
+FILE_ID := e9b45ca4-a92c-46a4-9590-af5bc950060a # current uuid is required
+DOWNLOAD_URL := http://localhost:8080/user/binary/$(FILE_ID)
+
+# Define variables to store tokens
+ACCESS_TOKEN := $(shell echo $$(curl -s -X POST --location "$(URL)" -d '{"email": "$(EMAIL)", "password": "$(PASSWORD)"}' | jq -r '.access_token'))
+REFRESH_TOKEN := $(shell echo $$(curl -s -X POST --location "$(URL)" -d '{"email": "$(EMAIL)", "password": "$(PASSWORD)"}' | jq -r '.refresh_token'))
+
+# Target to download the file using the access token
+download:
+	curl -X GET "$(DOWNLOAD_URL)" -H "Authorization: Bearer $(ACCESS_TOKEN)" -o downloaded_file.txt
+
+.PHONY: db_create db_uuid postgres lint generate reload_postgres test key_pem base64 inline public_pem public_base64 public_inline collectKeys clean download

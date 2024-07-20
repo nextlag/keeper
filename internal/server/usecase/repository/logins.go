@@ -49,10 +49,10 @@ func (r *Repo) AddLogin(ctx context.Context, login *entity.Login, userID uuid.UU
 	})
 }
 
-func (r *Repo) GetLogins(ctx context.Context, user entity.User) ([]entity.Login, error) {
+func (r *Repo) GetLogins(ctx context.Context, user entity.User) (logins []entity.Login, err error) {
 	var loginsFromDB []models.Login
 
-	err := r.db.WithContext(ctx).
+	err = r.db.WithContext(ctx).
 		Model(&models.Login{}).
 		Preload("Meta").
 		Find(&loginsFromDB, "user_id = ?", user.ID).Error
@@ -64,26 +64,23 @@ func (r *Repo) GetLogins(ctx context.Context, user entity.User) ([]entity.Login,
 		return nil, nil
 	}
 
-	logins := make([]entity.Login, len(loginsFromDB))
+	logins = make([]entity.Login, len(loginsFromDB))
 
-	for i, loginFromDB := range loginsFromDB {
-		login := entity.Login{
-			ID:       loginFromDB.ID,
-			Name:     loginFromDB.Name,
-			Password: loginFromDB.Password,
-			URI:      loginFromDB.URI,
-			Login:    loginFromDB.Login,
-		}
-
-		for _, meta := range loginFromDB.Meta {
-			login.Meta = append(login.Meta, entity.Meta{
-				ID:    meta.ID,
-				Name:  meta.Name,
-				Value: meta.Value,
+	for index := range loginsFromDB {
+		logins[index].ID = loginsFromDB[index].ID
+		logins[index].Name = loginsFromDB[index].Name
+		logins[index].Password = loginsFromDB[index].Password
+		logins[index].URI = loginsFromDB[index].URI
+		logins[index].Login = loginsFromDB[index].Login
+		for metaIndex := range loginsFromDB[index].Meta {
+			logins[index].Meta = append(logins[index].Meta, entity.Meta{
+				ID:    loginsFromDB[index].Meta[metaIndex].ID,
+				Name:  loginsFromDB[index].Meta[metaIndex].Name,
+				Value: loginsFromDB[index].Meta[metaIndex].Value,
 			})
 		}
-		logins[i] = login
 	}
+
 	return logins, nil
 }
 

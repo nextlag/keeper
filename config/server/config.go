@@ -21,12 +21,13 @@ var (
 
 type (
 	Config struct {
-		ConfigPath string    `yaml:"config_path"`
-		Network    *Network  `yaml:"network"`
-		Logging    *Logging  `yaml:"logging"`
-		Security   *Security `yaml:"security"`
-		PG         *PG       `yaml:"postgres"`
-		Cache      *Cache    `yaml:"cache"`
+		ConfigPath   string        `yaml:"config_path"`
+		Network      *Network      `yaml:"network"`
+		Logging      *Logging      `yaml:"logging"`
+		Security     *Security     `yaml:"security"`
+		PG           *PG           `yaml:"postgres"`
+		Cache        *Cache        `yaml:"cache"`
+		FilesStorage *FilesStorage `yaml:"files_storage"`
 	}
 
 	Network struct {
@@ -61,6 +62,10 @@ type (
 	Cache struct {
 		DefaultExpiration int `yaml:"default_expiration" env:"DEFAULT_EXPIRATION"`
 		CleanupInterval   int `yaml:"cleanup_interval" env:"CLEANUP_INTERVAL"`
+	}
+
+	FilesStorage struct {
+		Location string `yaml:"location" env:"FILES_LOCATION"`
 	}
 )
 

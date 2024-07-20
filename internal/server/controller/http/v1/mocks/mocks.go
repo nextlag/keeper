@@ -6,6 +6,7 @@ package mocks
 
 import (
 	context "context"
+	multipart "mime/multipart"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -34,6 +35,35 @@ func NewMockUseCase(ctrl *gomock.Controller) *MockUseCase {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockUseCase) EXPECT() *MockUseCaseMockRecorder {
 	return m.recorder
+}
+
+// AddBinary mocks base method.
+func (m *MockUseCase) AddBinary(arg0 context.Context, arg1 *entity.Binary, arg2 *multipart.FileHeader, arg3 uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddBinary", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AddBinary indicates an expected call of AddBinary.
+func (mr *MockUseCaseMockRecorder) AddBinary(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddBinary", reflect.TypeOf((*MockUseCase)(nil).AddBinary), arg0, arg1, arg2, arg3)
+}
+
+// AddBinaryMeta mocks base method.
+func (m *MockUseCase) AddBinaryMeta(arg0 context.Context, arg1 *entity.User, arg2 uuid.UUID, arg3 []entity.Meta) (*entity.Binary, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddBinaryMeta", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(*entity.Binary)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddBinaryMeta indicates an expected call of AddBinaryMeta.
+func (mr *MockUseCaseMockRecorder) AddBinaryMeta(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddBinaryMeta", reflect.TypeOf((*MockUseCase)(nil).AddBinaryMeta), arg0, arg1, arg2, arg3)
 }
 
 // AddCard mocks base method.
@@ -135,6 +165,35 @@ func (mr *MockUseCaseMockRecorder) DelNote(arg0, arg1, arg2 interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelNote", reflect.TypeOf((*MockUseCase)(nil).DelNote), arg0, arg1, arg2)
 }
 
+// DelUserBinary mocks base method.
+func (m *MockUseCase) DelUserBinary(arg0 context.Context, arg1 *entity.User, arg2 uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DelUserBinary", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DelUserBinary indicates an expected call of DelUserBinary.
+func (mr *MockUseCaseMockRecorder) DelUserBinary(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DelUserBinary", reflect.TypeOf((*MockUseCase)(nil).DelUserBinary), arg0, arg1, arg2)
+}
+
+// GetBinaries mocks base method.
+func (m *MockUseCase) GetBinaries(arg0 context.Context, arg1 entity.User) ([]entity.Binary, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBinaries", arg0, arg1)
+	ret0, _ := ret[0].([]entity.Binary)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetBinaries indicates an expected call of GetBinaries.
+func (mr *MockUseCaseMockRecorder) GetBinaries(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBinaries", reflect.TypeOf((*MockUseCase)(nil).GetBinaries), arg0, arg1)
+}
+
 // GetCards mocks base method.
 func (m *MockUseCase) GetCards(arg0 context.Context, arg1 entity.User) ([]entity.Card, error) {
 	m.ctrl.T.Helper()
@@ -192,6 +251,21 @@ func (m *MockUseCase) GetNotes(arg0 context.Context, arg1 entity.User) ([]entity
 func (mr *MockUseCaseMockRecorder) GetNotes(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNotes", reflect.TypeOf((*MockUseCase)(nil).GetNotes), arg0, arg1)
+}
+
+// GetUserBinary mocks base method.
+func (m *MockUseCase) GetUserBinary(arg0 context.Context, arg1 *entity.User, arg2 uuid.UUID) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserBinary", arg0, arg1, arg2)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserBinary indicates an expected call of GetUserBinary.
+func (mr *MockUseCaseMockRecorder) GetUserBinary(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserBinary", reflect.TypeOf((*MockUseCase)(nil).GetUserBinary), arg0, arg1, arg2)
 }
 
 // HealthCheck mocks base method.

@@ -1,4 +1,4 @@
-@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjE0MzYwODQsImlhdCI6MTcyMTQwMDA4NCwibmJmIjoxNzIxNDAwMDg0LCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.JjJ14XrSHxDK2b1DiCQMWFlTzY3H76h3Ia_7mUXfvPAau8u_xLUccH-fZDWkvj-GpwmfG_PePo74D51aRp5gcWvYEBc1XPGe_Y6B6lvXzVHfsMwZ22fo81tG5pGkayz5yT5pPJTaBHlenDu5jo74Ah1rDlHqf5P1JJvfw5jIEKGY8OGdC2dhXH2CV50LaXvrYi8hee7ptc33uQBV5eT-pafdycHVElBgOpK6AZ867K2WMVElRk8eTXROn1OfxLR4IpxOHkJ7qZFM79W2677sfbZDMrHGzVkdjbB6Ng09WFYUwHmd4P396OYnqHOPUfwtC1hQkGfQruqg9ZSK9_7RkA
+@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjE1MDQ3NDAsImlhdCI6MTcyMTQ2ODc0MCwibmJmIjoxNzIxNDY4NzQwLCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.HFCK0azul03DjCZJWiyoze1FpWNqGBwakC_GO1tk9LDygosWHQ1N-HWujBHJouleSiLNoe9xD2DJ6LUNhIsSAFubUsl7BhKQqpyKIHaAjbEeuVrJjaRvxpOJGLum-I9l_StUVuOdH7a6M_cmO79l-wHwit-ZAypNmEa5a0ll1rmRAtLzehFZtwA_tWoZVjxIZRvafBeqjzyHWt9BHPi2qfWhQ1-28tgS81QcU9tgRV8OYPJcnRecWddSGFWpUzurqRv9jamtZ_BUAQUJmeWEyX0JbVzlF4Vh1M9SI4t5uoJ8EVzuv4eQrJBuryHNkYSGxtR8Zbd5_BlIXKx2DJpi1Q
 @refresh_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjE3NjAwODQsImlhdCI6MTcyMTQwMDA4NCwibmJmIjoxNzIxNDAwMDg0LCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.Q1qDd3-IW62ITNeqCgpJt2DCn4Cc-Fq3AZpwqAcK43qgO9Pna8aU3KXejQh3KavVFjPy5rFQB_4jiCznvXGIF_wtk2oIw3HVAiYQRlE8Sv8N-5VHJpzq82i4B0eG1YzFxES7jQShomFkdwYlSYOijGYUxQTpd9DW3uyh9hylMI58WJKMqELAjf_91SG2ONDjwUmVt47-Lf-ve9oZsJ8Kl6iWvEYn9KQvyc1ULAVFMpxUKbq_u7n8m0jY4g-80THDVFD0T92xbiKdxrGQVF_vL1_L6xSKZo1lJoJRSf_sMHz46ITrfxrePYsyFO04JC7743AhfMq5NtqojCvf1VXamw
 
 ### GET ping
@@ -180,3 +180,40 @@ Authorization: Bearer {{access_token}}
 DELETE localhost:8080/user/notes/3fa710d3-2571-4013-a741-a51f6b34f724
 Authorization: Bearer {{access_token}}
 
+
+### ================================ BINARY ====================================###
+
+### POST user/binary
+POST localhost:8080/user/binary?name=fileBinary
+Authorization: Bearer {{access_token}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="fileBinary.txt";
+Content-Type: text/plain
+
+<file_content>
+--boundary--
+
+### POST user/binary/{id}/meta
+POST localhost:8080/user/binary/e9b45ca4-a92c-46a4-9590-af5bc950060a/meta
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+[
+  {
+    "name": "meta name",
+    "value": "meta value"
+  }
+]
+
+### GET user/binary
+GET localhost:8080/user/binary
+Authorization: Bearer {{access_token}}
+
+### DOWNLOAD user/binary/{id}
+# curl -X GET "http://localhost:8080/user/binary/e9b45ca4-a92c-46a4-9590-af5bc950060a" -H "Authorization: Bearer {{access_token}}" -o downloaded_file.txt
+
+### DELETE user/binary
+DELETE localhost:8080/user/binary/e9b45ca4-a92c-46a4-9590-af5bc950060a
+Authorization: Bearer {{access_token}}
