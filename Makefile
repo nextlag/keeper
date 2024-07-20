@@ -72,4 +72,7 @@ REFRESH_TOKEN := $(shell echo $$(curl -s -X POST --location "$(URL)" -d '{"email
 download:
 	curl -X GET "$(DOWNLOAD_URL)" -H "Authorization: Bearer $(ACCESS_TOKEN)" -o downloaded_file.txt
 
-.PHONY: db_create db_uuid postgres lint generate reload_postgres test key_pem base64 inline public_pem public_base64 public_inline collectKeys clean download
+build:
+	go build -o keeper cmd/client/main.go
+
+.PHONY: db_create db_uuid postgres lint generate reload_postgres test key_pem base64 inline public_pem public_base64 public_inline collectKeys clean download build

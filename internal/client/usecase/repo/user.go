@@ -54,3 +54,23 @@ func (r *Repo) DropUserToken() error {
 
 	return r.db.Save(&existedUser).Error
 }
+
+func (r *Repo) GetUserPasswordHash() string {
+	var existedUser models.User
+	r.db.First(&existedUser)
+	return existedUser.Password
+}
+
+func (r *Repo) GetSavedAccessToken() (accessToken string, err error) {
+	var user models.User
+	err = r.db.First(&user).Error
+
+	return user.AccessToken, err
+}
+
+func (r *Repo) getUserID() uint {
+	var user models.User
+	r.db.First(&user)
+
+	return user.ID
+}

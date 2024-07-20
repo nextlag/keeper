@@ -2,8 +2,8 @@ app:
   name: 'keeper'
   version: '1.0.0'
 
-network:
-  host: 'http://localhost:8080'
+server:
+  server_url: 'http://localhost:8080'
 
 logger:
   level: 'debug'

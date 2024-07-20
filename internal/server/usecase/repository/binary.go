@@ -9,6 +9,7 @@ import (
 
 	"github.com/nextlag/keeper/internal/entity"
 	"github.com/nextlag/keeper/internal/server/usecase/repository/models"
+	"github.com/nextlag/keeper/pkg/logger/l"
 )
 
 var errWrongBinaryOwner = errors.New("wrong binary owner or not found")
@@ -57,7 +58,7 @@ func (r *Repo) AddBinary(ctx context.Context, binary *entity.Binary, userID uuid
 	}
 
 	if err := r.db.WithContext(ctx).Create(&newBinaryToDB).Error; err != nil {
-		r.log.Debug(fmt.Sprintf("Repo - AddBinary - Create - %v", err), err)
+		r.log.Debug(fmt.Sprintf("Repo - AddBinary - Create - %v", err), l.ErrAttr(err))
 		return err
 	}
 	binary.ID = newBinaryToDB.ID

@@ -5,6 +5,8 @@ import (
 	"errors"
 	"net/http"
 	"time"
+
+	"github.com/nextlag/keeper/pkg/logger/l"
 )
 
 const shutdown = time.Second * 15
@@ -20,7 +22,7 @@ func (a *App) Run(ctx context.Context) {
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			a.log.Error("HTTP server ListenAndServe:", err)
+			a.log.Error("HTTP server ListenAndServe:", l.ErrAttr(err))
 		}
 	}()
 
@@ -32,7 +34,7 @@ func (a *App) Run(ctx context.Context) {
 	defer cancel()
 
 	if err := srv.Shutdown(shutdownCtx); err != nil {
-		a.log.Error("HTTP server Shutdown:", err)
+		a.log.Error("HTTP server Shutdown:", l.ErrAttr(err))
 	}
 
 	a.log.Info("Server shutdown gracefully")

@@ -10,6 +10,7 @@ import (
 	config "github.com/nextlag/keeper/config/client"
 	"github.com/nextlag/keeper/internal/client/app/auth"
 	"github.com/nextlag/keeper/internal/client/app/build"
+	"github.com/nextlag/keeper/internal/client/app/cards"
 	"github.com/nextlag/keeper/internal/client/app/vault"
 	"github.com/nextlag/keeper/internal/client/usecase"
 	"github.com/nextlag/keeper/internal/client/usecase/api"
@@ -44,6 +45,10 @@ func init() {
 		auth.LoginUserCmd,
 		auth.RegisterUserCmd,
 		auth.LogoutUser,
+
+		cards.AddCard,
+		cards.GetCard,
+		cards.DelCard,
 	}
 
 	rootCmd.AddCommand(commands...)
@@ -52,11 +57,11 @@ func init() {
 func initApp() {
 	cfg = config.LoadConfig()
 
-	log.Println(cfg.Network.Host)
+	log.Println(cfg.Server)
 
 	uc := usecase.GetClientUseCase()
-	clientOpts := []usecase.UseCaseOpts{
-		usecase.SetAPI(api.New(cfg.Network.Host)),
+	clientOpts := []usecase.OptsUseCase{
+		usecase.SetAPI(api.New(cfg.Server.ServerURL)),
 		usecase.SetConfig(cfg),
 		usecase.SetRepo(repo.New(cfg.SQLite.DSN)),
 	}

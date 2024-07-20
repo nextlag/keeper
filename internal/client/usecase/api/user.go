@@ -22,7 +22,7 @@ func (api *ClientAPI) Login(user *entity.User) (token entity.JWT, err error) {
 		SetHeader("Content-Type", "application/json").
 		SetBody(body).
 		SetResult(&token).
-		Post(fmt.Sprintf("%s/api/v1/auth/login", api.host))
+		Post(fmt.Sprintf("%s/api/v1/auth/login", api.serverURL))
 	if err != nil {
 		return
 	}
@@ -43,7 +43,7 @@ func (api *ClientAPI) Register(user *entity.User) error {
 		SetHeader("Content-Type", "application/json").
 		SetBody(body).
 		SetResult(user).
-		Post(fmt.Sprintf("%s/api/v1/auth/register", api.host))
+		Post(fmt.Sprintf("%s/api/v1/auth/register", api.serverURL))
 	if err != nil {
 		log.Fatal(err)
 	}

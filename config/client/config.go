@@ -19,7 +19,7 @@ type (
 	Config struct {
 		ConfigPath   string        `yaml:"config_path"`
 		App          *App          `yaml:"app"`
-		Network      *Network      `yaml:"network"`
+		Server       *Server       `yaml:"server"`
 		Log          *Log          `yaml:"logger"`
 		SQLite       *SQLite       `yaml:"sqlite"`
 		FilesStorage *FilesStorage `yaml:"files_storage"`
@@ -30,8 +30,8 @@ type (
 		Version string `yaml:"version" env:"APP_VERSION"`
 	}
 
-	Network struct {
-		Host string `yaml:"host" env:"HOST"`
+	Server struct {
+		ServerURL string `yaml:"server_url" env:"SERVER_URL"`
 	}
 
 	Log struct {
@@ -72,7 +72,7 @@ func LoadConfig() *Config {
 			}
 		}
 
-		flag.StringVar(&cfg.Network.Host, "a", cfg.Network.Host, "Host HTTP-server")
+		flag.StringVar(&cfg.Server.ServerURL, "a", cfg.Server.ServerURL, "Host HTTP-server")
 		flag.Var(&config.LogLevelValue{Value: &cfg.Log.Level}, "level", "Log level (debug, info, warn, error)")
 
 		if err = env.Parse(&cfg); err != nil {

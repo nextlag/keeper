@@ -10,6 +10,7 @@ import (
 
 	"github.com/nextlag/keeper/internal/entity"
 	"github.com/nextlag/keeper/internal/utils"
+	"github.com/nextlag/keeper/pkg/logger/l"
 )
 
 // GetBinaries retrieves all binaries associated with the given user.
@@ -29,7 +30,7 @@ func (uc *UseCase) AddBinary(
 		return err
 	}
 	if err := utils.SaveUploadedFile(file, binary.ID.String(), userDirectory); err != nil {
-		uc.log.Debug(fmt.Sprintf("UseCase - AddBinary - SaveUploadedFile - %v", err), err)
+		uc.log.Debug(fmt.Sprintf("UseCase - AddBinary - SaveUploadedFile - %v", err), l.ErrAttr(err))
 		return err
 	}
 	return nil

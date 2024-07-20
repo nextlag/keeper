@@ -1,11 +1,11 @@
 package api
 
 type ClientAPI struct {
-	host string
+	serverURL string
 }
 
-func New(host string) *ClientAPI {
+func New(serverURL string) *ClientAPI {
 	return &ClientAPI{
-		host: host,
+		serverURL: serverURL,
 	}
 }

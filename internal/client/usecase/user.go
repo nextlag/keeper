@@ -6,6 +6,7 @@ import (
 	"github.com/fatih/color"
 
 	"github.com/nextlag/keeper/internal/entity"
+	"github.com/nextlag/keeper/internal/utils"
 )
 
 func (uc *ClientUseCase) Login(user *entity.User) {
@@ -50,4 +51,14 @@ func (uc *ClientUseCase) Logout() {
 	}
 
 	color.Green("Users tokens were dropped")
+}
+
+func (uc *ClientUseCase) verifyPassword(userPassword string) bool {
+	if err := utils.VerifyPassword(uc.repo.GetUserPasswordHash(), userPassword); err != nil {
+		color.Red("Password check status: failed")
+
+		return false
+	}
+
+	return true
 }
