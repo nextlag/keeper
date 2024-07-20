@@ -15,7 +15,7 @@ import (
 )
 
 func TestController_HealthCheck(t *testing.T) {
-	cfg, err := config.NewConfig()
+	cfg, err := config.LoadConfig()
 	if err != nil {
 		t.Fatalf("Failed to create config: %v", err)
 	}

@@ -1,0 +1,15 @@
+app:
+  name: 'keeper-client'
+  version: '1.0.0'
+
+network:
+  host: ':8080'
+
+logger:
+  level: 'debug'
+
+sqlite:
+  sqlite_dsn: 'keeper.sqlite'
+
+files_storage:
+  location: 'data'

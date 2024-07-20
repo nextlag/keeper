@@ -2,7 +2,7 @@ network:
   host: ':8080'
   https: false
 
-logging:
+logger:
   level: debug
   project_path: '/Users/nextbug/Documents/GoProjects/keeper/'
   log_to_file: false

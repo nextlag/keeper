@@ -44,12 +44,12 @@ var (
 func NewLogger(cfg *config.Config) *Logger {
 	opts := LoggerOptions{
 		SlogOpts: &HandlerOptions{
-			Level:     cfg.Logging.Level,
+			Level:     cfg.Log.Level,
 			AddSource: true,
 		},
-		ProjectPath: cfg.Logging.ProjectPath,
-		LogToFile:   cfg.Logging.LogToFile,
-		LogPath:     cfg.Logging.LogPath,
+		ProjectPath: cfg.Log.ProjectPath,
+		LogToFile:   cfg.Log.LogToFile,
+		LogPath:     cfg.Log.LogPath,
 	}
 	if opts.LogToFile {
 		file, err := os.OpenFile(opts.LogPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
@@ -61,7 +61,7 @@ func NewLogger(cfg *config.Config) *Logger {
 		opts.Out = os.Stdout
 	}
 
-	handler := opts.slogHandler(opts.Out, cfg.Logging.ProjectPath)
+	handler := opts.slogHandler(opts.Out, cfg.Log.ProjectPath)
 	return slog.New(handler)
 }
 

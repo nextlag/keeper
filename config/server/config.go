@@ -12,18 +12,15 @@ import (
 	"github.com/caarlos0/env/v6"
 	"github.com/joho/godotenv"
 	"gopkg.in/yaml.v3"
-)
 
-var (
-	once sync.Once
-	cfg  Config
+	"github.com/nextlag/keeper/config"
 )
 
 type (
 	Config struct {
 		ConfigPath   string        `yaml:"config_path"`
 		Network      *Network      `yaml:"network"`
-		Logging      *Logging      `yaml:"logging"`
+		Log          *Log          `yaml:"logger"`
 		Security     *Security     `yaml:"security"`
 		PG           *PG           `yaml:"postgres"`
 		Cache        *Cache        `yaml:"cache"`
@@ -35,8 +32,8 @@ type (
 		HTTPS bool   `yaml:"https"`
 	}
 
-	Logging struct {
-		Level       slog.Level `yaml:"level"`
+	Log struct {
+		Level       slog.Level `yaml:"level" env:"LOG_LEVEL"`
 		ProjectPath string     `yaml:"project_path" env:"PROJECT_PATH"`
 		LogToFile   bool       `yaml:"log_to_file" env:"LOG_TO_FILE"`
 		LogPath     string     `yaml:"log_path" env:"LOG_PATH"`
@@ -69,15 +66,17 @@ type (
 	}
 )
 
-func NewConfig() (*Config, error) {
-	var (
-		err     error
-		homeDir string
-	)
+var (
+	cfg  Config
+	once sync.Once
+)
+
+func LoadConfig() (*Config, error) {
+	var err error
 	once.Do(func() {
-		homeDir, err = os.UserHomeDir()
+		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			return
+			log.Fatalf("error getting user home directory: %v", err)
 		}
 		envPath := fmt.Sprintf("%s/Documents/GoProjects/keeper/.env.example", homeDir)
 		if err = godotenv.Load(envPath); err != nil {
@@ -93,10 +92,10 @@ func NewConfig() (*Config, error) {
 		}
 
 		flag.StringVar(&cfg.Network.Host, "a", cfg.Network.Host, "Host HTTP-server")
-		flag.Var(&LogLevelValue{&cfg.Logging.Level}, "level", "Log level (debug, info, warn, error)")
+		flag.Var(&config.LogLevelValue{Value: &cfg.Log.Level}, "level", "Log level (debug, info, warn, error)")
 
 		if err = env.Parse(&cfg); err != nil {
-			return
+			log.Fatalf("error parsing environment variables: %v", err)
 		}
 
 		flag.Parse()
