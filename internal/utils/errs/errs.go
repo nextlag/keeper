@@ -33,3 +33,14 @@ func ParsePostgresErr(dbErr error) (newError GormErr) {
 	}
 	return
 }
+
+func ParseServerError(body []byte) string {
+	var errMessage struct {
+		Message string `json:"error"`
+	}
+
+	if err := json.Unmarshal(body, &errMessage); err == nil {
+		return errMessage.Message
+	}
+	return ""
+}

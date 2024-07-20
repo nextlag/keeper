@@ -4,25 +4,23 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+
+	config "github.com/nextlag/keeper/config/client"
+	"github.com/nextlag/keeper/internal/client/usecase"
+	"github.com/nextlag/keeper/internal/entity"
 )
 
-var registerUserCmd = &cobra.Command{ // cobra style guide
+var RegisterUserCmd = &cobra.Command{
 	Use:   "register",
-	Short: "Register user to the service",
-	Long: `
-This command register new user.
-Usage: client register user_login user_password`,
+	Short: "User registration in the service",
+	Long: fmt.Sprintf(`This command registers a new user.
+Usage: %s register <user_email> <user_password>`, config.LoadConfig().App.Name),
 	Args: cobra.MinimumNArgs(RequiredUserArgs),
 	Run: func(cmd *cobra.Command, args []string) {
-		login := loginUser{
-			login:    args[0],
-			password: args[1],
+		account := entity.User{
+			Email:    args[0],
+			Password: args[1],
 		}
-		fmt.Println(login)
-		// TODO: add register logic
+		usecase.GetClientUseCase().Register(&account)
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(registerUserCmd)
 }

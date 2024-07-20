@@ -68,42 +68,44 @@ func (c *Controller) NewServer(handler *chi.Mux) *http.Server {
 	handler.Use(gzip.MwGzip())
 	handler.Use(middleware.Recoverer)
 
-	handler.Get("/ping", c.HealthCheck) // Endpoint for health check
+	// Add version prefix here
+	handler.Route("/api/v1", func(r chi.Router) {
+		r.Get("/ping", c.HealthCheck) // Endpoint for health check
 
-	// Routes for authentication
-	handler.Route("/auth", func(r chi.Router) {
-		r.Post("/register", c.SignUpUser)
-		r.Post("/login", c.SignInUser)
-		r.Get("/refresh", c.RefreshAccessToken)
-		r.Get("/logout", c.LogoutUser)
-	})
+		// Routes for authentication
+		r.Route("/auth", func(r chi.Router) {
+			r.Post("/register", c.SignUpUser)
+			r.Post("/login", c.SignInUser)
+			r.Get("/refresh", c.RefreshAccessToken)
+			r.Get("/logout", c.LogoutUser)
+		})
 
-	// Routes for user operations.
-	handler.Route("/user", func(r chi.Router) {
-		r.Use(c.MwAuth())        // Middleware for user authentication
-		r.Get("/me", c.UserInfo) // Endpoint for retrieving current user information
+		// Routes for user operations.
+		r.Route("/user", func(r chi.Router) {
+			r.Use(c.MwAuth())        // Middleware for user authentication
+			r.Get("/me", c.UserInfo) // Endpoint for retrieving current user information
 
-		r.Post("/logins", c.AddLogin)
-		r.Get("/logins", c.GetLogins)
-		r.Delete("/logins/{id}", c.DelLogin)
-		r.Patch("/logins/{id}", c.UpdateLogin)
+			r.Post("/logins", c.AddLogin)
+			r.Get("/logins", c.GetLogins)
+			r.Delete("/logins/{id}", c.DelLogin)
+			r.Patch("/logins/{id}", c.UpdateLogin)
 
-		r.Post("/cards", c.AddCard)
-		r.Get("/cards", c.GetCards)
-		r.Delete("/cards/{id}", c.DelCard)
-		r.Patch("/cards/{id}", c.UpdateCard)
+			r.Post("/cards", c.AddCard)
+			r.Get("/cards", c.GetCards)
+			r.Delete("/cards/{id}", c.DelCard)
+			r.Patch("/cards/{id}", c.UpdateCard)
 
-		r.Post("/notes", c.AddNote)
-		r.Get("/notes", c.GetNotes)
-		r.Delete("/notes/{id}", c.DelNote)
-		r.Patch("/notes/{id}", c.UpdateNote)
+			r.Post("/notes", c.AddNote)
+			r.Get("/notes", c.GetNotes)
+			r.Delete("/notes/{id}", c.DelNote)
+			r.Patch("/notes/{id}", c.UpdateNote)
 
-		r.Post("/binary", c.AddBinary)
-		r.Post("/binary/{id}/meta", c.AddBinaryMeta)
-		r.Get("/binary", c.GetBinaries)
-		r.Get("/binary/{id}", c.DownloadBinary)
-		r.Delete("/binary/{id}", c.DelBinary)
-
+			r.Post("/binary", c.AddBinary)
+			r.Post("/binary/{id}/meta", c.AddBinaryMeta)
+			r.Get("/binary", c.GetBinaries)
+			r.Get("/binary/{id}", c.DownloadBinary)
+			r.Delete("/binary/{id}", c.DelBinary)
+		})
 	})
 
 	return &http.Server{

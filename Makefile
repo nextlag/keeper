@@ -58,11 +58,11 @@ test:
 
 
 # Download files
-URL := http://localhost:8080/auth/login
+URL := http://localhost:8080/api/v1/auth/login
 EMAIL := example@mail.ru
 PASSWORD := 12345
 FILE_ID := e9b45ca4-a92c-46a4-9590-af5bc950060a # current uuid is required
-DOWNLOAD_URL := http://localhost:8080/user/binary/$(FILE_ID)
+DOWNLOAD_URL := http://localhost:8080/api/v1/user/binary/$(FILE_ID)
 
 # Define variables to store tokens
 ACCESS_TOKEN := $(shell echo $$(curl -s -X POST --location "$(URL)" -d '{"email": "$(EMAIL)", "password": "$(PASSWORD)"}' | jq -r '.access_token'))

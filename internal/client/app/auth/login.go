@@ -4,32 +4,25 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+
+	config "github.com/nextlag/keeper/config/client"
+	"github.com/nextlag/keeper/internal/client/usecase"
+	"github.com/nextlag/keeper/internal/entity"
 )
 
-type loginUser struct {
-	login    string
-	password string
-}
+var RequiredUserArgs = 2
 
-var RequiredUserArgs = 2 // cobra style guide
-
-var loginUserCmd = &cobra.Command{ // cobra style guide
+var LoginUserCmd = &cobra.Command{
 	Use:   "login",
 	Short: "Login user to the service",
-	Long: `
-This command login user.
-Usage: client login user_login user_password`,
+	Long: fmt.Sprintf(`This is the user login command.
+Usage: %s login <user_email> <user_password>`, config.LoadConfig().App.Name),
 	Args: cobra.MinimumNArgs(RequiredUserArgs),
 	Run: func(cmd *cobra.Command, args []string) {
-		login := loginUser{
-			login:    args[0],
-			password: args[1],
+		account := entity.User{
+			Email:    args[0],
+			Password: args[1],
 		}
-		fmt.Println(login)
-		// TODO: add login logic
+		usecase.GetClientUseCase().Login(&account)
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(loginUserCmd)
 }

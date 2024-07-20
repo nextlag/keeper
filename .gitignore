@@ -23,3 +23,6 @@
 vendor/
 *.sqlite
 *debug_bin
+
+# client
+keeper

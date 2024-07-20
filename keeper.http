@@ -2,7 +2,7 @@
 @refresh_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjE3NjAwODQsImlhdCI6MTcyMTQwMDA4NCwibmJmIjoxNzIxNDAwMDg0LCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.Q1qDd3-IW62ITNeqCgpJt2DCn4Cc-Fq3AZpwqAcK43qgO9Pna8aU3KXejQh3KavVFjPy5rFQB_4jiCznvXGIF_wtk2oIw3HVAiYQRlE8Sv8N-5VHJpzq82i4B0eG1YzFxES7jQShomFkdwYlSYOijGYUxQTpd9DW3uyh9hylMI58WJKMqELAjf_91SG2ONDjwUmVt47-Lf-ve9oZsJ8Kl6iWvEYn9KQvyc1ULAVFMpxUKbq_u7n8m0jY4g-80THDVFD0T92xbiKdxrGQVF_vL1_L6xSKZo1lJoJRSf_sMHz46ITrfxrePYsyFO04JC7743AhfMq5NtqojCvf1VXamw
 
 ### GET ping
-GET localhost:8080/ping
+GET localhost:8080/api/v1/ping
 
 ### POST registration random user
 < {%
@@ -12,15 +12,15 @@ GET localhost:8080/ping
     request.variables.set("password", password)
 %}
 
-POST localhost:8080/auth/register
+POST localhost:8080/api/v1/auth/register
 
 {
   "email": "{{email}}@mail.ru",
-  "password": "{{alias}}"
+  "password": "{{password}}"
 }
 
 ### POST registration
-POST localhost:8080/auth/register
+POST localhost:8080/api/v1/auth/register
 
 {
   "email": "example@mail.ru",
@@ -28,7 +28,7 @@ POST localhost:8080/auth/register
 }
 
 ### POST authentication
-POST localhost:8080/auth/login
+POST localhost:8080/api/v1/auth/login
 
 {
   "email": "example@mail.ru",
@@ -36,21 +36,20 @@ POST localhost:8080/auth/login
 }
 
 ### GET refresh token
-GET localhost:8080/auth/refresh
+GET localhost:8080/api/v1/auth/refresh
 Cookie: refresh_token={{refresh_token}}
 
 ### GET auth logout
-GET localhost:8080/auth/logout
+GET localhost:8080/api/v1/auth/logout
 
 ### GET user/me
-GET localhost:8080/user/me
+GET localhost:8080/api/v1/user/me
 Authorization: Bearer {{access_token}}
-
 
 ### ================================ LOGINS ====================================###
 
 ### POST user/logins
-POST localhost:8080/user/logins
+POST localhost:8080/api/v1/user/logins
 Authorization: Bearer {{access_token}}
 
 {
@@ -71,35 +70,33 @@ Authorization: Bearer {{access_token}}
 }
 
 ### GET user/logins
-GET localhost:8080/user/logins
+GET localhost:8080/api/v1/user/logins
 Authorization: Bearer {{access_token}}
 
 ### PATCH user/logins
-PATCH localhost:8080/user/logins/7f20ba0a-35db-41ca-9835-d2b0ee721530
+PATCH localhost:8080/api/v1/user/logins/7f20ba0a-35db-41ca-9835-d2b0ee721530
 Authorization: Bearer {{access_token}}
 
 {
   "name": "yandex.practicum",
   "login": "example_yandex",
   "password": "543210",
-  "uri": "https://yandex.practicum.com",
+  "uri": "https://yandex.practicum.com"
 }
 
-
 ### DELETE user/logins
-DELETE localhost:8080/user/logins/0068b7b7-e501-4b8a-85de-d892da6e43aa
+DELETE localhost:8080/api/v1/user/logins/0068b7b7-e501-4b8a-85de-d892da6e43aa
 Authorization: Bearer {{access_token}}
-
 
 ### ================================ CARDS ====================================###
 
 ### POST user/cards
-POST localhost:8080/user/cards
+POST localhost:8080/api/v1/user/cards
 Authorization: Bearer {{access_token}}
 
 {
   "name": "GOLD",
-  "card_holder_hame": "DIGIT",
+  "card_holder_name": "DIGIT",
   "number": "1123 1234 1000 1234",
   "brand": "MIR",
   "expiration_month": "07",
@@ -118,16 +115,16 @@ Authorization: Bearer {{access_token}}
 }
 
 ### GET user/cards
-GET localhost:8080/user/cards
+GET localhost:8080/api/v1/user/cards
 Authorization: Bearer {{access_token}}
 
 ### PATCH user/cards
-PATCH localhost:8080/user/cards/18fc4d61-aa94-421d-9baf-78ea5d50e90d
+PATCH localhost:8080/api/v1/user/cards/18fc4d61-aa94-421d-9baf-78ea5d50e90d
 Authorization: Bearer {{access_token}}
 
 {
   "name": "Green",
-  "card_holder_hame": "DIGIT",
+  "card_holder_name": "DIGIT",
   "number": "1123123410001234",
   "brand": "MIR",
   "expiration_month": "07",
@@ -135,16 +132,14 @@ Authorization: Bearer {{access_token}}
   "security_code": "003"
 }
 
-
 ### DELETE user/cards
-DELETE localhost:8080/user/cards/18fc4d61-aa94-421d-9baf-78ea5d50e90d
+DELETE localhost:8080/api/v1/user/cards/18fc4d61-aa94-421d-9baf-78ea5d50e90d
 Authorization: Bearer {{access_token}}
-
 
 ### ================================ NOTES ====================================###
 
 ### POST user/notes
-POST localhost:8080/user/notes
+POST localhost:8080/api/v1/user/notes
 Authorization: Bearer {{access_token}}
 
 {
@@ -163,11 +158,11 @@ Authorization: Bearer {{access_token}}
 }
 
 ### GET user/notes
-GET localhost:8080/user/notes
+GET localhost:8080/api/v1/user/notes
 Authorization: Bearer {{access_token}}
 
 ### PATCH user/notes
-PATCH localhost:8080/user/notes/3fa710d3-2571-4013-a741-a51f6b34f724
+PATCH localhost:8080/api/v1/user/notes/3fa710d3-2571-4013-a741-a51f6b34f724
 Authorization: Bearer {{access_token}}
 
 {
@@ -175,28 +170,26 @@ Authorization: Bearer {{access_token}}
   "note": "Content"
 }
 
-
 ### DELETE user/notes
-DELETE localhost:8080/user/notes/3fa710d3-2571-4013-a741-a51f6b34f724
+DELETE localhost:8080/api/v1/user/notes/3fa710d3-2571-4013-a741-a51f6b34f724
 Authorization: Bearer {{access_token}}
-
 
 ### ================================ BINARY ====================================###
 
 ### POST user/binary
-POST localhost:8080/user/binary?name=fileBinary
+POST localhost:8080/api/v1/user/binary?name=fileBinary
 Authorization: Bearer {{access_token}}
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
-Content-Disposition: form-data; name="file"; filename="fileBinary.txt";
+Content-Disposition: form-data; name="file"; filename="fileBinary.txt"
 Content-Type: text/plain
 
 <file_content>
 --boundary--
 
 ### POST user/binary/{id}/meta
-POST localhost:8080/user/binary/e9b45ca4-a92c-46a4-9590-af5bc950060a/meta
+POST localhost:8080/api/v1/user/binary/e9b45ca4-a92c-46a4-9590-af5bc950060a/meta
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
@@ -208,12 +201,12 @@ Content-Type: application/json
 ]
 
 ### GET user/binary
-GET localhost:8080/user/binary
+GET localhost:8080/api/v1/user/binary
 Authorization: Bearer {{access_token}}
 
 ### DOWNLOAD user/binary/{id}
-# curl -X GET "http://localhost:8080/user/binary/e9b45ca4-a92c-46a4-9590-af5bc950060a" -H "Authorization: Bearer {{access_token}}" -o downloaded_file.txt
+# curl -X GET "http://localhost:8080/api/v1/user/binary/e9b45ca4-a92c-46a4-9590-af5bc950060a" -H "Authorization: Bearer {{access_token}}" -o downloaded_file.txt
 
 ### DELETE user/binary
-DELETE localhost:8080/user/binary/e9b45ca4-a92c-46a4-9590-af5bc950060a
+DELETE localhost:8080/api/v1/user/binary/e9b45ca4-a92c-46a4-9590-af5bc950060a
 Authorization: Bearer {{access_token}}

@@ -1,9 +1,9 @@
 app:
-  name: 'keeper-client'
+  name: 'keeper'
   version: '1.0.0'
 
 network:
-  host: ':8080'
+  host: 'http://localhost:8080'
 
 logger:
   level: 'debug'
