@@ -21,7 +21,7 @@ Flags:
   -c, --code string       Card code
   -h, --help              help for addcard
   -m, --month string      Card expiration month
-  -n, --number string     Card namber
+  -n, --number string     Card number
   -o, --owner string      Card holder name
   -p, --password string   User password value.
   -t, --title string      Card title

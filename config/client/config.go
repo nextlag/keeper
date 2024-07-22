@@ -11,8 +11,6 @@ import (
 	"github.com/caarlos0/env/v6"
 	"github.com/joho/godotenv"
 	"gopkg.in/yaml.v3"
-
-	"github.com/nextlag/keeper/config"
 )
 
 type (
@@ -73,7 +71,6 @@ func LoadConfig() *Config {
 		}
 
 		flag.StringVar(&cfg.Server.ServerURL, "a", cfg.Server.ServerURL, "Host HTTP-server")
-		flag.Var(&config.LogLevelValue{Value: &cfg.Log.Level}, "level", "Log level (debug, info, warn, error)")
 
 		if err = env.Parse(&cfg); err != nil {
 			log.Fatalf("error parsing environment variables: %v", err)
