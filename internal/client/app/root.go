@@ -56,9 +56,6 @@ func init() {
 
 func initApp() {
 	cfg = config.LoadConfig()
-
-	log.Println(cfg.Server)
-
 	uc := usecase.GetClientUseCase()
 	clientOpts := []usecase.OptsUseCase{
 		usecase.SetAPI(api.New(cfg.Server.ServerURL)),

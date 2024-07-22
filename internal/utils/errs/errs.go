@@ -50,9 +50,10 @@ func ParseServerError(body []byte) string {
 		body = unzippedBody
 	}
 
+	// Attempt to unmarshal JSON
 	if err := json.Unmarshal(body, &errMessage); err != nil {
-		log.Printf("Failed to parse error message: %v", err)
-		return ""
+		log.Printf("Failed to parse error message as JSON: %v", err)
+		return string(body)
 	}
 
 	if errMessage.Message == "" {

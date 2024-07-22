@@ -29,7 +29,7 @@ func (api *ClientAPI) Login(user *entity.User) (token entity.JWT, err error) {
 
 	if resp.StatusCode() == http.StatusBadRequest || resp.StatusCode() == http.StatusInternalServerError {
 		errMessage := errs.ParseServerError(resp.Body())
-		color.Red("Server error: %v", errMessage)
+		color.Red("Server error: %s", errMessage)
 		return token, errServer
 	}
 
