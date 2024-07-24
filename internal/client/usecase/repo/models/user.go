@@ -17,6 +17,11 @@ type User struct {
 	Notes        []Note  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Binary       []Note  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
+type TempUser struct {
+	gorm.Model
+	Email    string
+	Password string
+}
 
 func (user *User) ToString() string {
 	return fmt.Sprintf("id: %v\nemail: %s", user.ID, user.Email)

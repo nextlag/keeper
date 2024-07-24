@@ -15,6 +15,7 @@ type (
 		Register(user *entity.User)
 		Login(user *entity.User)
 		Logout()
+		GetTempPass() (string, error)
 
 		AddCard(userPassword string, card *entity.Card)
 		ShowCard(userPassword, cardID string)
@@ -25,18 +26,28 @@ type (
 		MigrateDB()
 
 		AddUser(user *entity.User) error
+		AddTempPass(user *entity.User) error
 		UpdateUserToken(user *entity.User, token *entity.JWT) error
-		DropUserToken() error
+		DropUserToken(email string) error
 		RemoveUsers()
+		RemoveTempUser()
 		UserExistsByEmail(email string) bool
-		GetUserPasswordHash() string
+		GetUserPasswordHash() (string, error)
 		GetSavedAccessToken() (string, error)
+		GetTempPass() (string, error)
+		GetTempUser() (string, error)
 
 		AddCard(*entity.Card) error
 		SaveCards([]entity.Card) error
 		LoadCards() []viewsets.CardForList
 		GetCardByID(cardID uuid.UUID) (entity.Card, error)
 		DelCard(cardID uuid.UUID) error
+
+		LoadLogins() []viewsets.LoginForList
+
+		LoadNotes() []viewsets.NoteForList
+
+		LoadBinaries() []viewsets.BinaryForList
 	}
 
 	ClientAPI interface {

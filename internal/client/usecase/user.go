@@ -24,6 +24,9 @@ func (uc *ClientUseCase) Login(user *entity.User) {
 	if err = uc.repo.UpdateUserToken(user, &token); err != nil {
 		log.Fatal(err)
 	}
+	if err = uc.repo.AddTempPass(user); err != nil {
+		log.Fatal(err)
+	}
 	color.Green("Got authorization token for %q", user.Email)
 }
 
@@ -34,7 +37,6 @@ func (uc *ClientUseCase) Register(user *entity.User) {
 
 	if err := uc.repo.AddUser(user); err != nil {
 		color.Red("Internal error: %v", err)
-
 		return
 	}
 
@@ -44,21 +46,49 @@ func (uc *ClientUseCase) Register(user *entity.User) {
 }
 
 func (uc *ClientUseCase) Logout() {
-	if err := uc.repo.DropUserToken(); err != nil {
-		color.Red("Internal error: %v", err)
-
+	email, err := uc.repo.GetTempUser()
+	if err != nil {
 		return
 	}
+
+	if err = uc.repo.DropUserToken(email); err != nil {
+		color.Red("Internal error: %v", err)
+		return
+	}
+
+	uc.repo.RemoveTempUser()
 
 	color.Green("Users tokens were dropped")
 }
 
-func (uc *ClientUseCase) verifyPassword(userPassword string) bool {
-	if err := utils.VerifyPassword(uc.repo.GetUserPasswordHash(), userPassword); err != nil {
-		color.Red("Password check status: failed")
+func (uc *ClientUseCase) Sync(userPassword string) {
+	if !uc.verifyPassword(userPassword) {
+		return
+	}
+	accessToken, err := uc.repo.GetSavedAccessToken()
+	if err != nil {
+		color.Red("Internal error: %v", err)
+		return
+	}
+	uc.loadCards(accessToken)
+}
 
+func (uc *ClientUseCase) verifyPassword(userPassword string) bool {
+	hashPassword, err := uc.repo.GetUserPasswordHash()
+	if err != nil {
 		return false
 	}
-
+	if err = utils.VerifyPassword(hashPassword, userPassword); err != nil {
+		color.Red("Password check status: failed")
+		return false
+	}
 	return true
+}
+
+func (uc *ClientUseCase) GetTempPass() (string, error) {
+	pass, err := uc.repo.GetTempPass()
+	if err != nil {
+		return "", err
+	}
+	return pass, nil
 }

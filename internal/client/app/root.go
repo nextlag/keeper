@@ -41,6 +41,8 @@ func init() {
 	cobra.OnInitialize(initApp)
 	commands := []*cobra.Command{
 		vault.RegisterInitLocalStorage,
+		vault.ShowVault,
+		vault.SyncUserData,
 
 		auth.LoginUserCmd,
 		auth.RegisterUserCmd,

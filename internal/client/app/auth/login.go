@@ -23,6 +23,7 @@ Usage: %s login <user_email> <user_password>`, config.LoadConfig().App.Name),
 			Email:    args[0],
 			Password: args[1],
 		}
+		usecase.GetClientUseCase().Logout()
 		usecase.GetClientUseCase().Login(&account)
 	},
 }

@@ -23,24 +23,23 @@ Flags:
   -m, --month string      Card expiration month
   -n, --number string     Card number
   -o, --owner string      Card holder name
-  -p, --password string   User password value.
   -t, --title string      Card title
   -y, --year string       Card expiration year
   --meta		  Add meta data for entiry
   example: --meta'[{"name":"some_meta","value":"some_meta_value"},{"name":"some_meta2","value":"some_meta_value2"}]'
   `,
 	Run: func(cmd *cobra.Command, args []string) {
+		userPassword, err := usecase.GetClientUseCase().GetTempPass()
+		if err != nil {
+			return
+		}
 		usecase.GetClientUseCase().AddCard(userPassword, &cardForAdditing)
 	},
 }
 
-var (
-	cardForAdditing entity.Card
-	userPassword    string
-)
+var cardForAdditing entity.Card
 
 func init() {
-	AddCard.Flags().StringVarP(&userPassword, "password", "p", "", "User password value.")
 	AddCard.Flags().StringVarP(&cardForAdditing.Name, "title", "t", "", "Card title")
 	AddCard.Flags().StringVarP(&cardForAdditing.Number, "number", "n", "", "Card namber")
 	AddCard.Flags().StringVarP(&cardForAdditing.CardHolderName, "owner", "o", "", "Card holder name")
@@ -50,16 +49,10 @@ func init() {
 	AddCard.Flags().StringVarP(&cardForAdditing.ExpirationYear, "year", "y", "", "Card expiration year")
 	AddCard.Flags().Var(&utils.JSONFlag{Target: &cardForAdditing.Meta}, "meta", `Add meta fields for entity`)
 
-	if err := AddCard.MarkFlagRequired("password"); err != nil {
-		log.Fatal(err)
-	}
 	if err := AddCard.MarkFlagRequired("title"); err != nil {
 		log.Fatal(err)
 	}
 	if err := AddCard.MarkFlagRequired("number"); err != nil {
-		log.Fatal(err)
-	}
-	if err := AddCard.MarkFlagRequired("password"); err != nil {
 		log.Fatal(err)
 	}
 }

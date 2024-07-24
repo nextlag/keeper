@@ -16,17 +16,13 @@ func (uc *ClientUseCase) AddCard(userPassword string, card *entity.Card) {
 	if err != nil {
 		return
 	}
-
 	uc.encryptCard(userPassword, card)
-
 	if err = uc.clientAPI.AddCard(accessToken, card); err != nil {
 		return
 	}
-
 	if err = uc.repo.AddCard(card); err != nil {
 		log.Fatal(err)
 	}
-
 	color.Green("Card %q added, id: %v", card.Name, card.ID)
 }
 
@@ -53,13 +49,11 @@ func (uc *ClientUseCase) ShowCard(userPassword, cardID string) {
 	cardUUID, err := uuid.Parse(cardID)
 	if err != nil {
 		color.Red(err.Error())
-
 		return
 	}
 	card, err := uc.repo.GetCardByID(cardUUID)
 	if err != nil {
 		color.Red(err.Error())
-
 		return
 	}
 	uc.decryptCard(userPassword, &card)
@@ -97,4 +91,18 @@ func (uc *ClientUseCase) DelCard(userPassword, cardID string) {
 	}
 
 	color.Green("Card %q removed", cardID)
+}
+
+func (uc *ClientUseCase) loadCards(accessToken string) {
+	cards, err := uc.clientAPI.GetCards(accessToken)
+	if err != nil {
+		color.Red("Connection error: %v", err)
+		return
+	}
+
+	if err = uc.repo.SaveCards(cards); err != nil {
+		log.Println(err)
+		return
+	}
+	color.Green("Loaded %v cards", len(cards))
 }

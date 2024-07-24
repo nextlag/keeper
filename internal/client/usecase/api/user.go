@@ -32,7 +32,6 @@ func (api *ClientAPI) Login(user *entity.User) (token entity.JWT, err error) {
 		color.Red("Server error: %s", errMessage)
 		return token, errServer
 	}
-
 	return token, nil
 }
 
