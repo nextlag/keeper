@@ -3,6 +3,7 @@ package usecase
 import (
 	"github.com/google/uuid"
 
+	"github.com/nextlag/keeper/internal/client/usecase/repo/models"
 	"github.com/nextlag/keeper/internal/client/usecase/viewsets"
 	"github.com/nextlag/keeper/internal/entity"
 )
@@ -34,8 +35,7 @@ type (
 		UserExistsByEmail(email string) bool
 		GetUserPasswordHash() (string, error)
 		GetSavedAccessToken() (string, error)
-		GetTempPass() (string, error)
-		GetTempUser() (string, error)
+		GetTempUser() (*models.TempUser, error)
 
 		AddCard(*entity.Card) error
 		SaveCards([]entity.Card) error

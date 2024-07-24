@@ -69,17 +69,17 @@ func (r *Repo) DropUserToken(email string) error {
 func (r *Repo) GetUserPasswordHash() (string, error) {
 	var existedUser models.User
 
-	email, err := r.GetTempUser()
+	user, err := r.GetTempUser()
 	if err != nil {
 		return "", fmt.Errorf("failed to get temp email: %v", err)
 	}
 
-	result := r.db.Where("email = ?", email).First(&existedUser)
+	result := r.db.Where("email = ?", user.Email).First(&existedUser)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return "", fmt.Errorf("user with email %s not found", email)
+			return "", fmt.Errorf("user with email %s not found", user.Email)
 		}
-		return "", fmt.Errorf("failed to query user with email %s: %v", email, result.Error)
+		return "", fmt.Errorf("failed to query user with email %s: %v", user.Email, result.Error)
 	}
 
 	return existedUser.Password, nil
@@ -88,14 +88,14 @@ func (r *Repo) GetUserPasswordHash() (string, error) {
 func (r *Repo) GetSavedAccessToken() (accessToken string, err error) {
 	var user models.User
 
-	email, err := r.GetTempUser()
+	tempUser, err := r.GetTempUser()
 	if err != nil {
 		return "", err
 	}
-	result := r.db.Where("email = ?", email).First(&user)
+	result := r.db.Where("email = ?", tempUser.Email).First(&user)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return "", fmt.Errorf("user with email %s not found", email)
+			return "", fmt.Errorf("user with email %s not found", tempUser.Email)
 		}
 		return "", result.Error
 	}
@@ -104,23 +104,25 @@ func (r *Repo) GetSavedAccessToken() (accessToken string, err error) {
 
 func (r *Repo) getUserID() uint {
 	var user models.User
-	r.db.First(&user)
+	tempUser, err := r.GetTempUser()
+	if err != nil {
+		return 0
+	}
+	result := r.db.Where("email = ?", tempUser.Email).First(&user)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return 0
+		}
+		return 0
+	}
 
 	return user.ID
 }
 
-func (r *Repo) GetTempPass() (string, error) {
+func (r *Repo) GetTempUser() (*models.TempUser, error) {
 	var tempUser models.TempUser
 	if err := r.db.First(&tempUser).Error; err != nil {
-		return "", err
+		return nil, err
 	}
-	return tempUser.Password, nil
-}
-
-func (r *Repo) GetTempUser() (string, error) {
-	var tempUser models.TempUser
-	if err := r.db.First(&tempUser).Error; err != nil {
-		return "", err
-	}
-	return tempUser.Email, nil
+	return &tempUser, nil
 }

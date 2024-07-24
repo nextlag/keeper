@@ -46,12 +46,12 @@ func (uc *ClientUseCase) Register(user *entity.User) {
 }
 
 func (uc *ClientUseCase) Logout() {
-	email, err := uc.repo.GetTempUser()
+	user, err := uc.repo.GetTempUser()
 	if err != nil {
 		return
 	}
 
-	if err = uc.repo.DropUserToken(email); err != nil {
+	if err = uc.repo.DropUserToken(user.Email); err != nil {
 		color.Red("Internal error: %v", err)
 		return
 	}
@@ -86,9 +86,9 @@ func (uc *ClientUseCase) verifyPassword(userPassword string) bool {
 }
 
 func (uc *ClientUseCase) GetTempPass() (string, error) {
-	pass, err := uc.repo.GetTempPass()
+	user, err := uc.repo.GetTempUser()
 	if err != nil {
 		return "", err
 	}
-	return pass, nil
+	return user.Password, nil
 }
