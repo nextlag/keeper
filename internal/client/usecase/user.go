@@ -70,7 +70,9 @@ func (uc *ClientUseCase) Sync(userPassword string) {
 		color.Red("Internal error: %v", err)
 		return
 	}
+	uc.loadLogins(accessToken)
 	uc.loadCards(accessToken)
+	uc.loadNotes(accessToken)
 }
 
 func (uc *ClientUseCase) verifyPassword(userPassword string) bool {

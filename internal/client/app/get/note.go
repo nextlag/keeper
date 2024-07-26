@@ -10,27 +10,27 @@ import (
 	"github.com/nextlag/keeper/internal/client/usecase"
 )
 
-var Card = &cobra.Command{
-	Use:   "card",
-	Short: "Show user card by id",
+var Note = &cobra.Command{
+	Use:   "note",
+	Short: "Show user note by id",
 	Long: fmt.Sprintf(`
-This command add card
-Usage: %s card -i <card_id> 
-  `, config.LoadConfig().App.Name),
+This command show user note
+Usage: %s note -i <note_id>
+`, config.LoadConfig().App.Name),
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
 		if err != nil {
 			return
 		}
-		usecase.GetClientUseCase().ShowCard(userPassword, getCardID)
+		usecase.GetClientUseCase().ShowNote(userPassword, getNoteID)
 	},
 }
 
-var getCardID string
+var getNoteID string
 
 func init() {
-	Card.Flags().StringVarP(&getCardID, "id", "i", "", "Card id")
-	if err := Card.MarkFlagRequired("id"); err != nil {
+	Note.Flags().StringVarP(&getNoteID, "id", "i", "", "Note id")
+	if err := Note.MarkFlagRequired("id"); err != nil {
 		log.Fatal(err)
 	}
 }

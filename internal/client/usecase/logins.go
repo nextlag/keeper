@@ -39,7 +39,6 @@ func (uc *ClientUseCase) AddLogin(userPassword string, login *entity.Login) {
 	if err = uc.repo.AddLogin(login); err != nil {
 		log.Fatal(err)
 	}
-
 	color.Green("Login %q added, id: %v", login.Name, login.ID)
 }
 
@@ -91,13 +90,12 @@ func (uc *ClientUseCase) DelLogin(userPassword, loginID string) {
 		log.Fatalf("ClientUseCase - uuid.Parse - %v", err)
 	}
 
-	if err := uc.repo.DelLogin(loginUUID); err != nil {
+	if err = uc.repo.DelLogin(loginUUID); err != nil {
 		log.Fatalf("ClientUseCase - repo.DelLogin - %v", err)
 	}
 
-	if err := uc.clientAPI.DelLogin(accessToken, loginID); err != nil {
+	if err = uc.clientAPI.DelLogin(accessToken, loginID); err != nil {
 		log.Fatalf("ClientUseCase - repo.DelLogin - %v", err)
 	}
-
 	color.Green("Login %q removed", loginID)
 }

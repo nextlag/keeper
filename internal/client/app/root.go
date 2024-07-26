@@ -13,6 +13,7 @@ import (
 	"github.com/nextlag/keeper/internal/client/app/build"
 	"github.com/nextlag/keeper/internal/client/app/del"
 	"github.com/nextlag/keeper/internal/client/app/get"
+	"github.com/nextlag/keeper/internal/client/app/storage"
 	"github.com/nextlag/keeper/internal/client/app/vault"
 	"github.com/nextlag/keeper/internal/client/usecase"
 	"github.com/nextlag/keeper/internal/client/usecase/api"
@@ -42,9 +43,8 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initApp)
 	commands := []*cobra.Command{
-		vault.RegisterInitLocalStorage,
-		vault.ShowVault,
-		vault.SyncUserData,
+		storage.InitLocalStorage,
+		storage.SyncUserData,
 
 		auth.LoginUserCmd,
 		auth.RegisterUserCmd,
@@ -61,6 +61,8 @@ func init() {
 		del.Del,
 		del.Login,
 		del.Card,
+
+		vault.ShowVault,
 	}
 
 	rootCmd.AddCommand(commands...)

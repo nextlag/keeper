@@ -1,21 +1,35 @@
 package del
 
-import "github.com/spf13/cobra"
+import (
+	"fmt"
 
+	"github.com/spf13/cobra"
+
+	config "github.com/nextlag/keeper/config/client"
+)
+
+var app = config.LoadConfig().App.Name
 var Del = &cobra.Command{
 	Use:   "del",
 	Short: "Del resources",
 	Long:  `Del different types of resources like cards or logins.`,
-	Example: `
+	Example: fmt.Sprintf(`
 # Get a card
-del card -i <uuid>
+%s del card -i <uuid>
 
 # Get a login
-del login -i <uuid>
-	`,
+%s del login -i <uuid>
+
+# Get a note
+%s del note -i <uuid>
+
+# Get a binary
+%s del binary -i <uuid>
+	`, app, app, app, app),
 }
 
 func init() {
 	Del.AddCommand(Card)
 	Del.AddCommand(Login)
+	Del.AddCommand(Note)
 }

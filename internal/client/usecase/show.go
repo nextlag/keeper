@@ -42,7 +42,7 @@ func (uc *ClientUseCase) showCards(cards []viewsets.CardForList) {
 	color.Yellow("Users cards:")
 	yellow := color.New(color.FgYellow).SprintFunc()
 	for _, card := range cards {
-		fmt.Printf("ID: %s name:%s brand:%s\n",
+		fmt.Printf("ID: %s name: %s brand: %s\n",
 			yellow(card.ID),
 			yellow(card.Name),
 			yellow(card.Brand))
@@ -54,7 +54,7 @@ func (uc *ClientUseCase) showLogins(logins []viewsets.LoginForList) {
 	color.Yellow("Users logins:")
 	yellow := color.New(color.FgYellow).SprintFunc()
 	for _, login := range logins {
-		fmt.Printf("ID: %s name:%s uri:%s\n",
+		fmt.Printf("ID: %s name: %s uri: %s\n",
 			yellow(login.ID),
 			yellow(login.Name),
 			yellow(login.URI))
@@ -65,7 +65,7 @@ func (uc *ClientUseCase) showNotes(notes []viewsets.NoteForList) {
 	color.Yellow("Users notes:")
 	yellow := color.New(color.FgYellow).SprintFunc()
 	for _, note := range notes {
-		fmt.Printf("ID: %s name:%s\n",
+		fmt.Printf("ID: %s name: %s\n",
 			yellow(note.ID),
 			yellow(note.Name))
 	}
@@ -75,7 +75,7 @@ func (uc *ClientUseCase) showBinaries(binaries []viewsets.BinaryForList) {
 	color.Yellow("Users files:")
 	yellow := color.New(color.FgYellow).SprintFunc()
 	for _, binary := range binaries {
-		fmt.Printf("ID: %s name:%s file_name:%s\n",
+		fmt.Printf("ID: %s name: %s file_name: %s\n",
 			yellow(binary.ID),
 			yellow(binary.Name),
 			yellow(binary.FileName))

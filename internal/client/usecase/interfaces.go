@@ -25,6 +25,10 @@ type (
 		AddLogin(userPassword string, login *entity.Login)
 		ShowLogin(userPassword, loginID string)
 		DelLogin(userPassword, loginID string)
+
+		AddNote(userPassword string, note *entity.SecretNote)
+		ShowNote(userPassword, noteID string)
+		DelNote(userPassword, noteID string)
 	}
 
 	ClientRepo interface {
@@ -41,19 +45,23 @@ type (
 		GetSavedAccessToken() (string, error)
 		GetTempUser() (*models.TempUser, error)
 
-		AddCard(*entity.Card) error
-		SaveCards([]entity.Card) error
-		LoadCards() []viewsets.CardForList
-		GetCardByID(cardID uuid.UUID) (entity.Card, error)
-		DelCard(cardID uuid.UUID) error
-
 		AddLogin(*entity.Login) error
 		SaveLogins([]entity.Login) error
 		LoadLogins() []viewsets.LoginForList
 		GetLoginByID(loginID uuid.UUID) (entity.Login, error)
 		DelLogin(loginID uuid.UUID) error
 
+		AddCard(*entity.Card) error
+		SaveCards([]entity.Card) error
+		LoadCards() []viewsets.CardForList
+		GetCardByID(cardID uuid.UUID) (entity.Card, error)
+		DelCard(cardID uuid.UUID) error
+
+		SaveNotes([]entity.SecretNote) error
+		AddNote(*entity.SecretNote) error
 		LoadNotes() []viewsets.NoteForList
+		GetNoteByID(notedID uuid.UUID) (entity.SecretNote, error)
+		DelNote(noteID uuid.UUID) error
 
 		LoadBinaries() []viewsets.BinaryForList
 	}
@@ -69,5 +77,9 @@ type (
 		AddLogin(accessToken string, login *entity.Login) error
 		GetLogins(accessToken string) ([]entity.Login, error)
 		DelLogin(accessToken, loginID string) error
+
+		GetNotes(accessToken string) ([]entity.SecretNote, error)
+		AddNote(accessToken string, note *entity.SecretNote) error
+		DelNote(accessToken, noteID string) error
 	}
 )
