@@ -85,7 +85,7 @@ func (uc *ClientUseCase) GetBinary(userPassword, binaryID, filePath string) {
 		log.Fatalf("ClientUseCase - GetBinary - GetBinaryByID - %v", err)
 	}
 
-	tmpFilePath := "tmp/" + binary.FileName
+	tmpFilePath := filePath + binary.FileName
 
 	defer func() {
 		if removeErr := os.Remove(tmpFilePath); removeErr != nil {
