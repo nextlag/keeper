@@ -15,7 +15,7 @@ var Login = &cobra.Command{
 	Short: "Show user login by id",
 	Long: fmt.Sprintf(`
 This command login
-Usage: %s login -i <login_id>
+Usage: %s get login -i <login_id>
 `, config.LoadConfig().App.Name),
 
 	Run: func(cmd *cobra.Command, args []string) {

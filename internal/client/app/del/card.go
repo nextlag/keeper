@@ -15,7 +15,7 @@ var Card = &cobra.Command{
 	Short: "Delete user card by id",
 	Long: fmt.Sprintf(`
 This command remove card
-Usage: %s card -i <card_id>
+Usage: %s del card -i <card_id>
   `, config.LoadConfig().App.Name),
 
 	Run: func(cmd *cobra.Command, args []string) {

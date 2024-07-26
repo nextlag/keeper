@@ -15,7 +15,7 @@ var Login = &cobra.Command{
 	Short: "Delete user login by id",
 	Long: fmt.Sprintf(`
 This command remove login
-Usage: %s login -i <login_id>
+Usage: %s del login -i <login_id>
   `, config.LoadConfig().App.Name),
 
 	Run: func(cmd *cobra.Command, args []string) {

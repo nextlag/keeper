@@ -53,14 +53,17 @@ func init() {
 		add.Add,
 		add.Login,
 		add.Card,
+		add.Note,
 
 		get.Get,
 		get.Login,
 		get.Card,
+		get.Note,
 
 		del.Del,
 		del.Login,
 		del.Card,
+		del.Note,
 
 		vault.ShowVault,
 	}

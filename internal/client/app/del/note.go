@@ -15,7 +15,7 @@ var Note = &cobra.Command{
 	Short: "Delete user note by id",
 	Long: fmt.Sprintf(`
 This command remove note
-Usage: %s note -i <note_id> 
+Usage: %s del note -i <note_id> 
   `, config.LoadConfig().App.Name),
 
 	Run: func(cmd *cobra.Command, args []string) {

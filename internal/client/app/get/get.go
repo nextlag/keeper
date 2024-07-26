@@ -28,4 +28,5 @@ var Get = &cobra.Command{
 func init() {
 	Get.AddCommand(Card)
 	Get.AddCommand(Login)
+	Get.AddCommand(Note)
 }

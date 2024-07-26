@@ -15,7 +15,7 @@ var Note = &cobra.Command{
 	Short: "Show user note by id",
 	Long: fmt.Sprintf(`
 This command show user note
-Usage: %s note -i <note_id>
+Usage: %s get note -i <note_id>
 `, config.LoadConfig().App.Name),
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
