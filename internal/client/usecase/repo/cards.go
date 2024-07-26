@@ -112,6 +112,7 @@ func (r *Repo) GetCardByID(cardID uuid.UUID) (card entity.Card, err error) {
 	card.CardHolderName = cardFromDB.CardHolderName
 	card.ExpirationMonth = cardFromDB.ExpirationMonth
 	card.ExpirationYear = cardFromDB.ExpirationYear
+	card.SecurityCode = cardFromDB.SecurityCode
 
 	for index := range cardFromDB.Meta {
 		card.Meta = append(card.Meta, entity.Meta{
@@ -120,7 +121,6 @@ func (r *Repo) GetCardByID(cardID uuid.UUID) (card entity.Card, err error) {
 			Value: cardFromDB.Meta[index].Value,
 		})
 	}
-
 	return
 }
 

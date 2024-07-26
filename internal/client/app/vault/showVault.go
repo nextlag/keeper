@@ -7,11 +7,11 @@ import (
 )
 
 var ShowVault = &cobra.Command{
-	Use:   "showvault",
+	Use:   "show",
 	Short: "Show user vault",
 	Long: `
 This command show user vault
-Usage: showvault -o \"a|c|l|n\" 
+Usage: show -o \"a|c|l|n\" 
 Flags:
   -o, --option string     Option for listing (default "a")
 	a - all

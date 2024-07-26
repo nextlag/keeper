@@ -54,7 +54,7 @@ func (uc *ClientUseCase) showLogins(logins []viewsets.LoginForList) {
 	color.Yellow("Users logins:")
 	yellow := color.New(color.FgYellow).SprintFunc()
 	for _, login := range logins {
-		fmt.Printf("ID: %s name:%s uri: %s\n",
+		fmt.Printf("ID: %s name:%s uri:%s\n",
 			yellow(login.ID),
 			yellow(login.Name),
 			yellow(login.URI))

@@ -21,6 +21,10 @@ type (
 		AddCard(userPassword string, card *entity.Card)
 		ShowCard(userPassword, cardID string)
 		DelCard(userPassword, cardID string)
+
+		AddLogin(userPassword string, login *entity.Login)
+		ShowLogin(userPassword, loginID string)
+		DelLogin(userPassword, loginID string)
 	}
 
 	ClientRepo interface {
@@ -43,7 +47,11 @@ type (
 		GetCardByID(cardID uuid.UUID) (entity.Card, error)
 		DelCard(cardID uuid.UUID) error
 
+		AddLogin(*entity.Login) error
+		SaveLogins([]entity.Login) error
 		LoadLogins() []viewsets.LoginForList
+		GetLoginByID(loginID uuid.UUID) (entity.Login, error)
+		DelLogin(loginID uuid.UUID) error
 
 		LoadNotes() []viewsets.NoteForList
 
@@ -54,8 +62,12 @@ type (
 		Login(user *entity.User) (entity.JWT, error)
 		Register(user *entity.User) error
 
-		GetCards(accessToken string) ([]entity.Card, error)
 		AddCard(accessToken string, card *entity.Card) error
+		GetCards(accessToken string) ([]entity.Card, error)
 		DelCard(accessToken, cardID string) error
+
+		AddLogin(accessToken string, login *entity.Login) error
+		GetLogins(accessToken string) ([]entity.Login, error)
+		DelLogin(accessToken, loginID string) error
 	}
 )

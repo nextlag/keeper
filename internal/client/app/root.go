@@ -8,9 +8,11 @@ import (
 	"github.com/spf13/cobra"
 
 	config "github.com/nextlag/keeper/config/client"
+	"github.com/nextlag/keeper/internal/client/app/add"
 	"github.com/nextlag/keeper/internal/client/app/auth"
 	"github.com/nextlag/keeper/internal/client/app/build"
-	"github.com/nextlag/keeper/internal/client/app/cards"
+	"github.com/nextlag/keeper/internal/client/app/del"
+	"github.com/nextlag/keeper/internal/client/app/get"
 	"github.com/nextlag/keeper/internal/client/app/vault"
 	"github.com/nextlag/keeper/internal/client/usecase"
 	"github.com/nextlag/keeper/internal/client/usecase/api"
@@ -48,9 +50,17 @@ func init() {
 		auth.RegisterUserCmd,
 		auth.LogoutUser,
 
-		cards.AddCard,
-		cards.GetCard,
-		cards.DelCard,
+		add.Add,
+		add.Login,
+		add.Card,
+
+		get.Get,
+		get.Login,
+		get.Card,
+
+		del.Del,
+		del.Login,
+		del.Card,
 	}
 
 	rootCmd.AddCommand(commands...)

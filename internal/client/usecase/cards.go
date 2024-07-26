@@ -58,7 +58,7 @@ func (uc *ClientUseCase) ShowCard(userPassword, cardID string) {
 	}
 	uc.decryptCard(userPassword, &card)
 	yellow := color.New(color.FgYellow).SprintFunc()
-	fmt.Printf("ID: %s\nname:%s\nCardHolderName:%s\nNumber:%s\nBrand:%s\nExpiration: %s/%s\nCode%s\n%v\n",
+	fmt.Printf("ID: %s\nname: %s\nCardHolderName: %s\nNumber: %s\nBrand: %s\nExpiration: %s/%s\nCode: %s\nMeta: %v\n",
 		yellow(card.ID),
 		yellow(card.Name),
 		yellow(card.CardHolderName),

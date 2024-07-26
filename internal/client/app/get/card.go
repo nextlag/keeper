@@ -1,4 +1,4 @@
-package cards
+package get
 
 import (
 	"log"
@@ -8,12 +8,12 @@ import (
 	"github.com/nextlag/keeper/internal/client/usecase"
 )
 
-var GetCard = &cobra.Command{
-	Use:   "getcard",
+var Card = &cobra.Command{
+	Use:   "card",
 	Short: "Show user card by id",
 	Long: `
 This command add card
-Usage: getcard -i \"card_id\" 
+Usage: card -i <card_id> 
 Flags:
   -i, --id string Card id
   `,
@@ -29,8 +29,8 @@ Flags:
 var getCardID string
 
 func init() {
-	GetCard.Flags().StringVarP(&getCardID, "id", "i", "", "Card id")
-	if err := GetCard.MarkFlagRequired("id"); err != nil {
+	Card.Flags().StringVarP(&getCardID, "id", "i", "", "Card id")
+	if err := Card.MarkFlagRequired("id"); err != nil {
 		log.Fatal(err)
 	}
 }
