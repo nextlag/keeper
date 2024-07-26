@@ -26,3 +26,8 @@ vendor/
 
 # client
 keeper
+
+# temp data
+tmp/
+some_file.txt
+data

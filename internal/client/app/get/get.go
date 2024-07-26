@@ -12,21 +12,25 @@ var App = config.LoadConfig().App.Name
 var Get = &cobra.Command{
 	Use:   "get",
 	Short: "Get resources",
-	Long:  "Get different types of resources like cards or logins.",
+	Long:  "Get different types of resources like login, card, note or binary.",
 	Example: fmt.Sprintf(`
-# Get a card
-%s get card -i <uuid>
-
 # Get a login
-%s get login -i <uuid>
+%s get login -i login_id
+
+# Get a card
+%s get card -i card_id
 
 # Get a note
-%s get note -i <uuid>
-	`, App, App, App),
+%s get note -i note_id
+
+# Get a binary
+%s get note -i binary_id
+	`, App, App, App, App),
 }
 
 func init() {
 	Get.AddCommand(Card)
 	Get.AddCommand(Login)
 	Get.AddCommand(Note)
+	Get.AddCommand(Binary)
 }

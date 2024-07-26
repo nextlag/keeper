@@ -18,8 +18,9 @@ var Login = &cobra.Command{
 	Short: "Add login",
 	Long: fmt.Sprintf(`This command adds a login for a site.
 Example:
-  %s add login -t "Login Title" -l "user@example.com" -s "password" -u "https://example.com" --meta '[{"name":"meta","value":"value"}]'
-	`, App),
+  %s add login -t "Login Title" -l "user@example.com" -s "password" -u "https://example.com" \
+  --meta '[{"name":"meta","value":"value"}]'`, App),
+
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
 		if err != nil {

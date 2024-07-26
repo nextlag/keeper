@@ -1,5 +1,5 @@
-@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjE1MDQ3NDAsImlhdCI6MTcyMTQ2ODc0MCwibmJmIjoxNzIxNDY4NzQwLCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.HFCK0azul03DjCZJWiyoze1FpWNqGBwakC_GO1tk9LDygosWHQ1N-HWujBHJouleSiLNoe9xD2DJ6LUNhIsSAFubUsl7BhKQqpyKIHaAjbEeuVrJjaRvxpOJGLum-I9l_StUVuOdH7a6M_cmO79l-wHwit-ZAypNmEa5a0ll1rmRAtLzehFZtwA_tWoZVjxIZRvafBeqjzyHWt9BHPi2qfWhQ1-28tgS81QcU9tgRV8OYPJcnRecWddSGFWpUzurqRv9jamtZ_BUAQUJmeWEyX0JbVzlF4Vh1M9SI4t5uoJ8EVzuv4eQrJBuryHNkYSGxtR8Zbd5_BlIXKx2DJpi1Q
-@refresh_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjE3NjAwODQsImlhdCI6MTcyMTQwMDA4NCwibmJmIjoxNzIxNDAwMDg0LCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.Q1qDd3-IW62ITNeqCgpJt2DCn4Cc-Fq3AZpwqAcK43qgO9Pna8aU3KXejQh3KavVFjPy5rFQB_4jiCznvXGIF_wtk2oIw3HVAiYQRlE8Sv8N-5VHJpzq82i4B0eG1YzFxES7jQShomFkdwYlSYOijGYUxQTpd9DW3uyh9hylMI58WJKMqELAjf_91SG2ONDjwUmVt47-Lf-ve9oZsJ8Kl6iWvEYn9KQvyc1ULAVFMpxUKbq_u7n8m0jY4g-80THDVFD0T92xbiKdxrGQVF_vL1_L6xSKZo1lJoJRSf_sMHz46ITrfxrePYsyFO04JC7743AhfMq5NtqojCvf1VXamw
+@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjIwNjE3NjUsImlhdCI6MTcyMjAyNTc2NSwibmJmIjoxNzIyMDI1NzY1LCJzdWIiOiIwYzQ1Mjk1NS1kODJlLTRhY2QtODEzMC03M2E5ZmMzNDk2YzIifQ.Pf4KU-SrDZfAIQa9K58SRFa53ler6bw-reSs753BYKaauJ2Pna77q7p0JX4hHsoFXubU2czA1rvDwepPYKJyyPqJzurFeArhNqpzUDQ5eVLIAcnWZHFo23te2yptqohH8Knrcst9Egaoxr4AWvDOTXwyGd8I3Ln2eYhnX5WYhPZ2L5lWDygaDn5q5cOJaA2uyezfltnHOVx69xZOQcDEnJXia9rgVUkUowcAyF2FKPgk64bDKbfXa9D00sMbmDJxn-pLCOMK69qHz9xkktGuweuo07ANleblM5JrK6l6s1wgWrwA6FFQMwaQngOfyUYf5k9Wfd3OkQnpppF42e4v1g
+@refresh_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjIzNzk2MjcsImlhdCI6MTcyMjAxOTYyNywibmJmIjoxNzIyMDE5NjI3LCJzdWIiOiIwYzQ1Mjk1NS1kODJlLTRhY2QtODEzMC03M2E5ZmMzNDk2YzIifQ.YMjuVaEqOcKE_k4grfwEhsTrVfZeOkGFwhh80nWljH4yI7EAyKjKXKWeV9rTPimLAeDfud0XFjlZpUp5twgnA5-96k1T2gxJtQOkVUDx_jGwdeUOjsKqe5xp1nDH2_s_amIngmkyFcrhN-YNO-rvybrTR-_IjyUGGLzdGKfu6d78hz1vg2IEQo2LE3t-41EdUuT5X4aZIVS9Xhqxsn4fnjzQG_NUpoSDFWm9qwTQY-PYp2CnI2UGha4l-25CtXWJS0Ej2loQTB-kgUro8ngBBdoFkPMuRhGfDM6vR-YzY6EQjiFA1f4fKge1LKsYfTe_ZB14urbA8vYM1fLSjLhmMQ
 
 ### GET ping
 GET localhost:8080/api/v1/ping
@@ -31,7 +31,7 @@ POST localhost:8080/api/v1/auth/register
 POST localhost:8080/api/v1/auth/login
 
 {
-  "email": "example@mail.ru",
+  "email": "example@mail.com",
   "password": "12345"
 }
 
@@ -205,7 +205,7 @@ GET localhost:8080/api/v1/user/binary
 Authorization: Bearer {{access_token}}
 
 ### DOWNLOAD user/binary/{id}
-# curl -X GET "http://localhost:8080/api/v1/user/binary/e9b45ca4-a92c-46a4-9590-af5bc950060a" -H "Authorization: Bearer {{access_token}}" -o downloaded_file.txt
+# curl -X GET "http://localhost:8080/api/v1/user/binary/cbe094d6-9fea-4fe2-bb1e-afea8a753853" -H "Authorization: Bearer {{access_token}}" -o downloaded_file.txt
 
 ### DELETE user/binary
 DELETE localhost:8080/api/v1/user/binary/e9b45ca4-a92c-46a4-9590-af5bc950060a

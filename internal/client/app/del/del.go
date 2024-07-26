@@ -12,19 +12,19 @@ var App = config.LoadConfig().App.Name
 var Del = &cobra.Command{
 	Use:   "del",
 	Short: "Del resources",
-	Long:  `Del different types of resources like cards or logins.`,
+	Long:  `Del different types of resources like login, card, note or binary.`,
 	Example: fmt.Sprintf(`
 # Get a card
-%s del card -i <uuid>
+%s del card -i card_id
 
 # Get a login
-%s del login -i <uuid>
+%s del login -i login_id
 
 # Get a note
-%s del note -i <uuid>
+%s del note -i note_id
 
 # Get a binary
-%s del binary -i <uuid>
+%s del binary -i binary_id
 	`, App, App, App, App),
 }
 
@@ -32,4 +32,5 @@ func init() {
 	Del.AddCommand(Card)
 	Del.AddCommand(Login)
 	Del.AddCommand(Note)
+	Del.AddCommand(Binary)
 }

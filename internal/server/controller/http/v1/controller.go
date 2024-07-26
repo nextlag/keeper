@@ -11,7 +11,6 @@ import (
 
 	config "github.com/nextlag/keeper/config/server"
 	"github.com/nextlag/keeper/internal/entity"
-	"github.com/nextlag/keeper/internal/server/mw/gzip"
 	"github.com/nextlag/keeper/internal/server/mw/request"
 	"github.com/nextlag/keeper/pkg/logger/l"
 )
@@ -65,7 +64,6 @@ func NewController(uc UseCase, cfg *config.Config, log *l.Logger) *Controller {
 func (c *Controller) NewServer(handler *chi.Mux) *http.Server {
 	handler.Use(middleware.RequestID)
 	handler.Use(request.MwRequest(c.log))
-	handler.Use(gzip.MwGzip())
 	handler.Use(middleware.Recoverer)
 
 	// Add version prefix here

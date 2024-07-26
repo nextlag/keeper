@@ -14,7 +14,7 @@ var Card = &cobra.Command{
 	Short: "Show user card by id",
 	Long: fmt.Sprintf(`
 This command add card
-Usage: %s get card -i <card_id>`, App),
+Usage: %s get card -i card_id`, App),
 
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()

@@ -73,6 +73,7 @@ func (uc *ClientUseCase) Sync(userPassword string) {
 	uc.loadLogins(accessToken)
 	uc.loadCards(accessToken)
 	uc.loadNotes(accessToken)
+	uc.loadBinaries(accessToken)
 }
 
 func (uc *ClientUseCase) verifyPassword(userPassword string) bool {

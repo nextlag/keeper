@@ -19,8 +19,8 @@ var Card = &cobra.Command{
 	Long: fmt.Sprintf(`
 This command adds a card.
 Example: 
-  %s add card -t "Card Title" -n "1234 5678 9012 3456" -o "Card Owner" -b "VISA" -c "123" -m "12" -y "2025" --meta '[{"name":"meta1","value":"value1"},{"name":"meta2","value":"value2"}]'
-  `, App),
+  %s add card -t "Card Title" -n "1234 5678 9012 3456" -o "Card Owner" -b "VISA" -c "123" -m "12" -y "2025" \
+  --meta '[{"name":"meta","value":"value"}]'`, App),
 
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()

@@ -29,6 +29,10 @@ type (
 		AddNote(userPassword string, note *entity.SecretNote)
 		ShowNote(userPassword, noteID string)
 		DelNote(userPassword, noteID string)
+
+		AddBinary(userPassword string, binary *entity.Binary)
+		DelBinary(userPassword, binaryID string)
+		GetBinary(userPassword, getBinaryID, filePath string)
 	}
 
 	ClientRepo interface {
@@ -64,6 +68,10 @@ type (
 		DelNote(noteID uuid.UUID) error
 
 		LoadBinaries() []viewsets.BinaryForList
+		SaveBinaries([]entity.Binary) error
+		AddBinary(*entity.Binary) error
+		GetBinaryByID(binarydID uuid.UUID) (entity.Binary, error)
+		DelBinary(binaryID uuid.UUID) error
 	}
 
 	ClientAPI interface {
@@ -81,5 +89,10 @@ type (
 		GetNotes(accessToken string) ([]entity.SecretNote, error)
 		AddNote(accessToken string, note *entity.SecretNote) error
 		DelNote(accessToken, noteID string) error
+
+		GetBinaries(accessToken string) ([]entity.Binary, error)
+		AddBinary(accessToken string, binary *entity.Binary, tmpFilePath string) error
+		DelBinary(accessToken, binaryID string) error
+		DownloadBinary(accessToken, outpuFilePath string, binary *entity.Binary) error
 	}
 )
