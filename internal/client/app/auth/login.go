@@ -12,7 +12,7 @@ import (
 
 var RequiredUserArgs = 2
 
-var LoginUserCmd = &cobra.Command{
+var LoginUser = &cobra.Command{
 	Use:   "login",
 	Short: "Login user to the service",
 	Long: fmt.Sprintf(`This is the user login command.

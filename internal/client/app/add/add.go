@@ -8,7 +8,7 @@ import (
 	config "github.com/nextlag/keeper/config/client"
 )
 
-var app = config.LoadConfig().App.Name
+var App = config.LoadConfig().App.Name
 var Add = &cobra.Command{
 	Use:   "add",
 	Short: "Add resources",
@@ -22,7 +22,7 @@ var Add = &cobra.Command{
 
 # Add a note
  %s add note -t "Name" -n "Content" --meta '[{"name":"meta","value":"value"}]'
-	`, app, app, app),
+	`, App, App, App),
 }
 
 func init() {

@@ -46,8 +46,8 @@ func init() {
 		storage.InitLocalStorage,
 		storage.SyncUserData,
 
-		auth.LoginUserCmd,
-		auth.RegisterUserCmd,
+		auth.LoginUser,
+		auth.RegisterUser,
 		auth.LogoutUser,
 
 		add.Add,

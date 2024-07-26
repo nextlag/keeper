@@ -8,7 +8,7 @@ import (
 	config "github.com/nextlag/keeper/config/client"
 )
 
-var app = config.LoadConfig().App.Name
+var App = config.LoadConfig().App.Name
 var Del = &cobra.Command{
 	Use:   "del",
 	Short: "Del resources",
@@ -25,7 +25,7 @@ var Del = &cobra.Command{
 
 # Get a binary
 %s del binary -i <uuid>
-	`, app, app, app, app),
+	`, App, App, App, App),
 }
 
 func init() {

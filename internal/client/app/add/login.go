@@ -6,7 +6,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	config "github.com/nextlag/keeper/config/client"
 	"github.com/nextlag/keeper/internal/client/usecase"
 	"github.com/nextlag/keeper/internal/entity"
 	utils "github.com/nextlag/keeper/internal/utils/client"
@@ -20,7 +19,7 @@ var Login = &cobra.Command{
 	Long: fmt.Sprintf(`This command adds a login for a site.
 Example:
   %s add login -t "Login Title" -l "user@example.com" -s "password" -u "https://example.com" --meta '[{"name":"meta","value":"value"}]'
-	`, config.LoadConfig().App.Name),
+	`, App),
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
 		if err != nil {

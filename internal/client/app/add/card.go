@@ -6,7 +6,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	config "github.com/nextlag/keeper/config/client"
 	"github.com/nextlag/keeper/internal/client/usecase"
 	"github.com/nextlag/keeper/internal/entity"
 	utils "github.com/nextlag/keeper/internal/utils/client"
@@ -21,7 +20,7 @@ var Card = &cobra.Command{
 This command adds a card.
 Example: 
   %s add card -t "Card Title" -n "1234 5678 9012 3456" -o "Card Owner" -b "VISA" -c "123" -m "12" -y "2025" --meta '[{"name":"meta1","value":"value1"},{"name":"meta2","value":"value2"}]'
-  `, config.LoadConfig().App.Name),
+  `, App),
 
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()

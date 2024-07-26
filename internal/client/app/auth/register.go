@@ -10,7 +10,7 @@ import (
 	"github.com/nextlag/keeper/internal/entity"
 )
 
-var RegisterUserCmd = &cobra.Command{
+var RegisterUser = &cobra.Command{
 	Use:   "register",
 	Short: "User registration in the service",
 	Long: fmt.Sprintf(`This command registers a new user.

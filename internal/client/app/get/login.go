@@ -6,7 +6,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	config "github.com/nextlag/keeper/config/client"
 	"github.com/nextlag/keeper/internal/client/usecase"
 )
 
@@ -15,8 +14,7 @@ var Login = &cobra.Command{
 	Short: "Show user login by id",
 	Long: fmt.Sprintf(`
 This command login
-Usage: %s get login -i <login_id>
-`, config.LoadConfig().App.Name),
+Usage: %s get login -i <login_id>`, App),
 
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()

@@ -6,7 +6,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	config "github.com/nextlag/keeper/config/client"
 	"github.com/nextlag/keeper/internal/client/usecase"
 	"github.com/nextlag/keeper/internal/entity"
 	utils "github.com/nextlag/keeper/internal/utils/client"
@@ -18,8 +17,7 @@ var Note = &cobra.Command{
 	Long: fmt.Sprintf(`
 This command add user note
 Example: 
- %s add note -t name -n content --meta '[{"name":"meta","value":"value"}]'
-  `, config.LoadConfig().App.Name),
+ %s add note -t name -n content --meta '[{"name":"meta","value":"value"}]'`, App),
 
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()

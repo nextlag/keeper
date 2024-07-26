@@ -6,7 +6,6 @@ import (
 
 	"github.com/spf13/cobra"
 
-	config "github.com/nextlag/keeper/config/client"
 	"github.com/nextlag/keeper/internal/client/usecase"
 )
 
@@ -15,8 +14,7 @@ var Login = &cobra.Command{
 	Short: "Delete user login by id",
 	Long: fmt.Sprintf(`
 This command remove login
-Usage: %s del login -i <login_id>
-  `, config.LoadConfig().App.Name),
+Usage: %s del login -i <login_id>`, App),
 
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
