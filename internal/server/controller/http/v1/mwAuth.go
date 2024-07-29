@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -30,7 +29,6 @@ func (c *Controller) MwAuth() func(next http.Handler) http.Handler {
 				accessToken = accessTokenFromCookie.Value
 			}
 
-			c.log.Debug(fmt.Sprintf("Received token: %s", accessToken))
 			if accessToken == "" {
 				http.Error(w, "You are not logged in", http.StatusUnauthorized)
 				return

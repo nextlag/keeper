@@ -24,7 +24,7 @@ var Get = &cobra.Command{
 %s get note -i note_id
 
 # Get a binary
-%s get note -i binary_id
+%s get binary -i binary_id -f some_file.txt
 	`, App, App, App, App),
 }
 

@@ -20,7 +20,7 @@ type Request struct {
 	Status      int    `json:"status"`
 	Bytes       int    `json:"bytes,omitempty"`
 	Duration    string `json:"duration"`
-	Compress    string `json:"compress"`
+	Compress    string `json:"compress,omitempty"`
 }
 
 // MwRequest creates middleware for logging HTTP requests.
@@ -48,7 +48,7 @@ func MwRequest(log *l.Logger) func(next http.Handler) http.Handler {
 				if requestFields.Status >= http.StatusInternalServerError {
 					log.Error("request completed with error", "error logger", requestFields)
 				} else {
-					log.Info("request", "request fields", requestFields)
+					log.Debug("request", "request fields", requestFields)
 				}
 			}()
 

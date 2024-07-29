@@ -41,7 +41,8 @@ type (
 	}
 
 	FilesStorage struct {
-		Location string `yaml:"location" env:"FILES_LOCATION"`
+		ServerLocation string `yaml:"server_location"`
+		ClientLocation string `yaml:"client_location"`
 	}
 )
 

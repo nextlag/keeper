@@ -48,6 +48,7 @@ func (c *Controller) GetCards(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) AddCard(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
 	}
 

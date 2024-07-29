@@ -18,12 +18,14 @@ import (
 func (c *Controller) GetNotes(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	userNotes, err := c.uc.GetNotes(r.Context(), currentUser)
 	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -36,6 +38,7 @@ func (c *Controller) GetNotes(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if err = json.NewEncoder(w).Encode(userNotes); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -47,18 +50,21 @@ func (c *Controller) GetNotes(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) AddNote(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	var payloadNote entity.SecretNote
 
-	if err := json.NewDecoder(r.Body).Decode(&payloadNote); err != nil {
+	if err = json.NewDecoder(r.Body).Decode(&payloadNote); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if err := c.uc.AddNote(r.Context(), &payloadNote, currentUser.ID); err != nil {
+	if err = c.uc.AddNote(r.Context(), &payloadNote, currentUser.ID); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -66,6 +72,7 @@ func (c *Controller) AddNote(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusAccepted)
 	if err = json.NewEncoder(w).Encode(payloadNote); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

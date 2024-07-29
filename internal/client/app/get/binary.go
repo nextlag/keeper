@@ -3,12 +3,11 @@ package get
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/spf13/cobra"
 
 	"github.com/nextlag/keeper/internal/client/usecase"
-
-	"github.com/nextlag/keeper/internal/client/app/add"
 )
 
 var Binary = &cobra.Command{
@@ -19,10 +18,18 @@ This command get user binary info and encode it for path
 Usage: %s get binary -i binary_id -f some_file`, App),
 
 	Run: func(cmd *cobra.Command, args []string) {
+		if getBinaryID == "" || filePath == "" {
+			fmt.Println("Error: Both 'id' and 'file' flags are required")
+			cmd.Help()
+			os.Exit(1)
+		}
+
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
 		if err != nil {
-			return
+			fmt.Printf("Error getting temporary password: %v\n", err)
+			os.Exit(1)
 		}
+
 		usecase.GetClientUseCase().GetBinary(userPassword, getBinaryID, filePath)
 	},
 }
@@ -39,7 +46,7 @@ func init() {
 	if err := Binary.MarkFlagRequired("id"); err != nil {
 		log.Fatal(err)
 	}
-	if err := add.Binary.MarkFlagRequired("file"); err != nil {
+	if err := Binary.MarkFlagRequired("file"); err != nil {
 		log.Fatal(err)
 	}
 }

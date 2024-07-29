@@ -26,17 +26,20 @@ func (c *Controller) SignUpUser(w http.ResponseWriter, r *http.Request) {
 	var payload *loginPayload
 
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	user, err := c.uc.SignUpUser(r.Context(), payload.Email, payload.Password)
 	if errors.Is(err, errs.ErrWrongEmail) || errors.Is(err, errs.ErrEmailAlreadyExists) {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
@@ -44,6 +47,7 @@ func (c *Controller) SignUpUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	if err = json.NewEncoder(w).Encode(user); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -60,6 +64,7 @@ func (c *Controller) SignUpUser(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) SignInUser(w http.ResponseWriter, r *http.Request) {
 	var payload loginPayload
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -67,8 +72,10 @@ func (c *Controller) SignInUser(w http.ResponseWriter, r *http.Request) {
 	jwtToken, err := c.uc.SignInUser(r.Context(), payload.Email, payload.Password)
 	if err != nil {
 		if errors.Is(err, errs.ErrWrongCredentials) {
+			c.log.Error("error", l.ErrAttr(err))
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		} else {
+			c.log.Error("error", l.ErrAttr(err))
 			http.Error(w, jsonError(err), http.StatusInternalServerError)
 		}
 		return
@@ -111,6 +118,7 @@ func (c *Controller) SignInUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(jwtToken)
 	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}

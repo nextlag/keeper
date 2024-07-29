@@ -11,8 +11,6 @@ import (
 	"github.com/nextlag/keeper/internal/utils"
 )
 
-const filePath = "tmp/"
-
 func (uc *ClientUseCase) AddBinary(userPassword string, binary *entity.Binary) {
 	accessToken, err := uc.authorisationCheck(userPassword)
 	if err != nil {
@@ -22,7 +20,7 @@ func (uc *ClientUseCase) AddBinary(userPassword string, binary *entity.Binary) {
 	if err != nil {
 		log.Fatalf("ClientUseCase - AddBinary - %v", err)
 	}
-	tmpFilePath := filePath + file.Name()
+	tmpFilePath := uc.cfg.FilesStorage.ClientLocation + file.Name()
 
 	if err = utils.EncryptFile(userPassword, binary.FileName, tmpFilePath); err != nil {
 		log.Fatalf("ClientUseCase - EncryptFile - %v", err)
@@ -35,12 +33,11 @@ func (uc *ClientUseCase) AddBinary(userPassword string, binary *entity.Binary) {
 	if err = uc.repo.AddBinary(binary); err != nil {
 		log.Fatalf("ClientUseCase - repo.AddBinary - %v", err)
 	}
-
-	if err = os.Rename(
-		tmpFilePath,
-		uc.cfg.FilesStorage.Location+"/"+binary.ID.String()); err != nil {
-		log.Fatalf("ClientUseCase - os.Rename - %v", err)
-	}
+	defer func() {
+		if err = os.Remove(tmpFilePath); err != nil {
+			log.Fatalf("ClientUseCase -  os.Remove - %v", err)
+		}
+	}()
 	color.Green("Binary %v - %s saved", binary.ID, binary.FileName)
 }
 
@@ -62,10 +59,6 @@ func (uc *ClientUseCase) DelBinary(userPassword, binaryID string) {
 	if err = uc.clientAPI.DelBinary(accessToken, binaryID); err != nil {
 		log.Fatalf("ClientUseCase - clientAPI.DelBinary - %v", err)
 	}
-	if err = os.Remove(uc.cfg.FilesStorage.Location + "/" + binaryID); err != nil {
-		log.Fatalf("ClientUseCase -  os.Remove - %v", err)
-	}
-
 	color.Green("Binary %q removed", binaryID)
 }
 

@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -21,6 +22,7 @@ func (a *App) Run(ctx context.Context) {
 	}
 
 	go func() {
+		fmt.Println("\n----------- START SERVER --------------")
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			a.log.Error("HTTP server ListenAndServe:", l.ErrAttr(err))
 		}

@@ -87,8 +87,8 @@ func initApp() {
 		opt(uc)
 	}
 
-	if _, err := os.Stat(cfg.FilesStorage.Location); os.IsNotExist(err) {
-		err = os.MkdirAll(cfg.FilesStorage.Location, os.ModePerm)
+	if _, err := os.Stat(cfg.FilesStorage.ServerLocation); os.IsNotExist(err) {
+		err = os.MkdirAll(cfg.FilesStorage.ServerLocation, os.ModePerm)
 		if err != nil {
 			log.Fatalf("App.Init - os.MkdirAll - %v", err)
 		}

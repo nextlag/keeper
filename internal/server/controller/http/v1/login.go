@@ -38,6 +38,7 @@ func (c *Controller) AddLogin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusAccepted)
 	if err = json.NewEncoder(w).Encode(payloadLogin); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -53,6 +54,7 @@ func (c *Controller) GetLogins(w http.ResponseWriter, r *http.Request) {
 
 	userLogins, err := c.uc.GetLogins(r.Context(), currentUser)
 	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
@@ -64,6 +66,7 @@ func (c *Controller) GetLogins(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if err = json.NewEncoder(w).Encode(userLogins); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

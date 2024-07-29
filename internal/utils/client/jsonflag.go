@@ -19,7 +19,7 @@ func (f *JSONFlag) String() string {
 	return string(b)
 }
 
-// Set must have pointer receiver so it doesn't change the value of a copy
+// Set must have pointer receiver, so it doesn't change the value of a copy
 func (f *JSONFlag) Set(v string) error {
 	return json.Unmarshal([]byte(v), f.Target)
 }
