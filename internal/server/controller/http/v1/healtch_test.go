@@ -57,7 +57,7 @@ func TestController_HealthCheck(t *testing.T) {
 				log: l.NewLogger(cfg),
 			}
 
-			req, err := http.NewRequest("GET", "/ping", nil)
+			req, err := http.NewRequest("GET", healthCheckPath, nil)
 			assert.NoError(t, err)
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(controller.HealthCheck)

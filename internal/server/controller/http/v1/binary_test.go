@@ -47,7 +47,7 @@ func TestAddBinary(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest(http.MethodPost, "/binary", nil)
+			req := httptest.NewRequest(http.MethodPost, userBinaryAddPath, nil)
 			req = req.WithContext(context.WithValue(req.Context(), currentUserKey, expectedUser))
 
 			if len(tt.queryParams) > 0 {
@@ -123,7 +123,7 @@ func TestGetBinaries(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest(http.MethodGet, "/binary", nil)
+			req := httptest.NewRequest(http.MethodGet, userBinaryGetPath, nil)
 			req = req.WithContext(context.WithValue(req.Context(), currentUserKey, expectedUser))
 
 			rr := httptest.NewRecorder()

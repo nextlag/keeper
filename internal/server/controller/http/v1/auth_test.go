@@ -6,35 +6,15 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
-	config "github.com/nextlag/keeper/config/server"
 	"github.com/nextlag/keeper/internal/entity"
-	"github.com/nextlag/keeper/internal/server/controller/http/v1/mocks"
 	"github.com/nextlag/keeper/internal/utils/errs"
-	"github.com/nextlag/keeper/pkg/logger/l"
 )
-
-func loadTest(t *testing.T) (*Controller, *mocks.MockUseCase, *gomock.Controller) {
-	ctrl := gomock.NewController(t)
-	mockUseCase := mocks.NewMockUseCase(ctrl)
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		t.Fatalf("Failed to load config: %v", err)
-	}
-	log := l.NewLogger(cfg)
-
-	c := &Controller{
-		uc:  mockUseCase,
-		cfg: cfg,
-		log: log,
-	}
-
-	return c, mockUseCase, ctrl
-}
 
 func TestSignUpUser(t *testing.T) {
 	c, mockUseCase, ctrl := loadTest(t)
@@ -106,7 +86,7 @@ func TestSignUpUser(t *testing.T) {
 			}
 
 			body, _ := json.Marshal(tt.payload)
-			req, _ := http.NewRequest(http.MethodPost, "api/v1/auth/register", bytes.NewReader(body))
+			req, _ := http.NewRequest(http.MethodPost, authRegisterPath, bytes.NewReader(body))
 			rr := httptest.NewRecorder()
 
 			http.HandlerFunc(c.SignUpUser).ServeHTTP(rr, req)
@@ -192,7 +172,7 @@ func TestSignInUser(t *testing.T) {
 			}
 
 			body, _ := json.Marshal(tt.payload)
-			req, _ := http.NewRequest(http.MethodPost, "/api/v1/auth/login", bytes.NewReader(body))
+			req, _ := http.NewRequest(http.MethodPost, authLoginPath, bytes.NewReader(body))
 			rr := httptest.NewRecorder()
 
 			http.HandlerFunc(c.SignInUser).ServeHTTP(rr, req)
@@ -209,6 +189,64 @@ func TestSignInUser(t *testing.T) {
 				assert.Contains(t, response, "access_token")
 				assert.Contains(t, response, "refresh_token")
 			}
+		})
+	}
+}
+
+func TestRefreshAccessToken(t *testing.T) {
+	c, mockUseCase, ctrl := loadTest(t)
+	defer ctrl.Finish()
+
+	tests := []struct {
+		name           string
+		cookieValue    string
+		mockReturn     entity.JWT
+		mockError      error
+		expectedStatus int
+		expectedBody   string
+	}{
+		{
+			name:           "successful refresh",
+			cookieValue:    "valid_refresh_token",
+			mockReturn:     entity.JWT{AccessToken: "new_access_token", RefreshToken: "new_refresh_token", AccessTokenMaxAge: 3600, Domain: "example.com"},
+			mockError:      nil,
+			expectedStatus: http.StatusOK,
+			expectedBody:   `{"access_token":"new_access_token","refresh_token":"new_refresh_token"}`,
+		},
+		{
+			name:           "error refreshing token",
+			cookieValue:    "valid_refresh_token",
+			mockReturn:     entity.JWT{},
+			mockError:      errors.New("unexpected error"),
+			expectedStatus: http.StatusBadRequest,
+			expectedBody:   "unexpected error",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, authRefreshPath, nil)
+			if tt.cookieValue != "" {
+				req.AddCookie(&http.Cookie{Name: "refresh_token", Value: tt.cookieValue})
+			}
+
+			rr := httptest.NewRecorder()
+
+			if tt.mockError != nil {
+				mockUseCase.EXPECT().RefreshAccessToken(gomock.Any(), tt.cookieValue).Return(entity.JWT{}, tt.mockError)
+			} else {
+				mockUseCase.EXPECT().RefreshAccessToken(gomock.Any(), tt.cookieValue).Return(tt.mockReturn, nil)
+			}
+
+			http.HandlerFunc(c.RefreshAccessToken).ServeHTTP(rr, req)
+
+			assert.Equal(t, tt.expectedStatus, rr.Code)
+
+			// Remove trailing newline characters for comparison
+			actualBody := strings.TrimSpace(rr.Body.String())
+			expectedBody := strings.TrimSpace(tt.expectedBody)
+
+			assert.Equal(t, expectedBody, actualBody)
 		})
 	}
 }
@@ -233,7 +271,7 @@ func TestLogoutUser(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req, err := http.NewRequest(http.MethodPost, "/api/v1/auth/logout", nil)
+			req, err := http.NewRequest(http.MethodPost, authLogoutPath, nil)
 			if err != nil {
 				t.Fatalf("Failed to create request: %v", err)
 			}
