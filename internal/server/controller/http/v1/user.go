@@ -24,7 +24,6 @@ func (c *Controller) getUserFromCtx(ctx context.Context) (entity.User, error) {
 func (c *Controller) UserInfo(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
-		c.log.Error("currentUser", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

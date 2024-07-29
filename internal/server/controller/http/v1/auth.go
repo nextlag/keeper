@@ -31,6 +31,11 @@ func (c *Controller) SignUpUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user, err := c.uc.SignUpUser(r.Context(), payload.Email, payload.Password)
+	if errors.Is(err, errs.ErrWrongEmail) || errors.Is(err, errs.ErrEmailAlreadyExists) {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	if err != nil {
 		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
@@ -40,16 +45,6 @@ func (c *Controller) SignUpUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	if err = json.NewEncoder(w).Encode(user); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	if errors.Is(err, errs.ErrWrongEmail) || errors.Is(err, errs.ErrEmailAlreadyExists) {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	if err != nil {
-		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
 }
