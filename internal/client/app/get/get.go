@@ -8,7 +8,7 @@ import (
 	config "github.com/nextlag/keeper/config/client"
 )
 
-var App = config.LoadConfig().App.Name
+var App = config.Load().App.Name
 var Get = &cobra.Command{
 	Use:   "get",
 	Short: "Get resources",

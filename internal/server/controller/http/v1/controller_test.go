@@ -38,7 +38,7 @@ const (
 func loadTest(t *testing.T) (*Controller, *mocks.MockUseCase, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
 	mockUseCase := mocks.NewMockUseCase(ctrl)
-	cfg, err := config.LoadConfig()
+	cfg, err := config.Load()
 	if err != nil {
 		t.Fatalf("Failed to load config: %v", err)
 	}

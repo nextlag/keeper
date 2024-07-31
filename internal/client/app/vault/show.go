@@ -22,7 +22,7 @@ Flags:
 	l - logins
 	n - notes
 	b - binaries
-  `, config.LoadConfig().App.Name),
+  `, config.Load().App.Name),
 
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()

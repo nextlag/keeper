@@ -24,7 +24,7 @@ var (
 	cfg *config.Config
 
 	rootCmd = &cobra.Command{
-		Use:   config.LoadConfig().App.Name,
+		Use:   config.Load().App.Name,
 		Short: "App for storing private data",
 		Long:  `User can save cards, note and logins`,
 		Run: func(cmd *cobra.Command, args []string) {
@@ -75,7 +75,7 @@ func init() {
 }
 
 func initApp() {
-	cfg = config.LoadConfig()
+	cfg = config.Load()
 	uc := usecase.GetClientUseCase()
 	clientOpts := []usecase.OptsUseCase{
 		usecase.SetAPI(api.New(cfg.Server.ServerURL)),

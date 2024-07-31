@@ -13,7 +13,7 @@ var SyncUserData = &cobra.Command{
 	Use:   "sync",
 	Short: "Sync user`s data",
 	Long: fmt.Sprintf(`This command update users private data from server 
-Usage: %s sync`, config.LoadConfig().App.Name),
+Usage: %s sync`, config.Load().App.Name),
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
 		if err != nil {

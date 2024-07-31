@@ -71,7 +71,7 @@ var (
 	once sync.Once
 )
 
-func LoadConfig() (*Config, error) {
+func Load() (*Config, error) {
 	var err error
 	once.Do(func() {
 		homeDir, err := os.UserHomeDir()
