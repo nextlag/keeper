@@ -2,10 +2,9 @@ package entity
 
 import "github.com/google/uuid"
 
-type (
-	Meta struct {
-		ID    uuid.UUID `json:"uuid"`
-		Name  string    `json:"name"`
-		Value string    `json:"value"`
-	}
-)
+// Meta represents additional metadata associated with an entity.
+type Meta struct {
+	ID    uuid.UUID `json:"uuid"`  // Unique identifier for the metadata.
+	Name  string    `json:"name"`  // Name or type of the metadata.
+	Value string    `json:"value"` // Value of the metadata.
+}

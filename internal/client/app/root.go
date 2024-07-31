@@ -26,13 +26,14 @@ var (
 	rootCmd = &cobra.Command{
 		Use:   config.Load().App.Name,
 		Short: "App for storing private data",
-		Long:  `User can save cards, note and logins`,
+		Long:  `User can save cards, notes, and logins.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			build.PrintBuildInfo()
 		},
 	}
 )
 
+// Execute runs the root command.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -40,40 +41,44 @@ func Execute() {
 	}
 }
 
+// init initializes the application and adds subcommands to the root command.
 func init() {
 	cobra.OnInitialize(initApp)
+
 	commands := []*cobra.Command{
-		storage.InitLocalStorage,
-		storage.SyncUserData,
+		storage.InitLocalStorage, // Command to initialize local storage.
+		storage.SyncUserData,     // Command to sync user data with the server.
 
-		auth.LoginUser,
-		auth.RegisterUser,
-		auth.LogoutUser,
+		auth.LoginUser,    // Command to log in a user.
+		auth.RegisterUser, // Command to register a new user.
+		auth.LogoutUser,   // Command to log out a user.
 
-		add.Add,
-		add.Login,
-		add.Card,
-		add.Note,
-		add.Binary,
+		add.Add,    // Command to add new entities.
+		add.Login,  // Command to add a new login.
+		add.Card,   // Command to add a new card.
+		add.Note,   // Command to add a new note.
+		add.Binary, // Command to add a new binary file.
 
-		get.Get,
-		get.Login,
-		get.Card,
-		get.Note,
-		get.Binary,
+		get.Get,    // Command to retrieve entities.
+		get.Login,  // Command to retrieve logins.
+		get.Card,   // Command to retrieve cards.
+		get.Note,   // Command to retrieve notes.
+		get.Binary, // Command to retrieve binary files.
 
-		del.Del,
-		del.Login,
-		del.Card,
-		del.Note,
-		del.Binary,
+		del.Del,    // Command to delete entities.
+		del.Login,  // Command to delete a login.
+		del.Card,   // Command to delete a card.
+		del.Note,   // Command to delete a note.
+		del.Binary, // Command to delete a binary file.
 
-		vault.ShowVault,
+		vault.ShowVault, // Command to display the vault.
 	}
 
 	rootCmd.AddCommand(commands...)
 }
 
+// initApp initializes the application configuration and use case.
+// Sets up the necessary directories and configurations based on the provided settings.
 func initApp() {
 	cfg = config.Load()
 	uc := usecase.GetClientUseCase()

@@ -11,6 +11,7 @@ import (
 	"github.com/nextlag/keeper/internal/utils/errs"
 )
 
+// GetNotes retrieves all secret notes associated with a specific user.
 func (r *Repo) GetNotes(ctx context.Context, user entity.User) ([]entity.SecretNote, error) {
 	var notesFromDB []models.Note
 
@@ -36,6 +37,7 @@ func (r *Repo) GetNotes(ctx context.Context, user entity.User) ([]entity.SecretN
 	return notes, nil
 }
 
+// AddNote adds a new secret note for a specific user. It also adds associated meta data.
 func (r *Repo) AddNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error {
 	return r.db.Transaction(func(tx *gorm.DB) error {
 		noteToDB := models.Note{
@@ -67,6 +69,7 @@ func (r *Repo) AddNote(ctx context.Context, note *entity.SecretNote, userID uuid
 	})
 }
 
+// IsNoteOwner checks if a specific user is the owner of a note.
 func (r *Repo) IsNoteOwner(ctx context.Context, noteID, userID uuid.UUID) bool {
 	var noteFromDB models.Note
 
@@ -75,6 +78,7 @@ func (r *Repo) IsNoteOwner(ctx context.Context, noteID, userID uuid.UUID) bool {
 	return noteFromDB.UserID == userID
 }
 
+// DelNote deletes a secret note if the user is the owner of the note.
 func (r *Repo) DelNote(ctx context.Context, noteID, userID uuid.UUID) error {
 	if !r.IsNoteOwner(ctx, noteID, userID) {
 		return errs.ErrWrongOwnerOrNotFound
@@ -83,6 +87,7 @@ func (r *Repo) DelNote(ctx context.Context, noteID, userID uuid.UUID) error {
 	return r.db.WithContext(ctx).Delete(&models.Note{}, noteID).Error
 }
 
+// UpdateNote updates an existing secret note if the user is the owner of the note.
 func (r *Repo) UpdateNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error {
 	if !r.IsNoteOwner(ctx, note.ID, userID) {
 		return errs.ErrWrongOwnerOrNotFound
@@ -97,7 +102,7 @@ func (r *Repo) UpdateNote(ctx context.Context, note *entity.SecretNote, userID u
 		}
 
 		if err := r.db.WithContext(ctx).Save(&noteToDB).Error; err != nil {
-			return nil
+			return err
 		}
 
 		return nil

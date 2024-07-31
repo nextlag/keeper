@@ -29,10 +29,10 @@ const (
 	userNotesPath          = "/api/v1/user/notes"
 	userNotesIDPath        = "/api/v1/user/notes/{id}"
 	userBinaryAddPath      = "/api/v1/user/binary"
-	userBinaryAddMetaPath  = "/api/v1/user/binary/{id}/meta"
+	userBinaryAddMetaPath  = "/user/binary/{id}/meta"
 	userBinaryGetPath      = "/api/v1/user/binary"
-	userBinaryDownloadPath = "/api/v1/user/binary/{id}"
-	userBinaryDeletePath   = "/api/v1/user/binary/{id}"
+	userBinaryDownloadPath = "/api/v1/user/binary/"
+	userBinaryDeletePath   = "/api/v1/user/binary/"
 )
 
 func loadTest(t *testing.T) (*Controller, *mocks.MockUseCase, *gomock.Controller) {

@@ -20,7 +20,9 @@ Usage: %s get binary -i binary_id -f some_file`, App),
 	Run: func(cmd *cobra.Command, args []string) {
 		if getBinaryID == "" || filePath == "" {
 			fmt.Println("Error: Both 'id' and 'file' flags are required")
-			cmd.Help()
+			if err := cmd.Help(); err != nil {
+				return
+			}
 			os.Exit(1)
 		}
 

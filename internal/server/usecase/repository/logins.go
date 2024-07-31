@@ -13,10 +13,10 @@ import (
 
 // AddLogin adds a new login entry to the database.
 // It wraps the database operation in a transaction to ensure atomicity.
-// The method creates a new Login record with the provided entity.Login data
+// Creates a new Login record with the provided entity.Login data
 // and associates it with the user identified by userID.
-// If successful, it also creates corresponding MetaLogin records for any metadata
-// associated with the login entry.
+// Also creates MetaLogin records for any metadata associated with the login entry.
+// Returns an error if the operation fails.
 func (r *Repo) AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error {
 	return r.db.Transaction(func(tx *gorm.DB) error {
 		loginToDB := models.Login{
@@ -49,6 +49,8 @@ func (r *Repo) AddLogin(ctx context.Context, login *entity.Login, userID uuid.UU
 	})
 }
 
+// GetLogins retrieves all login entries associated with a specific user.
+// Returns a slice of Login and an error if any occurs.
 func (r *Repo) GetLogins(ctx context.Context, user entity.User) (logins []entity.Login, err error) {
 	var loginsFromDB []models.Login
 
@@ -84,6 +86,8 @@ func (r *Repo) GetLogins(ctx context.Context, user entity.User) (logins []entity
 	return logins, nil
 }
 
+// IsLoginOwner checks if a specific user is the owner of a login entry.
+// Returns true if the user is the owner, false otherwise.
 func (r *Repo) IsLoginOwner(ctx context.Context, loginID, userID uuid.UUID) bool {
 	var loginFromDB models.Login
 
@@ -92,6 +96,8 @@ func (r *Repo) IsLoginOwner(ctx context.Context, loginID, userID uuid.UUID) bool
 	return loginFromDB.UserID == userID
 }
 
+// DelLogin deletes a login entry if the user is the owner of the login.
+// Returns an error if the user is not the owner or if any other issue occurs during deletion.
 func (r *Repo) DelLogin(ctx context.Context, loginID, userID uuid.UUID) error {
 	if !r.IsLoginOwner(ctx, loginID, userID) {
 		return errs.ErrWrongOwnerOrNotFound
@@ -100,6 +106,9 @@ func (r *Repo) DelLogin(ctx context.Context, loginID, userID uuid.UUID) error {
 	return r.db.WithContext(ctx).Delete(&models.Login{}, loginID).Error
 }
 
+// UpdateLogin updates an existing login entry if the user is the owner of the login.
+// Updates the login details and associated metadata.
+// Returns an error if the user is not the owner or if any other issue occurs during the update.
 func (r *Repo) UpdateLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error {
 	if !r.IsLoginOwner(ctx, login.ID, userID) {
 		return errs.ErrWrongOwnerOrNotFound

@@ -16,6 +16,9 @@ const keyLength = 32
 
 var errEmptyFile = errors.New("empty file has been given")
 
+// getKeyFromPass generates a 32-byte key from a provided string.
+// If the input string is shorter than 32 bytes, it is padded.
+// If it is longer, it is truncated to 32 bytes.
 func getKeyFromPass(keyString string) []byte {
 	key := []byte(keyString)
 
@@ -33,6 +36,9 @@ func getKeyFromPass(keyString string) []byte {
 	return key
 }
 
+// Encrypt encrypts a string using AES-GCM with a key derived from keyString.
+// The encrypted string is returned in base64 URL encoding format.
+// If the input string is empty, it is returned as-is.
 func Encrypt(keyString, stringToEncrypt string) string {
 	if stringToEncrypt == "" {
 		return stringToEncrypt
@@ -55,6 +61,8 @@ func Encrypt(keyString, stringToEncrypt string) string {
 	return base64.URLEncoding.EncodeToString(aead.Seal(nonce, nonce, []byte(stringToEncrypt), nil))
 }
 
+// Decrypt decrypts a base64 URL encoded AES-GCM encrypted string.
+// The decrypted string is returned. If the input string is empty, it is returned as-is.
 func Decrypt(keyString, encryptedString string) (decryptedString string) {
 	if encryptedString == "" {
 		return encryptedString
@@ -88,6 +96,9 @@ func Decrypt(keyString, encryptedString string) (decryptedString string) {
 	return string(plainData)
 }
 
+// EncryptFile encrypts the contents of a file using AES-GCM and writes the result
+// to a new file. The key for encryption is derived from keyString.
+// If the input file is empty, an error is returned.
 func EncryptFile(keyString, inputFilePath, outputFilePath string) error {
 	fi, err := os.Stat(inputFilePath)
 	if err != nil {
@@ -98,7 +109,7 @@ func EncryptFile(keyString, inputFilePath, outputFilePath string) error {
 	}
 	cipherBlock, err := aes.NewCipher(getKeyFromPass(keyString))
 	if err != nil {
-		return fmt.Errorf("EncryptFile - aes.NewCipher - %w", errEmptyFile)
+		return fmt.Errorf("EncryptFile - aes.NewCipher - %w", err)
 	}
 
 	aead, err := cipher.NewGCM(cipherBlock)
@@ -131,6 +142,8 @@ func EncryptFile(keyString, inputFilePath, outputFilePath string) error {
 	return nil
 }
 
+// DecryptFile decrypts a base64 URL encoded AES-GCM encrypted file and writes
+// the result to a new file. The key for decryption is derived from keyString.
 func DecryptFile(keyString, encryptedPath, decryptedFilePath string) error {
 	encryptedData, err := os.ReadFile(encryptedPath)
 	if err != nil {
@@ -164,14 +177,14 @@ func DecryptFile(keyString, encryptedPath, decryptedFilePath string) error {
 	}
 	outputFile, err := os.Create(decryptedFilePath)
 	if err != nil {
-		return fmt.Errorf("EncryptFile - os.Create - %w", err)
+		return fmt.Errorf("DecryptFile - os.Create - %w", err)
 	}
 
 	defer outputFile.Close()
 	_, err = outputFile.WriteString(
 		string(plainData))
 	if err != nil {
-		return fmt.Errorf("EncryptFile - outputFile.WriteString - %w", err)
+		return fmt.Errorf("DecryptFile - outputFile.WriteString - %w", err)
 	}
 
 	return nil
