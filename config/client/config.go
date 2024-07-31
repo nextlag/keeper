@@ -14,6 +14,8 @@ import (
 )
 
 type (
+	// Config holds the configuration settings for the application.
+	// It is populated from a YAML file and environment variables.
 	Config struct {
 		ConfigPath   string        `yaml:"config_path"`
 		App          *App          `yaml:"app"`
@@ -23,23 +25,27 @@ type (
 		FilesStorage *FilesStorage `yaml:"files_storage"`
 	}
 
+	// App contains application-specific settings.
 	App struct {
-		Name    string `yaml:"name"    env:"APP_NAME"`
-		Version string `yaml:"version" env:"APP_VERSION"`
+		Name string `yaml:"name" env:"APP_NAME"`
 	}
 
+	// Server contains server-related settings.
 	Server struct {
 		ServerURL string `yaml:"server_url" env:"SERVER_URL"`
 	}
 
+	// Log contains settings for logging.
 	Log struct {
 		Level slog.Level `yaml:"level" env:"LOG_LEVEL"`
 	}
 
+	// SQLite contains settings for SQLite database.
 	SQLite struct {
 		DSN string `yaml:"sqlite_dsn" env:"SQLITE_DSN"`
 	}
 
+	// FilesStorage contains file storage-related settings.
 	FilesStorage struct {
 		ServerLocation string `yaml:"server_location"`
 		ClientLocation string `yaml:"client_location"`
@@ -47,10 +53,13 @@ type (
 )
 
 var (
-	cfg  Config
-	once sync.Once
+	cfg  Config    // The application's configuration
+	once sync.Once // Ensures that the configuration is loaded only once
 )
 
+// Load initializes and returns the configuration.
+// It loads configuration from a YAML file and environment variables.
+// The function is thread-safe and ensures that configuration is loaded only once.
 func Load() *Config {
 	once.Do(func() {
 		var err error
@@ -82,6 +91,9 @@ func Load() *Config {
 	return &cfg
 }
 
+// configFromYAML loads configuration from a YAML file.
+// It reads the YAML file specified by ConfigPath and unmarshals it into the Config structure.
+// Returns an error if the file cannot be read or parsed.
 func configFromYAML() error {
 	if cfg.ConfigPath == "" {
 		log.Println("the path to the config file is empty")

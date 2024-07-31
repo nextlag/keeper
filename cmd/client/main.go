@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+	build.Version = "1.0.0"
 	build.CheckBuild()
 	app.Execute()
 }

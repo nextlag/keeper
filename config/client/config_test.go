@@ -17,8 +17,7 @@ func TestLoadConfig(t *testing.T) {
 		{
 			expectedConfig: &config.Config{
 				App: &config.App{
-					Name:    "keeper",
-					Version: "1.0.0",
+					Name: "keeper",
 				},
 				Server: &config.Server{
 					ServerURL: "http://localhost:8080",
@@ -47,7 +46,6 @@ func TestLoadConfig(t *testing.T) {
 			} else {
 				require.NotNil(t, cfg)
 				require.Equal(t, tt.expectedConfig.App.Name, cfg.App.Name)
-				require.Equal(t, tt.expectedConfig.App.Version, cfg.App.Version)
 				require.Equal(t, tt.expectedConfig.Server.ServerURL, cfg.Server.ServerURL)
 				require.Equal(t, tt.expectedConfig.Log.Level, cfg.Log.Level)
 				require.Equal(t, tt.expectedConfig.SQLite.DSN, cfg.SQLite.DSN)

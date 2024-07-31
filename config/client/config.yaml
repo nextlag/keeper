@@ -1,6 +1,5 @@
 app:
   name: 'keeper'
-  version: '1.0.0'
 
 server:
   server_url: 'http://localhost:8080'

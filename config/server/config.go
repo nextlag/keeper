@@ -17,6 +17,7 @@ import (
 )
 
 type (
+	// Config holds all application settings.
 	Config struct {
 		ConfigPath   string        `yaml:"config_path"`
 		Network      *Network      `yaml:"network"`
@@ -27,11 +28,13 @@ type (
 		FilesStorage *FilesStorage `yaml:"files_storage"`
 	}
 
+	// Network contains network-related settings.
 	Network struct {
 		Host  string `yaml:"host"`
 		HTTPS bool   `yaml:"https"`
 	}
 
+	// Log contains settings for logging.
 	Log struct {
 		Level       slog.Level `yaml:"level" env:"LOG_LEVEL"`
 		ProjectPath string     `yaml:"project_path" env:"PROJECT_PATH"`
@@ -39,38 +42,45 @@ type (
 		LogPath     string     `yaml:"log_path" env:"LOG_PATH"`
 	}
 
+	// Security contains security-related settings.
 	Security struct {
 		Domain                 string        `yaml:"domain" env:"DOMAIN"`
 		AccessTokenPrivateKey  string        `yaml:"access_token_private_key" env:"ACCESS_TOKEN_PRIVATE_KEY"`
 		AccessTokenPublicKey   string        `yaml:"access_token_public_key" env:"ACCESS_TOKEN_PUBLIC_KEY"`
 		RefreshTokenPrivateKey string        `yaml:"refresh_token_private_key" env:"REFRESH_TOKEN_PRIVATE_KEY"`
-		RefreshTokenPublicKey  string        `yaml:"refresh_token_public_key" env:"REFRESH_TOKEN_PUBLIC_KEY"`
+		RefreshTokenPublicKey  string        `yaml:"refresh_token_public_key" env:"ACCESS_TOKEN_PUBLIC_KEY"`
 		AccessTokenExpiresIn   time.Duration `yaml:"access_token_expired_in" env:"ACCESS_TOKEN_EXPIRED_IN"`
 		RefreshTokenExpiresIn  time.Duration `yaml:"refresh_token_expired_in" env:"REFRESH_TOKEN_EXPIRED_IN"`
 		AccessTokenMaxAge      int           `yaml:"access_token_maxage" env:"ACCESS_TOKEN_MAXAGE"`
-		RefreshTokenMaxAge     int           `yaml:"refresh_token_maxage" env:"REFRESH_TOKEN_MAXAGE"`
+		RefreshTokenMaxAge     int           `yaml:"refresh_token_maxage" env:"ACCESS_TOKEN_MAXAGE"`
 	}
 
+	// PG contains PostgreSQL-related settings.
 	PG struct {
 		PoolMax int    `yaml:"pool_max" env:"PG_POOL_MAX"`
 		DSN     string `yaml:"dsn" env:"DSN"`
 	}
 
+	// Cache contains caching settings.
 	Cache struct {
 		DefaultExpiration int `yaml:"default_expiration" env:"DEFAULT_EXPIRATION"`
 		CleanupInterval   int `yaml:"cleanup_interval" env:"CLEANUP_INTERVAL"`
 	}
 
+	// FilesStorage contains file storage settings.
 	FilesStorage struct {
 		Location string `yaml:"location" env:"FILES_LOCATION"`
 	}
 )
 
 var (
-	cfg  Config
-	once sync.Once
+	cfg  Config    // The application's configuration.
+	once sync.Once // Ensures that the configuration is loaded only once.
 )
 
+// Load initializes and returns the configuration.
+// It loads configuration from a YAML file and environment variables.
+// The function is thread-safe and ensures that configuration is loaded only once.
 func Load() (*Config, error) {
 	var err error
 	once.Do(func() {
@@ -103,6 +113,9 @@ func Load() (*Config, error) {
 	return &cfg, err
 }
 
+// configFromYAML loads configuration from a YAML file.
+// It reads the YAML file specified by ConfigPath and unmarshals it into the Config structure.
+// Returns an error if the file cannot be read or parsed.
 func configFromYAML() error {
 	if cfg.ConfigPath == "" {
 		log.Println("the path to the config file is empty")
