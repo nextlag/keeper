@@ -39,8 +39,8 @@ func TestLoadConfig(t *testing.T) {
 					PoolMax: 2,
 				},
 				Cache: &config.Cache{
-					DefaultExpiration: 5,
-					CleanupInterval:   10,
+					DefaultExpiration: 5 * time.Minute,
+					CleanupInterval:   10 * time.Minute,
 				},
 				FilesStorage: &config.FilesStorage{
 					Location: "data",

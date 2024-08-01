@@ -63,8 +63,8 @@ type (
 
 	// Cache contains caching settings.
 	Cache struct {
-		DefaultExpiration int `yaml:"default_expiration" env:"DEFAULT_EXPIRATION"`
-		CleanupInterval   int `yaml:"cleanup_interval" env:"CLEANUP_INTERVAL"`
+		DefaultExpiration time.Duration `yaml:"default_expiration" env:"DEFAULT_EXPIRATION"`
+		CleanupInterval   time.Duration `yaml:"cleanup_interval" env:"CLEANUP_INTERVAL"`
 	}
 
 	// FilesStorage contains file storage settings.

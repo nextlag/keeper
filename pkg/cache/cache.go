@@ -18,15 +18,13 @@ type Cache struct {
 	defaultExpiration time.Duration
 }
 
-// New creates a new Cache instance with the specified default expiration time and cleanup interval (both in minutes).
-func New(defaultExpiration, cleanupInterval int) *Cache {
-	expiration := time.Duration(defaultExpiration) * time.Minute
-
+// New creates a new Cache instance with the specified default expiration time and cleanup interval.
+func New(defaultExpiration, cleanupInterval time.Duration) *Cache {
 	return &Cache{
 		cache: cache.New(
-			expiration,
-			time.Duration(cleanupInterval)*time.Minute),
-		defaultExpiration: expiration,
+			defaultExpiration,
+			cleanupInterval),
+		defaultExpiration: defaultExpiration,
 	}
 }
 

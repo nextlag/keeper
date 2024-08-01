@@ -72,31 +72,6 @@ func (c *Controller) GetLogins(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// DelLogin handles the deletion of a login by its UUID.
-func (c *Controller) DelLogin(w http.ResponseWriter, r *http.Request) {
-	loginUUID, err := uuid.Parse(chi.URLParam(r, "id"))
-	if err != nil {
-		c.log.Error("error", l.ErrAttr(err), "uuid", loginUUID)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	currentUser, err := c.getUserFromCtx(r.Context())
-	if err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	if err = c.uc.DelLogin(r.Context(), loginUUID, currentUser.ID); err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusAccepted)
-}
-
 // UpdateLogin handles the update of a login by its UUID.
 func (c *Controller) UpdateLogin(w http.ResponseWriter, r *http.Request) {
 	loginUUID, err := uuid.Parse(chi.URLParam(r, "id"))
@@ -128,4 +103,29 @@ func (c *Controller) UpdateLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+// DelLogin handles the deletion of a login by its UUID.
+func (c *Controller) DelLogin(w http.ResponseWriter, r *http.Request) {
+	loginUUID, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		c.log.Error("error", l.ErrAttr(err), "uuid", loginUUID)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	currentUser, err := c.getUserFromCtx(r.Context())
+	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err = c.uc.DelLogin(r.Context(), loginUUID, currentUser.ID); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusAccepted)
 }

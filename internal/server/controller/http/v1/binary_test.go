@@ -52,7 +52,7 @@ func TestAddBinary(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest(http.MethodPost, userBinaryAddPath, nil)
+			req := httptest.NewRequest(http.MethodPost, userBinary, nil)
 			req = req.WithContext(context.WithValue(req.Context(), currentUserKey, expectedUser))
 
 			if len(tt.queryParams) > 0 {
@@ -128,15 +128,15 @@ func TestGetBinaries(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest(http.MethodGet, userBinaryGetPath, nil)
+			req := httptest.NewRequest(http.MethodGet, userBinary, nil)
 			req = req.WithContext(context.WithValue(req.Context(), currentUserKey, expectedUser))
 
 			rr := httptest.NewRecorder()
 
 			if tt.mockReturn == errs.ErrUnexpectedError {
-				mockUseCase.EXPECT().GetBinaries(gomock.Any(), expectedUser).Return(nil, tt.mockReturn.(error))
+				mockUseCase.EXPECT().GetBinaries(gomock.Any(), gomock.Any()).Return(nil, tt.mockReturn.(error))
 			} else {
-				mockUseCase.EXPECT().GetBinaries(gomock.Any(), expectedUser).Return(tt.mockReturn.([]entity.Binary), nil)
+				mockUseCase.EXPECT().GetBinaries(gomock.Any(), gomock.Any()).Return(tt.mockReturn.([]entity.Binary), nil)
 			}
 
 			http.HandlerFunc(c.GetBinaries).ServeHTTP(rr, req)
@@ -223,7 +223,7 @@ func TestDownloadBinary(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest(http.MethodGet, userBinaryDownloadPath+binaryUUID.String(), nil)
+			req := httptest.NewRequest(http.MethodGet, userBinary+binaryUUID.String(), nil)
 			req = req.WithContext(context.WithValue(req.Context(), currentUserKey, expectedUser))
 			rctx := chi.NewRouteContext()
 			rctx.URLParams.Add("id", binaryUUID.String())
@@ -231,9 +231,9 @@ func TestDownloadBinary(t *testing.T) {
 			rr := httptest.NewRecorder()
 			switch tt.name {
 			case "successful download binary":
-				mockUseCase.EXPECT().GetUserBinary(gomock.Any(), gomock.Any(), binaryUUID).Return(file.Name(), nil)
+				mockUseCase.EXPECT().GetUserBinary(gomock.Any(), gomock.Any(), gomock.Any()).Return(file.Name(), nil)
 			case "GetUserBinary error":
-				mockUseCase.EXPECT().GetUserBinary(gomock.Any(), gomock.Any(), binaryUUID).Return("", tt.getBinaryError)
+				mockUseCase.EXPECT().GetUserBinary(gomock.Any(), gomock.Any(), gomock.Any()).Return("", tt.getBinaryError)
 			}
 			http.HandlerFunc(c.DownloadBinary).ServeHTTP(rr, req)
 			assert.Equal(t, tt.expectedStatus, rr.Code)
@@ -297,7 +297,7 @@ func TestDelBinary(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest(http.MethodDelete, userBinaryDeletePath+binaryUUID.String(), nil)
+			req := httptest.NewRequest(http.MethodDelete, userBinary+binaryUUID.String(), nil)
 			req = req.WithContext(context.WithValue(req.Context(), currentUserKey, expectedUser))
 			rctx := chi.NewRouteContext()
 			rctx.URLParams.Add("id", binaryUUID.String())
@@ -324,7 +324,7 @@ func TestAddBinaryMeta(t *testing.T) {
 	defer ctrl.Finish()
 
 	r := chi.NewRouter()
-	r.Post(userBinaryAddMetaPath, c.AddBinaryMeta)
+	r.Post(userBinaryAddMeta, c.AddBinaryMeta)
 
 	tests := []struct {
 		name           string

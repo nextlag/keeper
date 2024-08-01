@@ -43,7 +43,7 @@ func TestUserInfo(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req, err := http.NewRequest(http.MethodGet, userInfoPath, nil)
+			req, err := http.NewRequest(http.MethodGet, userInfo, nil)
 			if err != nil {
 				t.Fatalf("Failed to create request: %v", err)
 			}

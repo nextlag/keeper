@@ -10,7 +10,10 @@ import (
 
 type contextKey string
 
-const currentUserKey contextKey = "currentUser"
+const (
+	currentUserKey contextKey = "currentUser"
+	errorKey       contextKey = "errorKey"
+)
 
 // MwAuth returns middleware to validate the access token.
 // The token can be passed either in the Authorization header or in the "access_token" cookie.

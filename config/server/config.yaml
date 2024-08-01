@@ -19,8 +19,8 @@ postgres:
   pool_max: 2
 
 cache:
-  default_expiration: 5
-  cleanup_interval: 10
+  default_expiration: '5m'
+  cleanup_interval: '10m'
 
 files_storage:
   location: 'data'

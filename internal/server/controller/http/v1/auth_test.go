@@ -86,7 +86,7 @@ func TestSignUpUser(t *testing.T) {
 			}
 
 			body, _ := json.Marshal(tt.payload)
-			req, _ := http.NewRequest(http.MethodPost, authRegisterPath, bytes.NewReader(body))
+			req, _ := http.NewRequest(http.MethodPost, authRegister, bytes.NewReader(body))
 			rr := httptest.NewRecorder()
 
 			http.HandlerFunc(c.SignUpUser).ServeHTTP(rr, req)
@@ -172,7 +172,7 @@ func TestSignInUser(t *testing.T) {
 			}
 
 			body, _ := json.Marshal(tt.payload)
-			req, _ := http.NewRequest(http.MethodPost, authLoginPath, bytes.NewReader(body))
+			req, _ := http.NewRequest(http.MethodPost, authLogin, bytes.NewReader(body))
 			rr := httptest.NewRecorder()
 
 			http.HandlerFunc(c.SignInUser).ServeHTTP(rr, req)
@@ -225,7 +225,7 @@ func TestRefreshAccessToken(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest(http.MethodGet, authRefreshPath, nil)
+			req := httptest.NewRequest(http.MethodGet, authRefresh, nil)
 			if tt.cookieValue != "" {
 				req.AddCookie(&http.Cookie{Name: "refresh_token", Value: tt.cookieValue})
 			}
@@ -271,7 +271,7 @@ func TestLogoutUser(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req, err := http.NewRequest(http.MethodPost, authLogoutPath, nil)
+			req, err := http.NewRequest(http.MethodPost, authLogout, nil)
 			if err != nil {
 				t.Fatalf("Failed to create request: %v", err)
 			}

@@ -12,27 +12,22 @@ import (
 
 const (
 	// Health check
-	healthCheckPath = "/api/v1/ping"
+	healthCheck = "/api/v1/ping"
 
 	// Authentication
-	authRegisterPath = "/api/v1/auth/register"
-	authLoginPath    = "/api/v1/auth/login"
-	authRefreshPath  = "/api/v1/auth/refresh"
-	authLogoutPath   = "/api/v1/auth/logout"
+	userAuth     = "/api/v1/user/auth"
+	authRegister = "/api/v1/auth/register"
+	authLogin    = "/api/v1/auth/login"
+	authRefresh  = "/api/v1/auth/refresh"
+	authLogout   = "/api/v1/auth/logout"
 
 	// User
-	userInfoPath           = "/api/v1/user/me"
-	userLoginsPath         = "/api/v1/user/logins"
-	userLoginsIDPath       = "/api/v1/user/logins/{id}"
-	userCardsPath          = "/api/v1/user/cards"
-	userCardsIDPath        = "/api/v1/user/cards/{id}"
-	userNotesPath          = "/api/v1/user/notes"
-	userNotesIDPath        = "/api/v1/user/notes/{id}"
-	userBinaryAddPath      = "/api/v1/user/binary"
-	userBinaryAddMetaPath  = "/user/binary/{id}/meta"
-	userBinaryGetPath      = "/api/v1/user/binary"
-	userBinaryDownloadPath = "/api/v1/user/binary/"
-	userBinaryDeletePath   = "/api/v1/user/binary/"
+	userInfo          = "/api/v1/user/me"
+	userLogins        = "/api/v1/user/logins"
+	userCards         = "/api/v1/user/cards"
+	userNotes         = "/api/v1/user/notes"
+	userBinaryAddMeta = "/user/binary/{id}/meta"
+	userBinary        = "/api/v1/user/binary"
 )
 
 func loadTest(t *testing.T) (*Controller, *mocks.MockUseCase, *gomock.Controller) {

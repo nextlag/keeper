@@ -10,6 +10,8 @@ import (
 	"github.com/nextlag/keeper/internal/utils/errs"
 )
 
+const minutesPerHour = 60
+
 // SignUpUser registers a new user with the provided email and hashed password.
 // It validates the email format and hashes the password before storing it.
 func (uc *UseCase) SignUpUser(ctx context.Context, email, password string) (user entity.User, err error) {

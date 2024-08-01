@@ -15,36 +15,6 @@ import (
 
 var errBinaryNameNotGiven = errors.New("binary name has not given")
 
-// GetBinaries retrieves all binaries for the current user.
-func (c *Controller) GetBinaries(w http.ResponseWriter, r *http.Request) {
-	currentUser, err := c.getUserFromCtx(r.Context())
-	if err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	userBinaries, err := c.uc.GetBinaries(r.Context(), currentUser)
-	if err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	if len(userBinaries) == 0 {
-		w.WriteHeader(http.StatusNoContent)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	if err = json.NewEncoder(w).Encode(userBinaries); err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
 // AddBinary adds a new binary for the current user.
 func (c *Controller) AddBinary(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := c.getUserFromCtx(r.Context())
@@ -85,6 +55,36 @@ func (c *Controller) AddBinary(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetBinaries retrieves all binaries for the current user.
+func (c *Controller) GetBinaries(w http.ResponseWriter, r *http.Request) {
+	currentUser, err := c.getUserFromCtx(r.Context())
+	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	userBinaries, err := c.uc.GetBinaries(r.Context(), currentUser)
+	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if len(userBinaries) == 0 {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err = json.NewEncoder(w).Encode(userBinaries); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 // DownloadBinary downloads a binary by its UUID.
 func (c *Controller) DownloadBinary(w http.ResponseWriter, r *http.Request) {
 	binaryUUID, err := uuid.Parse(chi.URLParam(r, "id"))
@@ -110,31 +110,6 @@ func (c *Controller) DownloadBinary(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Disposition", "attachment; filename="+filePath)
 	http.ServeFile(w, r, filePath)
-}
-
-// DelBinary deletes a binary by its UUID.
-func (c *Controller) DelBinary(w http.ResponseWriter, r *http.Request) {
-	binaryUUID, err := uuid.Parse(chi.URLParam(r, "id"))
-	if err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	currentUser, err := c.getUserFromCtx(r.Context())
-	if err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	if err = c.uc.DelUserBinary(r.Context(), &currentUser, binaryUUID); err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusAccepted)
 }
 
 // AddBinaryMeta adds metadata to a binary by its UUID.
@@ -174,4 +149,29 @@ func (c *Controller) AddBinaryMeta(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+// DelBinary deletes a binary by its UUID.
+func (c *Controller) DelBinary(w http.ResponseWriter, r *http.Request) {
+	binaryUUID, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	currentUser, err := c.getUserFromCtx(r.Context())
+	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err = c.uc.DelUserBinary(r.Context(), &currentUser, binaryUUID); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusAccepted)
 }

@@ -7,8 +7,6 @@ import (
 	"github.com/nextlag/keeper/pkg/logger/l"
 )
 
-const minutesPerHour = 60
-
 // UseCase represents the use case layer for business logic operations.
 type UseCase struct {
 	repo  repository.Repository // Repository interface for data access
