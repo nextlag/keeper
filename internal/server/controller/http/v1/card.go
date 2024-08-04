@@ -106,6 +106,9 @@ func (c *Controller) UpdateCard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
+	if _, err = w.Write([]byte("Update accepted")); err != nil {
+		return
+	}
 }
 
 // DelCard handles the deletion of a card by its UUID for the current user.
@@ -132,4 +135,7 @@ func (c *Controller) DelCard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusAccepted)
+	if _, err = w.Write([]byte("Delete accepted")); err != nil {
+		return
+	}
 }

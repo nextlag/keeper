@@ -29,11 +29,11 @@ func (r *Repo) AddUser(ctx context.Context, email, hashedPassword string) (user 
 
 	switch errs.ParsePostgresErr(result.Error).Code {
 	case "23505":
-		r.log.Error("AddUser", l.ErrAttr(result.Error))
+		r.log.Error("error", l.ErrAttr(result.Error))
 		err = errs.ErrEmailAlreadyExists
 		return
 	default:
-		err = fmt.Errorf("AddUser - %w", result.Error)
+		err = fmt.Errorf("%s", l.ErrAttr(result.Error))
 		return
 	}
 }

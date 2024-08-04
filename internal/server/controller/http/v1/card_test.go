@@ -275,7 +275,7 @@ func TestUpdateCard(t *testing.T) {
 			name:           "successful update card",
 			mockReturn:     nil,
 			expectedStatus: http.StatusAccepted,
-			expectedBody:   "",
+			expectedBody:   "Update accepted",
 			cardID:         validUUID.String(),
 			reqBody:        card,
 		},
@@ -350,7 +350,7 @@ func TestDelCard(t *testing.T) {
 			name:           "successful delete card",
 			mockReturn:     nil,
 			expectedStatus: http.StatusAccepted,
-			expectedBody:   "",
+			expectedBody:   "Delete accepted",
 			cardID:         validUUID.String(),
 		},
 		{

@@ -25,13 +25,14 @@ func (uc *UseCase) AddBinary(
 	file *multipart.FileHeader,
 	userID uuid.UUID,
 ) error {
+
 	userDirectory := uc.cfg.FilesStorage.Location + "/" + userID.String()
 	if err := uc.repo.AddBinary(ctx, binary, userID); err != nil {
-		return err
+		return l.WrapErr(err)
 	}
 	if err := utils.SaveUploadedFile(file, binary.ID.String(), userDirectory); err != nil {
-		uc.log.Debug(fmt.Sprintf("UseCase - AddBinary - SaveUploadedFile - %v", err), l.ErrAttr(err))
-		return err
+		uc.log.Debug("error", l.ErrAttr(err))
+		return l.WrapErr(err)
 	}
 	return nil
 }
@@ -41,18 +42,17 @@ func (uc *UseCase) GetUserBinary(
 	ctx context.Context,
 	currentUser *entity.User,
 	binaryUUID uuid.UUID,
-) (string, error) {
+) (filePath string, err error) {
+
 	binary, err := uc.repo.GetBinary(ctx, binaryUUID, currentUser.ID)
 	if err != nil {
-		return "", err
+		return "", l.WrapErr(err)
 	}
-	filePath := fmt.Sprintf(
+	return fmt.Sprintf(
 		"%s/%s/%s",
 		uc.cfg.FilesStorage.Location,
 		currentUser.ID.String(),
-		binary.ID)
-
-	return filePath, nil
+		binary.ID), nil
 }
 
 // DelUserBinary deletes a binary file from the storage and database.
@@ -61,9 +61,10 @@ func (uc *UseCase) DelUserBinary(
 	currentUser *entity.User,
 	binaryUUID uuid.UUID,
 ) error {
+
 	err := uc.repo.DelUserBinary(ctx, currentUser, binaryUUID)
 	if err != nil {
-		return err
+		return l.WrapErr(err)
 	}
 
 	filePath := fmt.Sprintf(

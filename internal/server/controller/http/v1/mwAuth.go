@@ -39,7 +39,7 @@ func (c *Controller) MwAuth() func(next http.Handler) http.Handler {
 
 			user, err := c.uc.CheckAccessToken(r.Context(), accessToken)
 			if err != nil {
-				c.log.Error("Failed to validate token", l.ErrAttr(err))
+				c.log.Error("error", l.ErrAttr(err))
 				http.Error(w, "Unauthorized", http.StatusUnauthorized)
 				return
 			}

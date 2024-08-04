@@ -15,44 +15,6 @@ type loginPayload struct {
 	Password string `json:"password"`
 }
 
-// SignUpUser handles the HTTP request to sign up a new user.
-// It decodes the JSON payload from the request body into a loginPayload struct.
-// If decoding fails, it responds with a HTTP 400 Bad Request error.
-// It then calls the SignUpUser method of the use case (uc) to create a new user.
-// If an error occurs during sign-up, it responds with a HTTP 500 Internal Server Error and logs the error.
-// If the error is due to a wrong email format or a duplicate email, it responds with a HTTP 400 Bad Request error.
-// If sign-up is successful, it responds with a HTTP 201 Created status and JSON representation of the user.
-func (c *Controller) SignUpUser(w http.ResponseWriter, r *http.Request) {
-	var payload *loginPayload
-
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	user, err := c.uc.SignUpUser(r.Context(), payload.Email, payload.Password)
-	if errors.Is(err, errs.ErrWrongEmail) || errors.Is(err, errs.ErrEmailAlreadyExists) {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	if err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, jsonError(err), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	if err = json.NewEncoder(w).Encode(user); err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
 // SignInUser handles the HTTP request to sign in a user.
 // It decodes the JSON payload from the request body into a loginPayload struct.
 // If decoding fails, it responds with a HTTP 400 Bad Request error.
@@ -124,23 +86,59 @@ func (c *Controller) SignInUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// SignUpUser handles the HTTP request to sign up a new user.
+// It decodes the JSON payload from the request body into a loginPayload struct.
+// If decoding fails, it responds with a HTTP 400 Bad Request error.
+// It then calls the SignUpUser method of the use case (uc) to create a new user.
+// If an error occurs during sign-up, it responds with a HTTP 500 Internal Server Error and logs the error.
+// If the error is due to a wrong email format or a duplicate email, it responds with a HTTP 400 Bad Request error.
+// If sign-up is successful, it responds with a HTTP 201 Created status and JSON representation of the user.
+func (c *Controller) SignUpUser(w http.ResponseWriter, r *http.Request) {
+	var payload *loginPayload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user, err := c.uc.SignUpUser(r.Context(), payload.Email, payload.Password)
+	if errors.Is(err, errs.ErrWrongEmail) || errors.Is(err, errs.ErrEmailAlreadyExists) {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	if err = json.NewEncoder(w).Encode(user); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 // RefreshAccessToken - handler for refreshing the access token using the provided refresh token in cookies.
 // This method reads the refresh token from the "refresh_token" cookie, attempts to refresh the access token,
 // and sets the new access token and "logged_in" cookie. If the refresh token is not found or invalid,
 // an error response is returned.
 func (c *Controller) RefreshAccessToken(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-
 	refreshToken, err := r.Cookie("refresh_token")
 	if err != nil {
-		c.log.Error("RefreshAccessToken: refresh token not found", l.ErrAttr(err))
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, "refresh token has not been found", http.StatusBadRequest)
 		return
 	}
 
 	jwt, err := c.uc.RefreshAccessToken(ctx, refreshToken.Value)
 	if err != nil {
-		c.log.Error("RefreshAccessToken: unable to refresh access token", l.ErrAttr(err))
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -170,7 +168,7 @@ func (c *Controller) RefreshAccessToken(w http.ResponseWriter, r *http.Request) 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if err = json.NewEncoder(w).Encode(jwt); err != nil {
-		c.log.Error("RefreshAccessToken: unable to encode response", l.ErrAttr(err))
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, "unable to encode response", http.StatusInternalServerError)
 		return
 	}
@@ -213,7 +211,7 @@ func (c *Controller) LogoutUser(w http.ResponseWriter, _ *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	if _, err := w.Write([]byte(jsonResponse("success"))); err != nil {
+	if _, err := w.Write([]byte(jsonResponse("Logout success"))); err != nil {
 		return
 	}
 }

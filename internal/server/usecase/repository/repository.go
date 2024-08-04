@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -51,23 +52,27 @@ type Repo struct {
 	log *l.Logger
 }
 
-// New creates a new Repo instance with the given database DSN and logger.
-func New(dsn string, log *l.Logger) *Repo {
+// New создает новый экземпляр Repo с указанным DSN базы данных и логгером.
+func New(dsn string, log *l.Logger) (*Repo, error) {
+	if log == nil {
+		return nil, fmt.Errorf("logger cannot be nil")
+	}
+
 	attempts := 3
 	for attempts > 0 {
 		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-		if err == nil {
-			return &Repo{
-				db:  db,
-				log: log,
-			}
+		if err != nil {
+			log.Warn("database: %s is not available, attempts left: %d", dsn, attempts)
+			time.Sleep(time.Second)
+			attempts--
+			continue
 		}
-		log.Info("Database: %s is not available, attempts left: %d", dsn, attempts)
-		time.Sleep(time.Second)
-		attempts--
+		return &Repo{
+			db:  db,
+			log: log,
+		}, nil
 	}
-	log.Error("Repo - New - could not connect")
-	return nil
+	return nil, fmt.Errorf("could not connect to the database after several attempts")
 }
 
 // Migrate performs database schema migration for all registered models.

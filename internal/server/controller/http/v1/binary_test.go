@@ -284,7 +284,7 @@ func TestDelBinary(t *testing.T) {
 			getUserError:   nil,
 			delBinaryError: nil,
 			expectedStatus: http.StatusAccepted,
-			expectedBody:   "",
+			expectedBody:   "Delete accepted",
 		},
 		{
 			name:           "DelUserBinary error",

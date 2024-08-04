@@ -179,7 +179,7 @@ func TestUpdateNote(t *testing.T) {
 			name:           "successful update note",
 			mockReturn:     nil,
 			expectedStatus: http.StatusAccepted,
-			expectedBody:   "",
+			expectedBody:   "Update accepted",
 			noteID:         validUUID.String(),
 			reqBody:        note,
 			expectCall:     true,
@@ -224,7 +224,7 @@ func TestUpdateNote(t *testing.T) {
 			reqBody, err := json.Marshal(tt.reqBody)
 			require.NoError(t, err)
 
-			req := httptest.NewRequest(http.MethodPatch, "/notes/"+tt.noteID, bytes.NewBuffer(reqBody))
+			req := httptest.NewRequest(http.MethodPatch, userNotes+tt.noteID, bytes.NewBuffer(reqBody))
 			req = req.WithContext(context.WithValue(req.Context(), currentUserKey, expectedUser))
 
 			rctx := chi.NewRouteContext()
@@ -259,7 +259,7 @@ func TestDelNote(t *testing.T) {
 			name:           "successful delete note",
 			mockReturn:     nil,
 			expectedStatus: http.StatusAccepted,
-			expectedBody:   "",
+			expectedBody:   "Delete accepted",
 			noteID:         validUUID.String(),
 			expectCall:     true,
 		},
@@ -297,7 +297,7 @@ func TestDelNote(t *testing.T) {
 					Return(tt.mockReturn).Times(1)
 			}
 
-			req := httptest.NewRequest(http.MethodDelete, "/notes/"+tt.noteID, nil)
+			req := httptest.NewRequest(http.MethodDelete, userNotes+tt.noteID, nil)
 			req = req.WithContext(context.WithValue(req.Context(), currentUserKey, expectedUser))
 
 			rctx := chi.NewRouteContext()

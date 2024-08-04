@@ -9,6 +9,7 @@ import (
 	"github.com/nextlag/keeper/internal/entity"
 	"github.com/nextlag/keeper/internal/server/usecase/repository/models"
 	"github.com/nextlag/keeper/internal/utils/errs"
+	"github.com/nextlag/keeper/pkg/logger/l"
 )
 
 // AddLogin adds a new login entry to the database.
@@ -17,7 +18,7 @@ import (
 // and associates it with the user identified by userID.
 // Also creates MetaLogin records for any metadata associated with the login entry.
 // Returns an error if the operation fails.
-func (r *Repo) AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error {
+func (r *Repo) AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) (err error) {
 	return r.db.Transaction(func(tx *gorm.DB) error {
 		loginToDB := models.Login{
 			ID:       uuid.New(),
@@ -28,8 +29,8 @@ func (r *Repo) AddLogin(ctx context.Context, login *entity.Login, userID uuid.UU
 			Login:    login.Login,
 		}
 
-		if err := tx.WithContext(ctx).Create(&loginToDB).Error; err != nil {
-			return err
+		if err = tx.WithContext(ctx).Create(&loginToDB).Error; err != nil {
+			return l.WrapErr(err)
 		}
 
 		login.ID = loginToDB.ID
@@ -39,8 +40,8 @@ func (r *Repo) AddLogin(ctx context.Context, login *entity.Login, userID uuid.UU
 				Value:   meta.Value,
 				LoginID: loginToDB.ID,
 			}
-			if err := tx.WithContext(ctx).Create(&metaForLogin).Error; err != nil {
-				return err
+			if err = tx.WithContext(ctx).Create(&metaForLogin).Error; err != nil {
+				return l.WrapErr(err)
 			}
 			login.Meta[index].ID = metaForLogin.ID
 		}
@@ -59,7 +60,7 @@ func (r *Repo) GetLogins(ctx context.Context, user entity.User) (logins []entity
 		Preload("Meta").
 		Find(&loginsFromDB, "user_id = ?", user.ID).Error
 	if err != nil {
-		return nil, err
+		return nil, l.WrapErr(err)
 	}
 
 	if len(loginsFromDB) == 0 {
@@ -83,27 +84,25 @@ func (r *Repo) GetLogins(ctx context.Context, user entity.User) (logins []entity
 		}
 	}
 
-	return logins, nil
+	return
 }
 
 // IsLoginOwner checks if a specific user is the owner of a login entry.
 // Returns true if the user is the owner, false otherwise.
 func (r *Repo) IsLoginOwner(ctx context.Context, loginID, userID uuid.UUID) bool {
 	var loginFromDB models.Login
-
 	r.db.WithContext(ctx).Where("id = ?", loginID).First(&loginFromDB)
-
 	return loginFromDB.UserID == userID
 }
 
 // DelLogin deletes a login entry if the user is the owner of the login.
 // Returns an error if the user is not the owner or if any other issue occurs during deletion.
-func (r *Repo) DelLogin(ctx context.Context, loginID, userID uuid.UUID) error {
+func (r *Repo) DelLogin(ctx context.Context, loginID, userID uuid.UUID) (err error) {
 	if !r.IsLoginOwner(ctx, loginID, userID) {
-		return errs.ErrWrongOwnerOrNotFound
+		return l.WrapErr(errs.ErrWrongOwnerOrNotFound)
 	}
 
-	return r.db.WithContext(ctx).Delete(&models.Login{}, loginID).Error
+	return l.WrapErr(r.db.WithContext(ctx).Delete(&models.Login{}, loginID).Error)
 }
 
 // UpdateLogin updates an existing login entry if the user is the owner of the login.
@@ -111,7 +110,7 @@ func (r *Repo) DelLogin(ctx context.Context, loginID, userID uuid.UUID) error {
 // Returns an error if the user is not the owner or if any other issue occurs during the update.
 func (r *Repo) UpdateLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error {
 	if !r.IsLoginOwner(ctx, login.ID, userID) {
-		return errs.ErrWrongOwnerOrNotFound
+		return l.WrapErr(errs.ErrWrongOwnerOrNotFound)
 	}
 
 	return r.db.Transaction(func(tx *gorm.DB) error {
@@ -125,7 +124,7 @@ func (r *Repo) UpdateLogin(ctx context.Context, login *entity.Login, userID uuid
 		}
 
 		if err := tx.WithContext(ctx).Save(&loginToDB).Error; err != nil {
-			return err
+			return l.WrapErr(err)
 		}
 		login.ID = loginToDB.ID
 		for _, meta := range login.Meta {
@@ -136,7 +135,7 @@ func (r *Repo) UpdateLogin(ctx context.Context, login *entity.Login, userID uuid
 				ID:      meta.ID,
 			}
 			if err := tx.WithContext(ctx).Create(&metaForLogin).Error; err != nil {
-				return err
+				return l.WrapErr(err)
 			}
 		}
 		return nil

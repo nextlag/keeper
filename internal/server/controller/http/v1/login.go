@@ -48,7 +48,7 @@ func (c *Controller) AddLogin(w http.ResponseWriter, r *http.Request) {
 func (c *Controller) GetLogins(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
-		c.log.Error("getUserFromCtx", l.ErrAttr(err))
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
 	}
 
@@ -102,7 +102,10 @@ func (c *Controller) UpdateLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusAccepted)
+	if _, err = w.Write([]byte("Update accepted")); err != nil {
+		return
+	}
 }
 
 // DelLogin handles the deletion of a login by its UUID.
@@ -128,4 +131,7 @@ func (c *Controller) DelLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusAccepted)
+	if _, err = w.Write([]byte("Delete accepted")); err != nil {
+		return
+	}
 }

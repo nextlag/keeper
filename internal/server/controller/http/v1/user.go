@@ -32,7 +32,7 @@ func (c *Controller) UserInfo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if err = json.NewEncoder(w).Encode(currentUser); err != nil {
-		c.log.Error("encode", l.ErrAttr(err))
+		c.log.Error("error", l.ErrAttr(err))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

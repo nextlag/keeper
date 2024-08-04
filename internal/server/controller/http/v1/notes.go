@@ -112,6 +112,9 @@ func (c *Controller) UpdateNote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusAccepted)
+	if _, err = w.Write([]byte("Update accepted")); err != nil {
+		return
+	}
 }
 
 // DelNote deletes a specific note by its UUID if it belongs to the current user.
@@ -138,4 +141,7 @@ func (c *Controller) DelNote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusAccepted)
+	if _, err = w.Write([]byte("Delete accepted")); err != nil {
+		return
+	}
 }

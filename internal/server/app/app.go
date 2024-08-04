@@ -2,6 +2,7 @@ package app
 
 import (
 	"errors"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 
@@ -34,7 +35,11 @@ func NewApp(cfg *config.Config) (*App, error) {
 	log := l.NewLogger(cfg)
 	log.Debug("Configuration initialized", "config", cfg.Network)
 
-	repo := repository.New(cfg.PG.DSN, log)
+	repo, err := repository.New(cfg.PG.DSN, log)
+	if err != nil {
+		log.Error("error", l.ErrAttr(err))
+		os.Exit(1)
+	}
 	repo.Migrate()
 
 	uc := usecase.New(repo, cfg, cache.New(cfg.Cache.DefaultExpiration, cfg.Cache.CleanupInterval), log)

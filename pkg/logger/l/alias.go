@@ -1,7 +1,10 @@
 package l
 
 import (
+	"fmt"
 	"log/slog"
+	"runtime"
+	"strings"
 	"time"
 )
 
@@ -57,6 +60,16 @@ func TimeAttr(key string, time time.Time) Attr {
 	return slog.String(key, time.String())
 }
 
-func ErrAttr(err error) Attr {
-	return slog.String("error", err.Error())
+func ErrAttr(err error) (attr Attr) {
+	pc, _, _, ok := runtime.Caller(1)
+	if !ok {
+		return attr
+	}
+	fullFuncName := runtime.FuncForPC(pc).Name()
+	parts := strings.Split(fullFuncName, "/")
+	funcName := parts[len(parts)-1]
+	packageAndFunc := strings.Split(funcName, ".")
+	packageName := strings.Join(packageAndFunc[:len(packageAndFunc)-1], ".")
+	funcName = packageAndFunc[len(packageAndFunc)-1]
+	return slog.String(fmt.Sprintf("%s.%s", packageName, funcName), err.Error())
 }

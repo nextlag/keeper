@@ -8,6 +8,7 @@ import (
 	"github.com/nextlag/keeper/internal/entity"
 	"github.com/nextlag/keeper/internal/utils"
 	"github.com/nextlag/keeper/internal/utils/errs"
+	"github.com/nextlag/keeper/pkg/logger/l"
 )
 
 const minutesPerHour = 60
@@ -17,13 +18,12 @@ const minutesPerHour = 60
 func (uc *UseCase) SignUpUser(ctx context.Context, email, password string) (user entity.User, err error) {
 	if _, err = mail.ParseAddress(email); err != nil {
 		err = errs.ErrWrongEmail
-
-		return
+		return user, l.WrapErr(err)
 	}
 
 	hashedPassword, err := utils.HashPassword(password)
 	if err != nil {
-		return
+		return user, l.WrapErr(err)
 	}
 
 	return uc.repo.AddUser(ctx, email, hashedPassword)
@@ -42,13 +42,12 @@ func (uc *UseCase) SignUpUser(ctx context.Context, email, password string) (user
 func (uc *UseCase) SignInUser(ctx context.Context, email, password string) (token entity.JWT, err error) {
 	if _, err = mail.ParseAddress(email); err != nil {
 		err = errs.ErrWrongEmail
-
-		return
+		return token, l.WrapErr(err)
 	}
 
 	user, err := uc.repo.GetUserByEmail(ctx, email, password)
 	if err != nil {
-		return
+		return token, l.WrapErr(err)
 	}
 
 	token.AccessToken, err = utils.CreateToken(
@@ -56,7 +55,7 @@ func (uc *UseCase) SignInUser(ctx context.Context, email, password string) (toke
 		user.ID,
 		uc.cfg.Security.AccessTokenPrivateKey)
 	if err != nil {
-		return
+		return token, l.WrapErr(err)
 	}
 
 	token.RefreshToken, err = utils.CreateToken(
@@ -65,14 +64,14 @@ func (uc *UseCase) SignInUser(ctx context.Context, email, password string) (toke
 		uc.cfg.Security.RefreshTokenPrivateKey)
 
 	if err != nil {
-		return
+		return token, l.WrapErr(err)
 	}
 
 	token.AccessTokenMaxAge = uc.cfg.Security.AccessTokenMaxAge * minutesPerHour
 	token.RefreshTokenMaxAge = uc.cfg.Security.RefreshTokenMaxAge * minutesPerHour
 	token.Domain = uc.cfg.Security.Domain
 
-	return token, nil
+	return
 }
 
 // CheckAccessToken verifies the validity of the provided access token.
@@ -81,49 +80,45 @@ func (uc *UseCase) SignInUser(ctx context.Context, email, password string) (toke
 // If not found in cache, it validates the token using a public key and retrieves
 // the user details from the repository using the extracted userID from the token's subject.
 // Upon successful validation, it caches the user details for future requests with the same token.
-func (uc *UseCase) CheckAccessToken(ctx context.Context, accessToken string) (entity.User, error) {
+func (uc *UseCase) CheckAccessToken(ctx context.Context, accessToken string) (user entity.User, err error) {
 	if userFromCache, found := uc.cache.Get(accessToken); found {
 		checkedUser, ok := userFromCache.(entity.User)
-
 		if ok {
 			return checkedUser, nil
 		}
 	}
 
-	var user entity.User
-
 	sub, err := utils.ValidToken(accessToken, uc.cfg.Security.AccessTokenPublicKey)
 	if err != nil {
 		err = errs.ErrTokenValidation
-		return user, err
+		return user, l.WrapErr(err)
 	}
 
 	userID := fmt.Sprint(sub)
-
 	user, err = uc.repo.GetUserByID(ctx, userID)
 	if err != nil {
 		err = errs.ErrTokenValidation
-		return user, err
+		return user, l.WrapErr(err)
 	}
 
 	uc.cache.Set(accessToken, user)
-
-	return user, nil
+	return
 }
 
 // RefreshAccessToken validates the provided refresh token, retrieves the corresponding user,
 // and generates a new access token.
 func (uc *UseCase) RefreshAccessToken(ctx context.Context, refreshToken string) (token entity.JWT, err error) {
+
 	userID, err := utils.ValidToken(refreshToken, uc.cfg.Security.RefreshTokenPublicKey)
 	if err != nil {
 		err = errs.ErrTokenValidation
-		return
+		return token, l.WrapErr(err)
 	}
 
 	user, err := uc.repo.GetUserByID(ctx, fmt.Sprint(userID))
 	if err != nil {
 		err = errs.ErrTokenValidation
-		return
+		return token, l.WrapErr(err)
 	}
 
 	token.RefreshToken = refreshToken
@@ -133,7 +128,7 @@ func (uc *UseCase) RefreshAccessToken(ctx context.Context, refreshToken string) 
 		uc.cfg.Security.AccessTokenPrivateKey)
 
 	if err != nil {
-		return
+		return token, l.WrapErr(err)
 	}
 
 	token.AccessTokenMaxAge = uc.cfg.Security.AccessTokenMaxAge * minutesPerHour

@@ -265,7 +265,7 @@ func TestLogoutUser(t *testing.T) {
 		{
 			name:           "success logout",
 			expectedStatus: http.StatusOK,
-			expectedBody:   `{"status":"success"}`,
+			expectedBody:   `{"status":"Logout success"}`,
 		},
 	}
 

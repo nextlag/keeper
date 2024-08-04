@@ -174,4 +174,7 @@ func (c *Controller) DelBinary(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusAccepted)
+	if _, err = w.Write([]byte("Delete accepted")); err != nil {
+		return
+	}
 }
