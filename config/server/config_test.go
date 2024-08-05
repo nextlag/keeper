@@ -24,9 +24,9 @@ func TestLoadConfig(t *testing.T) {
 				},
 				Log: &config.Log{
 					Level:       slog.Level(-4),
-					ProjectPath: "/Users/nextbug/Documents/GoProjects/keeper/",
+					ProjectPath: "/app/",
 					LogToFile:   false,
-					LogPath:     "/Users/nextbug/Documents/GoProjects/keeper/logs/out.log",
+					LogPath:     "/app/logs/out.log",
 				},
 				Security: &config.Security{
 					Domain:                "localhost",

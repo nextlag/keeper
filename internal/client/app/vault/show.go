@@ -14,7 +14,7 @@ var ShowVault = &cobra.Command{
 	Short: "Show user vault",
 	Long: fmt.Sprintf(`
 This command show user vault
-Usage: %s show -o a|c|l|n
+Usage: %s show -o a|c|l|n|b
 Flags:
   -o, --option string     Option for listing (default "a")
 	a - all

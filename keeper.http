@@ -1,4 +1,4 @@
-@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI4MDQwNzMsImlhdCI6MTcyMjc2ODA3MywibmJmIjoxNzIyNzY4MDczLCJzdWIiOiJkYTc0MDBjOS0wNDM4LTQ0ODktOTgzYy0wZWM5ZDRhNzdiZDMifQ.VPxeXH7EBLcFo9Vqh8TljUvsfcIUWNJcLQ6OgKfi-Q3xs23LathdtcVpFy2gYcHJFXRxhDo6xdlkniob4HGnLZchpBopfq1VjkOEFH3F_NBguKdF9qChPUs84pk2nxUhbz19yPci8T-WtL0zQ1RuryP_hbqQpZS2L8PaVXMyjYacdu6fcW3ENa0eMhMs6YRP05erUAtxyWJGi3bx8K5SH2OIdr1S6X6lXW7EdZGai1n0sbxB5Be246KVIRjUzI00Ga0ZWwTAZabdGNzbJpjVOLRtyJ7S0I3zhW4LgAroe0_D2OQ-q5TD90oPF6-ZMc7drdfLAxdCkUqnv0KfBYISag
+@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjMwMTA2NDgsImlhdCI6MTcyMjk3NDY0OCwibmJmIjoxNzIyOTc0NjQ4LCJzdWIiOiI5ZmEyOGViMi1kM2NhLTRkNTItYTI4Yi04N2NiNTEwZjNlMDkifQ.U_9zhCPo3bFxFlbJZIfDM7OHXointyvrwWKp5l1A3BFuOAl1bPMjH46eqYu7x7MQpx-0QA_JwBwAtb_rVI7tpY0t955WdqziCCt-kBpj_23aXYNC9sLnEmkO9n4NiJeWxLHyAk3794SJ2xdAqYuMefozXZk6evpuc8A7aNxELEN4-Qou-n-rm_vsok85gO6mUxNbyHZ5r0Bp9pnZ8OJmGbSVIAt0uR7ZZgMZGQkvtG8QRJyXJEuqK1g4_Icf4A675Yl0UIQ69tOsbBJ4zbynqVW3lm1GZAUs4gzyB7j6uFg6p5aG6q8_QRkCbmLMy5f-v8lkZZjJ3Lc5RGRxegNkbw
 @refresh_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI2MTE3NzksImlhdCI6MTcyMjI1MTc3OSwibmJmIjoxNzIyMjUxNzc5LCJzdWIiOiJlNDhjYjI4Yy05ZGRhLTQ3MDItODU1Ny0wMzU1OGQxYzIyOWIifQ.IBfrfSBAd8q2md35otgZ4cR-QGHhjVpUNsAjAYuZ6aurVd3TamOhz5rYhmYdow4grxJz-J7CYvLcMnQ8sFaQdPoBIC61GpvKN4DZvw2oDyaIMeljBzLDsoRzEaNBDRuWI8f4mQA6BduuBuncrtRhUUHQX3hh-KpWBK0603mbLyvI14WSIirjbrBODxKTM711Yh4Gl2oGnGmrTSUE6NqkZXo9QH5vl0ToumOZJM5bglKF35YJSO0lAaFM99aB_vDZDT0-Pu7iU6y9M1nXHfsoqjpxzvvX7YEZQHpU65R-JDSRvGKSp6pxF9EZVnkdJZb0vS6A7PTWHhCRV_YeZo6g4w
 
 ### GET ping
@@ -23,7 +23,7 @@ POST localhost:8080/api/v1/auth/register
 POST localhost:8080/api/v1/auth/register
 
 {
-  "email": "examplemail.ru",
+  "email": "example@gmail.ru",
   "password": "12345"
 }
 
@@ -31,7 +31,7 @@ POST localhost:8080/api/v1/auth/register
 POST localhost:8080/api/v1/auth/login
 
 {
-  "email": "example@mail.ru",
+  "email": "example@gmail.ru",
   "password": "12345"
 }
 

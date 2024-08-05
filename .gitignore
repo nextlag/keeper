@@ -3,9 +3,6 @@
 .vscode
 .DS_Store
 
-# Config
-.env
-
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -32,3 +29,4 @@ tmp/
 some_file.txt
 data
 file_test
+build

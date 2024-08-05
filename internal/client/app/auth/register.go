@@ -14,7 +14,7 @@ var RegisterUser = &cobra.Command{
 	Use:   "register",
 	Short: "User registration in the service",
 	Long: fmt.Sprintf(`This command registers a new user.
-Usage: %s register <user_email> <user_password>`, config.Load().App.Name),
+Usage: %s register user_email user_password`, config.Load().App.Name),
 	Args: cobra.MinimumNArgs(RequiredUserArgs),
 	Run: func(cmd *cobra.Command, args []string) {
 		account := entity.User{

@@ -3,6 +3,7 @@ module github.com/nextlag/keeper
 go 1.22.5
 
 require (
+	github.com/BurntSushi/toml v1.4.0
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/fatih/color v1.17.0
 	github.com/go-chi/chi/v5 v5.1.0
@@ -22,6 +23,7 @@ require (
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/driver/sqlite v1.5.6
 	gorm.io/gorm v1.25.11
+	olympos.io/encoding/edn v0.0.0-20201019073823-d3554ca0b0a3
 )
 
 require (
