@@ -16,7 +16,7 @@ var LoginUser = &cobra.Command{
 	Use:   "login",
 	Short: "Login user to the service",
 	Long: fmt.Sprintf(`This is the user login command.
-Usage: %s login <user_email> <user_password>`, config.Load().App.Name),
+Usage: %s login user_email user_password`, config.Load().App.Name),
 	Args: cobra.MinimumNArgs(RequiredUserArgs),
 	Run: func(cmd *cobra.Command, args []string) {
 		account := entity.User{

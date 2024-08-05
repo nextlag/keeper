@@ -82,15 +82,19 @@ var (
 // It loads configuration from a YAML file and environment variables.
 // The function is thread-safe and ensures that configuration is loaded only once.
 func Load() (*Config, error) {
-	var err error
+	var (
+		err     error
+		homeDir string
+	)
+
 	once.Do(func() {
-		homeDir, err := os.UserHomeDir()
+		homeDir, err = os.UserHomeDir()
 		if err != nil {
 			log.Fatalf("error getting user home directory: %v", err)
 		}
-		envPath := fmt.Sprintf("%s/Documents/GoProjects/keeper/.env.example", homeDir)
+		envPath := fmt.Sprintf("%s/.env", homeDir)
 		if err = godotenv.Load(envPath); err != nil {
-			log.Fatal("error parsing .env.example: ", err)
+			log.Fatal("error parsing .env: ", err)
 		}
 
 		if configPath := os.Getenv("CONFIG_PATH"); configPath != "" {

@@ -179,7 +179,7 @@ func TestDownloadBinary(t *testing.T) {
 
 	expectedUser := entity.User{ID: uuid.New()}
 	binaryUUID := uuid.New()
-	dir := c.cfg.Log.ProjectPath
+	dir := "."
 	file, err := os.CreateTemp(dir, "testfile-*.txt")
 	if err != nil {
 		t.Fatalf("Failed to create temporary file: %v", err)
@@ -251,7 +251,7 @@ func TestDelBinary(t *testing.T) {
 	expectedUser := entity.User{ID: uuid.New()}
 	binaryUUID := uuid.New()
 
-	dir := c.cfg.Log.ProjectPath
+	dir := "."
 	file, err := os.CreateTemp(dir, "testfile-*.txt")
 	if err != nil {
 		t.Fatalf("Failed to create temporary file: %v", err)

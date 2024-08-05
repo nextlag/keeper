@@ -4,9 +4,9 @@ network:
 
 logger:
   level: debug
-  project_path: '/Users/nextbug/Documents/GoProjects/keeper/'
+  project_path: '/app/'
   log_to_file: false
-  log_path: '/Users/nextbug/Documents/GoProjects/keeper/logs/out.log'
+  log_path: '/app/logs/out.log'
 
 security:
   domain: 'localhost'

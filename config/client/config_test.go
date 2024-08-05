@@ -1,34 +1,32 @@
-package client_test
+package client
 
 import (
 	"log/slog"
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	config "github.com/nextlag/keeper/config/client"
 )
 
 func TestLoadConfig(t *testing.T) {
 	tests := []struct {
 		name           string
-		expectedConfig *config.Config
+		expectedConfig *Config
 	}{
 		{
-			expectedConfig: &config.Config{
-				App: &config.App{
+			expectedConfig: &Config{
+				App: &App{
 					Name: "keeper",
 				},
-				Server: &config.Server{
+				Server: &Server{
 					ServerURL: "http://localhost:8080",
 				},
-				Log: &config.Log{
+				Log: &Log{
 					Level: slog.Level(-4),
 				},
-				SQLite: &config.SQLite{
+				SQLite: &SQLite{
 					DSN: "keeper.sqlite",
 				},
-				FilesStorage: &config.FilesStorage{
+				FilesStorage: &FilesStorage{
 					ServerLocation: "data",
 					ClientLocation: "tmp",
 				},
@@ -39,7 +37,8 @@ func TestLoadConfig(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			cfg := config.Load()
+			ConfigYaml = "config.yaml"
+			cfg := Load()
 
 			if tt.expectedConfig == nil {
 				require.Nil(t, cfg)
