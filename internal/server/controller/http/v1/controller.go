@@ -8,6 +8,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/google/uuid"
+	httpSwagger "github.com/swaggo/http-swagger"
+
+	_ "github.com/nextlag/keeper/docs"
 
 	config "github.com/nextlag/keeper/config/server"
 	"github.com/nextlag/keeper/internal/entity"
@@ -104,6 +107,9 @@ func (c *Controller) NewServer(handler *chi.Mux) *http.Server {
 			r.Get("/binary/{id}", c.DownloadBinary)
 			r.Delete("/binary/{id}", c.DelBinary)
 		})
+
+		// Swagger UI route
+		r.Get("/swagger/*", httpSwagger.WrapHandler)
 	})
 
 	return &http.Server{

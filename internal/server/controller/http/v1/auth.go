@@ -15,19 +15,63 @@ type loginPayload struct {
 	Password string `json:"password"`
 }
 
-// SignInUser handles the HTTP request to sign in a user.
-// It decodes the JSON payload from the request body into a loginPayload struct.
-// If decoding fails, it responds with a HTTP 400 Bad Request error.
-// It then calls the SignInUser method of the use case (uc) to authenticate the user and generate JWT tokens.
-// If authentication fails due to wrong credentials, it responds with a HTTP 400 Bad Request error.
-// For other errors during sign-in, it responds with a HTTP 500 Internal Server Error and logs the error.
-// If sign-in is successful, it sets HTTP cookies for access_token, refresh_token, and a logged_in flag.
-// It responds with a HTTP 200 OK status and JSON representation of the JWT tokens.
+// SignUpUser godoc
+// @Summary Sign up a new user
+// @Description Register a new user and generate initial JWT tokens
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param payload body loginPayload true "Registration credentials"
+// @Success 201 {object} entity.User
+// @Failure 400 {object} response
+// @Failure 500 {object} response
+// @Router /auth/register [post]
+func (c *Controller) SignUpUser(w http.ResponseWriter, r *http.Request) {
+	var payload *loginPayload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, jsonError(err), http.StatusBadRequest)
+		return
+	}
+
+	user, err := c.uc.SignUpUser(r.Context(), payload.Email, payload.Password)
+	if errors.Is(err, errs.ErrWrongEmail) || errors.Is(err, errs.ErrEmailAlreadyExists) {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, jsonError(err), http.StatusBadRequest)
+		return
+	}
+
+	if err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	if err = json.NewEncoder(w).Encode(user); err != nil {
+		c.log.Error("error", l.ErrAttr(err))
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
+		return
+	}
+}
+
+// SignInUser godoc
+// @Summary Sign in a user
+// @Description Authenticate a user and generate JWT tokens
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param payload body loginPayload true "Login credentials"
+// @Success 200 {object} entity.JWT
+// @Failure 400 {object} response
+// @Failure 500 {object} response
+// @Router /auth/login [post]
 func (c *Controller) SignInUser(w http.ResponseWriter, r *http.Request) {
 	var payload loginPayload
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
@@ -35,7 +79,7 @@ func (c *Controller) SignInUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if errors.Is(err, errs.ErrWrongCredentials) {
 			c.log.Error("error", l.ErrAttr(err))
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, jsonError(err), http.StatusBadRequest)
 		} else {
 			c.log.Error("error", l.ErrAttr(err))
 			http.Error(w, jsonError(err), http.StatusInternalServerError)
@@ -86,47 +130,15 @@ func (c *Controller) SignInUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// SignUpUser handles the HTTP request to sign up a new user.
-// It decodes the JSON payload from the request body into a loginPayload struct.
-// If decoding fails, it responds with a HTTP 400 Bad Request error.
-// It then calls the SignUpUser method of the use case (uc) to create a new user.
-// If an error occurs during sign-up, it responds with a HTTP 500 Internal Server Error and logs the error.
-// If the error is due to a wrong email format or a duplicate email, it responds with a HTTP 400 Bad Request error.
-// If sign-up is successful, it responds with a HTTP 201 Created status and JSON representation of the user.
-func (c *Controller) SignUpUser(w http.ResponseWriter, r *http.Request) {
-	var payload *loginPayload
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	user, err := c.uc.SignUpUser(r.Context(), payload.Email, payload.Password)
-	if errors.Is(err, errs.ErrWrongEmail) || errors.Is(err, errs.ErrEmailAlreadyExists) {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	if err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, jsonError(err), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	if err = json.NewEncoder(w).Encode(user); err != nil {
-		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-// RefreshAccessToken - handler for refreshing the access token using the provided refresh token in cookies.
-// This method reads the refresh token from the "refresh_token" cookie, attempts to refresh the access token,
-// and sets the new access token and "logged_in" cookie. If the refresh token is not found or invalid,
-// an error response is returned.
+// RefreshAccessToken godoc
+// @Summary Refresh JWT access token
+// @Description Refresh the JWT access token using the refresh token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} entity.JWT
+// @Failure 400 {object} response
+// @Router /auth/refresh [post]
 func (c *Controller) RefreshAccessToken(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	refreshToken, err := r.Cookie("refresh_token")
@@ -139,7 +151,7 @@ func (c *Controller) RefreshAccessToken(w http.ResponseWriter, r *http.Request) 
 	jwt, err := c.uc.RefreshAccessToken(ctx, refreshToken.Value)
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
@@ -169,13 +181,20 @@ func (c *Controller) RefreshAccessToken(w http.ResponseWriter, r *http.Request) 
 	w.WriteHeader(http.StatusOK)
 	if err = json.NewEncoder(w).Encode(jwt); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, "unable to encode response", http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
 }
 
-// LogoutUser - handler for logging out the current user by clearing the access, refresh, and logged_in cookies.
-// This method invalidates the user's session by setting the cookies to expire immediately.
+// LogoutUser godoc
+// @Summary Log out the user
+// @Description Clear JWT tokens and user session
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} response
+// @Failure 500 {object} response
+// @Router /auth/logout [post]
 func (c *Controller) LogoutUser(w http.ResponseWriter, _ *http.Request) {
 	domainName := c.uc.GetDomainName()
 
@@ -211,7 +230,7 @@ func (c *Controller) LogoutUser(w http.ResponseWriter, _ *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	if _, err := w.Write([]byte(jsonResponse("Logout success"))); err != nil {
+	if _, err := w.Write([]byte(jsonResponse("logout success"))); err != nil {
 		return
 	}
 }

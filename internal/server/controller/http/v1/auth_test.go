@@ -219,7 +219,7 @@ func TestRefreshAccessToken(t *testing.T) {
 			mockReturn:     entity.JWT{},
 			mockError:      errors.New("unexpected error"),
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   "unexpected error",
+			expectedBody:   `{"error":"unexpected error"}`,
 		},
 	}
 
@@ -265,7 +265,7 @@ func TestLogoutUser(t *testing.T) {
 		{
 			name:           "success logout",
 			expectedStatus: http.StatusOK,
-			expectedBody:   `{"status":"Logout success"}`,
+			expectedBody:   `{"status":"logout success"}`,
 		},
 	}
 

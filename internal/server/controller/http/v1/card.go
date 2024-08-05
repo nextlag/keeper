@@ -12,9 +12,17 @@ import (
 	"github.com/nextlag/keeper/pkg/logger/l"
 )
 
-// AddCard handles the addition of a new card for the current user.
-// It fetches the user from the context, decodes the card from the request body,
-// and passes it to the use case for creation. If successful, it returns the created card as a JSON response.
+// AddCard godoc
+// @Summary Add a new card
+// @Description Upload a new card for the current user
+// @Tags cards
+// @Accept json
+// @Produce json
+// @Param card body entity.Card true "Card data"
+// @Success 202 {object} entity.Card
+// @Failure 400 {object} response
+// @Failure 500 {object} response
+// @Router /user/cards [post]
 func (c *Controller) AddCard(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
@@ -25,13 +33,13 @@ func (c *Controller) AddCard(w http.ResponseWriter, r *http.Request) {
 	var payloadCard *entity.Card
 	if err = json.NewDecoder(r.Body).Decode(&payloadCard); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
 	if err = c.uc.AddCard(r.Context(), payloadCard, currentUser.ID); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
@@ -39,14 +47,20 @@ func (c *Controller) AddCard(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusAccepted)
 	if err = json.NewEncoder(w).Encode(payloadCard); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
 }
 
-// GetCards handles the retrieval of cards for the current user.
-// It fetches the user from the context, retrieves their cards from the use case,
-// and returns them as a JSON response. If there are no cards, it returns a 204 No Content status.
+// GetCards godoc
+// @Summary Get all cards for the current user
+// @Description Retrieve all cards for the current user
+// @Tags cards
+// @Produce json
+// @Success 200 {array} entity.Card
+// @Success 204 "No content"
+// @Failure 500 {object} response
+// @Router /user/cards [get]
 func (c *Controller) GetCards(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
@@ -57,7 +71,7 @@ func (c *Controller) GetCards(w http.ResponseWriter, r *http.Request) {
 	userCards, err := c.uc.GetCards(r.Context(), currentUser)
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 	}
 
 	if len(userCards) == 0 {
@@ -69,19 +83,28 @@ func (c *Controller) GetCards(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	if err = json.NewEncoder(w).Encode(userCards); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
 }
 
-// UpdateCard handles the update of a card by its UUID for the current user.
-// It fetches the user and the card ID from the request, decodes the updated card data from the request body,
-// and passes them to the use case for updating. If successful, it returns a 202 Accepted status.
+// UpdateCard godoc
+// @Summary Update a card by UUID
+// @Description Update a specific card identified by its UUID
+// @Tags cards
+// @Accept json
+// @Produce json
+// @Param id path string true "Card UUID"
+// @Param card body entity.Card true "Updated card data"
+// @Success 202 {string} string "Update accepted"
+// @Failure 400 {object} response
+// @Failure 500 {object} response
+// @Router /user/cards/{id} [patch]
 func (c *Controller) UpdateCard(w http.ResponseWriter, r *http.Request) {
 	cardUUID, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
@@ -95,14 +118,14 @@ func (c *Controller) UpdateCard(w http.ResponseWriter, r *http.Request) {
 	var payloadCard *entity.Card
 	if err = json.NewDecoder(r.Body).Decode(&payloadCard); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
 	payloadCard.ID = cardUUID
 	if err = c.uc.UpdateCard(r.Context(), payloadCard, currentUser.ID); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
@@ -111,14 +134,20 @@ func (c *Controller) UpdateCard(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// DelCard handles the deletion of a card by its UUID for the current user.
-// It fetches the user and the card ID from the request, passes them to the use case for deletion,
-// and returns a 202 Accepted status if successful.
+// DelCard godoc
+// @Summary Delete a card by UUID
+// @Description Delete a specific card identified by its UUID
+// @Tags cards
+// @Param id path string true "Card UUID"
+// @Success 202 {string} string "Delete accepted"
+// @Failure 400 {object} response
+// @Failure 500 {object} response
+// @Router /user/cards/{id} [delete]
 func (c *Controller) DelCard(w http.ResponseWriter, r *http.Request) {
 	cardUUID, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
@@ -130,7 +159,7 @@ func (c *Controller) DelCard(w http.ResponseWriter, r *http.Request) {
 
 	if err = c.uc.DelCard(r.Context(), cardUUID, currentUser.ID); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
 

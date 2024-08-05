@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"strings"
 
@@ -33,14 +34,14 @@ func (c *Controller) MwAuth() func(next http.Handler) http.Handler {
 			}
 
 			if accessToken == "" {
-				http.Error(w, "You are not logged in", http.StatusUnauthorized)
+				http.Error(w, jsonError(errors.New("you are not logged in")), http.StatusUnauthorized)
 				return
 			}
 
 			user, err := c.uc.CheckAccessToken(r.Context(), accessToken)
 			if err != nil {
 				c.log.Error("error", l.ErrAttr(err))
-				http.Error(w, "Unauthorized", http.StatusUnauthorized)
+				http.Error(w, jsonError(err), http.StatusUnauthorized)
 				return
 			}
 

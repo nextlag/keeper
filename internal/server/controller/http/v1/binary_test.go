@@ -146,14 +146,14 @@ func TestGetBinaries(t *testing.T) {
 			if tt.expectedStatus == http.StatusNoContent {
 				assert.Empty(t, rr.Body.String())
 			} else {
-				var response []map[string]interface{}
-				err := json.Unmarshal(rr.Body.Bytes(), &response)
+				var resp []map[string]interface{}
+				err := json.Unmarshal(rr.Body.Bytes(), &resp)
 				if err != nil {
 					t.Fatalf("Failed to unmarshal response body: %v", err)
 				}
 
 				var actualBinaries []map[string]interface{}
-				for _, binary := range response {
+				for _, binary := range resp {
 					filteredBinary := map[string]interface{}{
 						"file_name": binary["file_name"],
 						"name":      binary["name"],
@@ -284,14 +284,14 @@ func TestDelBinary(t *testing.T) {
 			getUserError:   nil,
 			delBinaryError: nil,
 			expectedStatus: http.StatusAccepted,
-			expectedBody:   "Delete accepted",
+			expectedBody:   `{"status":"delete accepted"}`,
 		},
 		{
 			name:           "DelUserBinary error",
 			getUserError:   nil,
 			delBinaryError: errs.ErrUnexpectedError,
 			expectedStatus: http.StatusInternalServerError,
-			expectedBody:   "some unexpected error\n",
+			expectedBody:   `{"error":"some unexpected error"}` + "\n",
 		},
 	}
 
@@ -347,21 +347,21 @@ func TestAddBinaryMeta(t *testing.T) {
 			binaryUUID:     "invalid-uuid",
 			payload:        []entity.Meta{{Name: "test", Value: "value"}},
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   "invalid UUID length: 12\n",
+			expectedBody:   `{"error":"invalid UUID length: 12"}` + "\n",
 		},
 		{
 			name:           "Error in UseCase",
 			binaryUUID:     "89dacc37-e9cb-4e9a-833b-7b8c0062b449",
 			payload:        []entity.Meta{{Name: "test", Value: "value"}},
 			expectedStatus: http.StatusInternalServerError,
-			expectedBody:   "internal error\n",
+			expectedBody:   `{"error":"internal error"}` + "\n",
 		},
 		{
 			name:           "Invalid JSON Payload",
 			binaryUUID:     "89dacc37-e9cb-4e9a-833b-7b8c0062b449",
 			payload:        "invalid json",
 			expectedStatus: http.StatusBadRequest,
-			expectedBody:   "invalid character 'i' looking for beginning of value\n",
+			expectedBody:   `{"error":"invalid character 'i' looking for beginning of value"}` + "\n",
 		},
 	}
 

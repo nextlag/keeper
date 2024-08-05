@@ -79,15 +79,15 @@ func (r *Repo) IsNoteOwner(ctx context.Context, noteID, userID uuid.UUID) bool {
 // DelNote deletes a secret note if the user is the owner of the note.
 func (r *Repo) DelNote(ctx context.Context, noteID, userID uuid.UUID) (err error) {
 	if !r.IsNoteOwner(ctx, noteID, userID) {
-		return l.WrapErr(errs.ErrWrongOwnerOrNotFound)
+		return errs.ErrWrongOwnerOrNotFound
 	}
-	return l.WrapErr(r.db.WithContext(ctx).Delete(&models.Note{}, noteID).Error)
+	return r.db.WithContext(ctx).Delete(&models.Note{}, noteID).Error
 }
 
 // UpdateNote updates an existing secret note if the user is the owner of the note.
 func (r *Repo) UpdateNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) (err error) {
 	if !r.IsNoteOwner(ctx, note.ID, userID) {
-		return l.WrapErr(errs.ErrWrongOwnerOrNotFound)
+		return errs.ErrWrongOwnerOrNotFound
 	}
 
 	return r.db.Transaction(func(tx *gorm.DB) error {

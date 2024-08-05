@@ -1,0 +1,734 @@
+basePath: /api/v1
+definitions:
+  entity.Binary:
+    properties:
+      file_name:
+        description: Filesystem name.
+        type: string
+      meta:
+        description: Associated metadata.
+        items:
+          $ref: '#/definitions/entity.Meta'
+        type: array
+      name:
+        description: File name.
+        type: string
+    type: object
+  entity.Card:
+    properties:
+      brand:
+        description: Card brand.
+        type: string
+      card_holder_name:
+        description: Cardholder's name.
+        type: string
+      expiration_month:
+        description: Expiration month.
+        type: string
+      expiration_year:
+        description: Expiration year.
+        type: string
+      meta:
+        description: Associated metadata.
+        items:
+          $ref: '#/definitions/entity.Meta'
+        type: array
+      name:
+        description: Card name.
+        type: string
+      number:
+        description: Card number.
+        type: string
+      security_code:
+        description: Security code (CVV).
+        type: string
+    type: object
+  entity.JWT:
+    properties:
+      access_token:
+        description: Access token for authentication.
+        type: string
+      refresh_token:
+        description: Refresh token for obtaining a new access token.
+        type: string
+    type: object
+  entity.Login:
+    properties:
+      login:
+        description: Login username or identifier.
+        type: string
+      meta:
+        description: Associated metadata.
+        items:
+          $ref: '#/definitions/entity.Meta'
+        type: array
+      name:
+        description: Name of the login entry.
+        type: string
+      password:
+        description: Password for the login.
+        type: string
+      uri:
+        description: URI or website related to the login.
+        type: string
+    type: object
+  entity.Meta:
+    properties:
+      name:
+        description: Name or type of the metadata.
+        type: string
+      value:
+        description: Value of the metadata.
+        type: string
+    type: object
+  entity.SecretNote:
+    properties:
+      meta:
+        description: Associated metadata for the note.
+        items:
+          $ref: '#/definitions/entity.Meta'
+        type: array
+      name:
+        description: Name or title of the note.
+        type: string
+      note:
+        description: Content of the note.
+        type: string
+    type: object
+  entity.User:
+    properties:
+      email:
+        description: Email address of the user.
+        type: string
+      uuid:
+        description: Unique identifier for the user.
+        type: string
+    type: object
+  v1.loginPayload:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  v1.response:
+    properties:
+      error:
+        example: message
+        type: string
+      status:
+        example: message
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: nextbug@ya.ru
+    name: Nexbug
+    url: https://github.com/nextlag
+  description: keeper project
+  title: Keeper Server
+  version: 1.0.0
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and generate JWT tokens
+      parameters:
+      - description: Login credentials
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/v1.loginPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.JWT'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Sign in a user
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Clear JWT tokens and user session
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Log out the user
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh the JWT access token using the refresh token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.JWT'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Refresh JWT access token
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user and generate initial JWT tokens
+      parameters:
+      - description: Registration credentials
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/v1.loginPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Sign up a new user
+      tags:
+      - auth
+  /ping:
+    get:
+      description: Endpoint to check if the application is running correctly
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: connected
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Check the health of the application
+      tags:
+      - health
+  /user/binary:
+    get:
+      description: Retrieve all binaries uploaded by the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Binary'
+            type: array
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get all binaries for the current user
+      tags:
+      - binaries
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a new binary for the current user
+      parameters:
+      - description: Binary name
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: Binary file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Binary'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Add a new binary
+      tags:
+      - binaries
+  /user/binary/{id}:
+    delete:
+      description: Delete a specific binary identified by its UUID
+      parameters:
+      - description: Binary UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "202":
+          description: delete accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Delete a binary by UUID
+      tags:
+      - binaries
+    get:
+      description: Download a specific binary identified by its UUID
+      parameters:
+      - description: Binary UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Download a binary by UUID
+      tags:
+      - binaries
+  /user/binary/{id}/meta:
+    post:
+      consumes:
+      - application/json
+      description: Add metadata to a specific binary identified by its UUID
+      parameters:
+      - description: Binary UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Metadata for the binary
+        in: body
+        name: metadata
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/entity.Meta'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/entity.Meta'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Add metadata to a binary
+      tags:
+      - binaries
+  /user/cards:
+    get:
+      description: Retrieve all cards for the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Card'
+            type: array
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get all cards for the current user
+      tags:
+      - cards
+    post:
+      consumes:
+      - application/json
+      description: Upload a new card for the current user
+      parameters:
+      - description: Card data
+        in: body
+        name: card
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Card'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/entity.Card'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Add a new card
+      tags:
+      - cards
+  /user/cards/{id}:
+    delete:
+      description: Delete a specific card identified by its UUID
+      parameters:
+      - description: Card UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "202":
+          description: Delete accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Delete a card by UUID
+      tags:
+      - cards
+    patch:
+      consumes:
+      - application/json
+      description: Update a specific card identified by its UUID
+      parameters:
+      - description: Card UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated card data
+        in: body
+        name: card
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Card'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Update accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Update a card by UUID
+      tags:
+      - cards
+  /user/info:
+    get:
+      description: Retrieve information about the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get current user information
+      tags:
+      - user
+  /user/logins:
+    get:
+      description: Retrieve all logins for the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Login'
+            type: array
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get all logins for the current user
+      tags:
+      - logins
+    post:
+      consumes:
+      - application/json
+      description: Upload a new login for the current user
+      parameters:
+      - description: Login data
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Login'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/entity.Login'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Add a new login
+      tags:
+      - logins
+  /user/logins/{id}:
+    delete:
+      description: Delete a specific login identified by its UUID
+      parameters:
+      - description: Login UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "202":
+          description: Delete accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Delete a login by UUID
+      tags:
+      - logins
+    patch:
+      consumes:
+      - application/json
+      description: Update a specific login identified by its UUID
+      parameters:
+      - description: Login UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated login data
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Login'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Update accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Update a login by UUID
+      tags:
+      - logins
+  /user/notes:
+    get:
+      description: Retrieve all notes for the current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.SecretNote'
+            type: array
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get all notes for the current user
+      tags:
+      - notes
+    post:
+      consumes:
+      - application/json
+      description: Upload a new note for the current user
+      parameters:
+      - description: Note data
+        in: body
+        name: note
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SecretNote'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/entity.SecretNote'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Add a new note
+      tags:
+      - notes
+  /user/notes/{id}:
+    delete:
+      description: Delete a specific note identified by its UUID
+      parameters:
+      - description: Note UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "202":
+          description: Delete accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Delete a note by UUID
+      tags:
+      - notes
+    patch:
+      consumes:
+      - application/json
+      description: Update a specific note identified by its UUID
+      parameters:
+      - description: Note UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated note data
+        in: body
+        name: note
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SecretNote'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Update accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Update a note by UUID
+      tags:
+      - notes
+swagger: "2.0"

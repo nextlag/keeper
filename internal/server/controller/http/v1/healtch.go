@@ -6,12 +6,19 @@ import (
 	"github.com/nextlag/keeper/pkg/logger/l"
 )
 
-// HealthCheck checks the health of the application.
+// HealthCheck godoc
+// @Summary Check the health of the application
+// @Description Endpoint to check if the application is running correctly
+// @Tags health
+// @Produce json
+// @Success 200 {string} string "connected"
+// @Failure 500 {object} response
+// @Router /ping [get]
 func (c *Controller) HealthCheck(w http.ResponseWriter, _ *http.Request) {
 	err := c.uc.HealthCheck()
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, "Application not available", http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")

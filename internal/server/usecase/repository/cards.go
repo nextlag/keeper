@@ -96,7 +96,7 @@ func (r *Repo) IsCardOwner(ctx context.Context, cardUUID, userID uuid.UUID) bool
 func (r *Repo) DelCard(ctx context.Context, cardUUID, userID uuid.UUID) (err error) {
 	if !r.IsCardOwner(ctx, cardUUID, userID) {
 		err = errs.ErrWrongOwnerOrNotFound
-		return l.WrapErr(err)
+		return err
 	}
 	return r.db.WithContext(ctx).Delete(&models.Card{}, cardUUID).Error
 }
@@ -107,7 +107,7 @@ func (r *Repo) DelCard(ctx context.Context, cardUUID, userID uuid.UUID) (err err
 func (r *Repo) UpdateCard(ctx context.Context, card *entity.Card, userID uuid.UUID) (err error) {
 	if !r.IsCardOwner(ctx, card.ID, userID) {
 		err = errs.ErrWrongOwnerOrNotFound
-		return l.WrapErr(err)
+		return err
 	}
 
 	return r.db.Transaction(func(tx *gorm.DB) error {

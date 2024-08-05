@@ -43,7 +43,7 @@ func TestController_HealthCheck(t *testing.T) {
 				mockUc.EXPECT().HealthCheck().Return(errors.New("service unavailable")).Times(1)
 			},
 			expectedStatus:   http.StatusInternalServerError,
-			expectedResponse: "Application not available\n",
+			expectedResponse: `{"error":"service unavailable"}` + "\n",
 		},
 	}
 

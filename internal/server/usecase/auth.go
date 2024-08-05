@@ -18,7 +18,7 @@ const minutesPerHour = 60
 func (uc *UseCase) SignUpUser(ctx context.Context, email, password string) (user entity.User, err error) {
 	if _, err = mail.ParseAddress(email); err != nil {
 		err = errs.ErrWrongEmail
-		return user, l.WrapErr(err)
+		return user, err
 	}
 
 	hashedPassword, err := utils.HashPassword(password)
@@ -42,7 +42,7 @@ func (uc *UseCase) SignUpUser(ctx context.Context, email, password string) (user
 func (uc *UseCase) SignInUser(ctx context.Context, email, password string) (token entity.JWT, err error) {
 	if _, err = mail.ParseAddress(email); err != nil {
 		err = errs.ErrWrongEmail
-		return token, l.WrapErr(err)
+		return token, err
 	}
 
 	user, err := uc.repo.GetUserByEmail(ctx, email, password)
@@ -91,14 +91,14 @@ func (uc *UseCase) CheckAccessToken(ctx context.Context, accessToken string) (us
 	sub, err := utils.ValidToken(accessToken, uc.cfg.Security.AccessTokenPublicKey)
 	if err != nil {
 		err = errs.ErrTokenValidation
-		return user, l.WrapErr(err)
+		return user, err
 	}
 
 	userID := fmt.Sprint(sub)
 	user, err = uc.repo.GetUserByID(ctx, userID)
 	if err != nil {
 		err = errs.ErrTokenValidation
-		return user, l.WrapErr(err)
+		return user, err
 	}
 
 	uc.cache.Set(accessToken, user)
@@ -112,13 +112,13 @@ func (uc *UseCase) RefreshAccessToken(ctx context.Context, refreshToken string) 
 	userID, err := utils.ValidToken(refreshToken, uc.cfg.Security.RefreshTokenPublicKey)
 	if err != nil {
 		err = errs.ErrTokenValidation
-		return token, l.WrapErr(err)
+		return token, err
 	}
 
 	user, err := uc.repo.GetUserByID(ctx, fmt.Sprint(userID))
 	if err != nil {
 		err = errs.ErrTokenValidation
-		return token, l.WrapErr(err)
+		return token, err
 	}
 
 	token.RefreshToken = refreshToken

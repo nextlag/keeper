@@ -20,12 +20,19 @@ func (c *Controller) getUserFromCtx(ctx context.Context) (entity.User, error) {
 	return currentUser, nil
 }
 
-// UserInfo - handler for obtaining information about the current user
+// UserInfo godoc
+// @Summary Get current user information
+// @Description Retrieve information about the current user
+// @Tags user
+// @Produce json
+// @Success 200 {object} entity.User
+// @Failure 500 {object} response
+// @Router /user/info [get]
 func (c *Controller) UserInfo(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
 
@@ -33,6 +40,6 @@ func (c *Controller) UserInfo(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	if err = json.NewEncoder(w).Encode(currentUser); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 	}
 }

@@ -1,13 +1,22 @@
 package v1
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
+
+type response struct {
+	Error  string `json:"error,omitempty" example:"message"`
+	Status string `json:"status,omitempty" example:"message"`
+}
 
 func jsonError(err error) string {
-	response, _ := json.Marshal(map[string]string{"error": err.Error()})
-	return string(response)
+	r := response{Error: err.Error()}
+	jsonData, _ := json.Marshal(r)
+	return string(jsonData)
 }
 
 func jsonResponse(message string) string {
-	response, _ := json.Marshal(map[string]string{"status": message})
-	return string(response)
+	r := response{Status: message}
+	jsonData, _ := json.Marshal(r)
+	return string(jsonData)
 }

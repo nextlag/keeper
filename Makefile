@@ -78,4 +78,7 @@ download:
 build:
 	go build -o $(APP) cmd/client/main.go
 
-.PHONY: db_create db_uuid postgres lint generate reload_postgres test key_pem base64 inline public_pem public_base64 public_inline collectKeys clean download build
+swag:
+	swag init -g cmd/server/main.go
+
+.PHONY: db_create db_uuid postgres lint generate reload_postgres test key_pem base64 inline public_pem public_base64 public_inline collectKeys clean download build swag

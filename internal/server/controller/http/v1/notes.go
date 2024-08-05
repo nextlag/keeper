@@ -12,14 +12,22 @@ import (
 	"github.com/nextlag/keeper/pkg/logger/l"
 )
 
-// AddNote adds a new note for the current user based on the provided JSON payload.
-// If successful, it returns the created note in JSON format with a 202 Accepted status.
-// It handles errors by returning appropriate HTTP status codes and messages.
+// AddNote godoc
+// @Summary Add a new note
+// @Description Upload a new note for the current user
+// @Tags notes
+// @Accept json
+// @Produce json
+// @Param note body entity.SecretNote true "Note data"
+// @Success 202 {object} entity.SecretNote
+// @Failure 400 {object} response
+// @Failure 500 {object} response
+// @Router /user/notes [post]
 func (c *Controller) AddNote(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(errs.ErrUnexpectedError), http.StatusInternalServerError)
 		return
 	}
 
@@ -27,13 +35,13 @@ func (c *Controller) AddNote(w http.ResponseWriter, r *http.Request) {
 
 	if err = json.NewDecoder(r.Body).Decode(&payloadNote); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
 	if err = c.uc.AddNote(r.Context(), &payloadNote, currentUser.ID); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
@@ -41,26 +49,32 @@ func (c *Controller) AddNote(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusAccepted)
 	if err = json.NewEncoder(w).Encode(payloadNote); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
 }
 
-// GetNotes retrieves all notes associated with the current user.
-// If successful, it returns a list of notes in JSON format. If no notes are found, it returns a 204 No Content status.
-// It handles errors by returning appropriate HTTP status codes and messages.
+// GetNotes godoc
+// @Summary Get all notes for the current user
+// @Description Retrieve all notes for the current user
+// @Tags notes
+// @Produce json
+// @Success 200 {array} entity.SecretNote
+// @Success 204 "No content"
+// @Failure 500 {object} response
+// @Router /user/notes [get]
 func (c *Controller) GetNotes(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(errs.ErrUnexpectedError), http.StatusInternalServerError)
 		return
 	}
 
 	userNotes, err := c.uc.GetNotes(r.Context(), currentUser)
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
 
@@ -73,25 +87,35 @@ func (c *Controller) GetNotes(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	if err = json.NewEncoder(w).Encode(userNotes); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
 }
 
-// UpdateNote updates an existing note identified by its UUID with the provided JSON payload.
-// It returns a 202 Accepted status if the update is successful. Errors are handled by returning appropriate HTTP status codes and messages.
+// UpdateNote godoc
+// @Summary Update a note by UUID
+// @Description Update a specific note identified by its UUID
+// @Tags notes
+// @Accept json
+// @Produce json
+// @Param id path string true "Note UUID"
+// @Param note body entity.SecretNote true "Updated note data"
+// @Success 202 {string} string "Update accepted"
+// @Failure 400 {object} response
+// @Failure 500 {object} response
+// @Router /user/notes/{id} [patch]
 func (c *Controller) UpdateNote(w http.ResponseWriter, r *http.Request) {
 	noteUUID, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err), "noteUUID", noteUUID)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(errs.ErrUnexpectedError), http.StatusInternalServerError)
 		return
 	}
 
@@ -99,7 +123,7 @@ func (c *Controller) UpdateNote(w http.ResponseWriter, r *http.Request) {
 
 	if err = json.NewDecoder(r.Body).Decode(&payloadNote); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
@@ -107,41 +131,48 @@ func (c *Controller) UpdateNote(w http.ResponseWriter, r *http.Request) {
 
 	if err = c.uc.UpdateNote(r.Context(), &payloadNote, currentUser.ID); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
 	w.WriteHeader(http.StatusAccepted)
-	if _, err = w.Write([]byte("Update accepted")); err != nil {
+	if _, err = w.Write([]byte(jsonResponse("update accepted"))); err != nil {
 		return
 	}
 }
 
-// DelNote deletes a specific note by its UUID if it belongs to the current user.
-// It returns a 202 Accepted status if the note is successfully deleted. If there are any errors, appropriate HTTP status codes and messages are returned.
+// DelNote godoc
+// @Summary Delete a note by UUID
+// @Description Delete a specific note identified by its UUID
+// @Tags notes
+// @Param id path string true "Note UUID"
+// @Success 202 {string} string "Delete accepted"
+// @Failure 400 {object} response
+// @Failure 500 {object} response
+// @Router /user/notes/{id} [delete]
 func (c *Controller) DelNote(w http.ResponseWriter, r *http.Request) {
 	noteUUID, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err), "noteUUID", noteUUID)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, jsonError(err), http.StatusBadRequest)
 		return
 	}
 
 	currentUser, err := c.getUserFromCtx(r.Context())
 	if err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, errs.ErrUnexpectedError.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(errs.ErrUnexpectedError), http.StatusInternalServerError)
 		return
 	}
 
 	if err = c.uc.DelNote(r.Context(), noteUUID, currentUser.ID); err != nil {
 		c.log.Error("error", l.ErrAttr(err))
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, jsonError(err), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusAccepted)
-	if _, err = w.Write([]byte("Delete accepted")); err != nil {
+	if _, err = w.Write([]byte(jsonResponse("delete accepted"))); err != nil {
 		return
 	}
 }

@@ -99,7 +99,7 @@ func (r *Repo) IsLoginOwner(ctx context.Context, loginID, userID uuid.UUID) bool
 // Returns an error if the user is not the owner or if any other issue occurs during deletion.
 func (r *Repo) DelLogin(ctx context.Context, loginID, userID uuid.UUID) (err error) {
 	if !r.IsLoginOwner(ctx, loginID, userID) {
-		return l.WrapErr(errs.ErrWrongOwnerOrNotFound)
+		return errs.ErrWrongOwnerOrNotFound
 	}
 
 	return l.WrapErr(r.db.WithContext(ctx).Delete(&models.Login{}, loginID).Error)
@@ -110,7 +110,7 @@ func (r *Repo) DelLogin(ctx context.Context, loginID, userID uuid.UUID) (err err
 // Returns an error if the user is not the owner or if any other issue occurs during the update.
 func (r *Repo) UpdateLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error {
 	if !r.IsLoginOwner(ctx, login.ID, userID) {
-		return l.WrapErr(errs.ErrWrongOwnerOrNotFound)
+		return errs.ErrWrongOwnerOrNotFound
 	}
 
 	return r.db.Transaction(func(tx *gorm.DB) error {
