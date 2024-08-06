@@ -1,0 +1,15 @@
+app:
+  name: 'keeper'
+
+server:
+  server_url: 'http://localhost:8080'
+
+logger:
+  level: 'debug'
+
+sqlite:
+  sqlite_dsn: 'keeper.sqlite'
+
+files_storage:
+  server_location: 'data'
+  client_location: 'tmp'

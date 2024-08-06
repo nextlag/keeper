@@ -1,0 +1,212 @@
+@access_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjMwMTA2NDgsImlhdCI6MTcyMjk3NDY0OCwibmJmIjoxNzIyOTc0NjQ4LCJzdWIiOiI5ZmEyOGViMi1kM2NhLTRkNTItYTI4Yi04N2NiNTEwZjNlMDkifQ.U_9zhCPo3bFxFlbJZIfDM7OHXointyvrwWKp5l1A3BFuOAl1bPMjH46eqYu7x7MQpx-0QA_JwBwAtb_rVI7tpY0t955WdqziCCt-kBpj_23aXYNC9sLnEmkO9n4NiJeWxLHyAk3794SJ2xdAqYuMefozXZk6evpuc8A7aNxELEN4-Qou-n-rm_vsok85gO6mUxNbyHZ5r0Bp9pnZ8OJmGbSVIAt0uR7ZZgMZGQkvtG8QRJyXJEuqK1g4_Icf4A675Yl0UIQ69tOsbBJ4zbynqVW3lm1GZAUs4gzyB7j6uFg6p5aG6q8_QRkCbmLMy5f-v8lkZZjJ3Lc5RGRxegNkbw
+@refresh_token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjI2MTE3NzksImlhdCI6MTcyMjI1MTc3OSwibmJmIjoxNzIyMjUxNzc5LCJzdWIiOiJlNDhjYjI4Yy05ZGRhLTQ3MDItODU1Ny0wMzU1OGQxYzIyOWIifQ.IBfrfSBAd8q2md35otgZ4cR-QGHhjVpUNsAjAYuZ6aurVd3TamOhz5rYhmYdow4grxJz-J7CYvLcMnQ8sFaQdPoBIC61GpvKN4DZvw2oDyaIMeljBzLDsoRzEaNBDRuWI8f4mQA6BduuBuncrtRhUUHQX3hh-KpWBK0603mbLyvI14WSIirjbrBODxKTM711Yh4Gl2oGnGmrTSUE6NqkZXo9QH5vl0ToumOZJM5bglKF35YJSO0lAaFM99aB_vDZDT0-Pu7iU6y9M1nXHfsoqjpxzvvX7YEZQHpU65R-JDSRvGKSp6pxF9EZVnkdJZb0vS6A7PTWHhCRV_YeZo6g4w
+
+### GET ping
+GET localhost:8080/api/v1/ping
+
+### POST registration random user
+< {%
+    const email = $random.alphabetic(4).toLowerCase()
+    const password = $random.alphanumeric(8)
+    request.variables.set("email", email)
+    request.variables.set("password", password)
+%}
+
+POST localhost:8080/api/v1/auth/register
+
+{
+  "email": "{{email}}@mail.ru",
+  "password": "{{password}}"
+}
+
+### POST registration
+POST localhost:8080/api/v1/auth/register
+
+{
+  "email": "example@gmail.ru",
+  "password": "12345"
+}
+
+### POST authentication
+POST localhost:8080/api/v1/auth/login
+
+{
+  "email": "example@gmail.ru",
+  "password": "12345"
+}
+
+### GET refresh token
+GET localhost:8080/api/v1/auth/refresh
+Cookie: refresh_token={{refresh_token}}
+
+### GET auth logout
+GET localhost:8080/api/v1/auth/logout
+
+### GET user/me
+GET localhost:8080/api/v1/user/me
+Authorization: Bearer {{access_token}}
+
+### ================================ LOGINS ====================================###
+
+### POST user/logins
+POST localhost:8080/api/v1/user/logins
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "yandex.practicum",
+  "login": "example",
+  "password": "12345",
+  "uri": "https://yandex.practicum.ru",
+  "meta": [
+    {
+      "name": "GO",
+      "value": "base"
+    },
+    {
+      "name": "GO",
+      "value": "advance"
+    }
+  ]
+}
+
+### GET user/logins
+GET localhost:8080/api/v1/user/logins
+Authorization: Bearer {{access_token}}
+
+### PATCH user/logins
+PATCH localhost:8080/api/v1/user/logins/7f20ba0a-35db-41ca-9835-d2b0ee721530
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "yandex.practicum",
+  "login": "example_yandex",
+  "password": "543210",
+  "uri": "https://yandex.practicum.com"
+}
+
+### DELETE user/logins
+DELETE localhost:8080/api/v1/user/logins/0068b7b7-e501-4b8a-85de-d892da6e43aa
+Authorization: Bearer {{access_token}}
+
+### ================================ CARDS ====================================###
+
+### POST user/cards
+POST localhost:8080/api/v1/user/cards
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "GOLD",
+  "card_holder_name": "DIGIT",
+  "number": "1123 1234 1000 1234",
+  "brand": "MIR",
+  "expiration_month": "07",
+  "expiration_year": "2024",
+  "security_code": "003",
+  "meta": [
+    {
+      "name": "GO",
+      "value": "base"
+    },
+    {
+      "name": "GO",
+      "value": "advance"
+    }
+  ]
+}
+
+### GET user/cards
+GET localhost:8080/api/v1/user/cards
+Authorization: Bearer {{access_token}}
+
+### PATCH user/cards
+PATCH localhost:8080/api/v1/user/cards/97237dc7-dd01-4284-ac54-22b0d8b611d4
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "Green",
+  "card_holder_name": "DIGIT",
+  "number": "1123123410001234",
+  "brand": "MIR",
+  "expiration_month": "07",
+  "expiration_year": "2024",
+  "security_code": "003"
+}
+
+### DELETE user/cards
+DELETE localhost:8080/api/v1/user/cards/18fc4d61-aa94-421d-9baf-78ea5d50e90d
+Authorization: Bearer {{access_token}}
+
+### ================================ NOTES ====================================###
+
+### POST user/notes
+POST localhost:8080/api/v1/user/notes
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "Text",
+  "note": "Content",
+  "meta": [
+    {
+      "name": "GO",
+      "value": "base"
+    },
+    {
+      "name": "GO",
+      "value": "advance"
+    }
+  ]
+}
+
+### GET user/notes
+GET localhost:8080/api/v1/user/notes
+Authorization: Bearer {{access_token}}
+
+### PATCH user/notes
+PATCH localhost:8080/api/v1/user/notes/3fa710d3-2571-4013-a741-a51f6b34f724
+Authorization: Bearer {{access_token}}
+
+{
+  "name": "TEXT",
+  "note": "Content"
+}
+
+### DELETE user/notes
+DELETE localhost:8080/api/v1/user/notes/3fa710d3-2571-4013-a741-a51f6b34f724
+Authorization: Bearer {{access_token}}
+
+### ================================ BINARY ====================================###
+
+### POST user/binary
+POST localhost:8080/api/v1/user/binary?name=fileBinary
+Authorization: Bearer {{access_token}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="fileBinary.txt"
+Content-Type: text/plain
+
+<file_content>
+--boundary--
+
+### POST user/binary/{id}/meta
+POST localhost:8080/api/v1/user/binary/89dacc37-e9cb-4e9a-833b-7b8c0062b449/meta
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+[
+  {
+    "name": "meta name",
+    "value": "meta value"
+  }
+]
+
+### GET user/binary
+GET localhost:8080/api/v1/user/binary
+Authorization: Bearer {{access_token}}
+
+### DOWNLOAD user/binary/{id}
+# curl -X GET "http://localhost:8080/api/v1/user/binary/cbe094d6-9fea-4fe2-bb1e-afea8a753853" -H "Authorization: Bearer {{access_token}}" -o downloaded_file.txt
+
+### DELETE user/binary
+DELETE localhost:8080/api/v1/user/binary/e9b45ca4-a92c-46a4-9590-af5bc950060a
+Authorization: Bearer {{access_token}}

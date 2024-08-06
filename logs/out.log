@@ -1,0 +1,2 @@
+[17.07.2024 18:23:38.086] INFO: Shutting down config... internal/server/app/run.go:30
+[17.07.2024 18:23:38.086] INFO: Server Shutdown gracefully internal/server/app/run.go:46 
