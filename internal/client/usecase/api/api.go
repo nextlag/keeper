@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/fatih/color"
@@ -32,7 +31,6 @@ func (api *ClientAPI) addEntity(entity any, accessToken, endpoint string) error 
 		SetResult(entity).
 		Post(fmt.Sprintf("%s/%s", api.serverURL, endpoint))
 	if err != nil {
-		log.Printf("ClientAPI - client.R - %v ", err)
 		return err
 	}
 	if err = api.checkResCode(resp); err != nil {
@@ -50,11 +48,11 @@ func (api *ClientAPI) getEntities(entity any, accessToken, endpoint string) erro
 		SetResult(entity).
 		Get(fmt.Sprintf("%s/%s", api.serverURL, endpoint))
 	if err != nil {
-		log.Println(err)
+		color.Red("%v", err)
 		return err
 	}
 
-	if err := api.checkResCode(resp); err != nil {
+	if err = api.checkResCode(resp); err != nil {
 		return err
 	}
 
@@ -81,10 +79,10 @@ func (api *ClientAPI) delEntity(accessToken, endpoint, id string) error {
 		SetHeader("Content-Type", "application/json").
 		Delete(fmt.Sprintf("%s/%s/%s", api.serverURL, endpoint, id))
 	if err != nil {
-		log.Printf("ClientAPI - client.R - %v ", err)
 		return err
 	}
 	if err = api.checkResCode(resp); err != nil {
+		color.Red("Server error: %s", errServer)
 		return errServer
 	}
 

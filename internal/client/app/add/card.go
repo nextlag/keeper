@@ -2,8 +2,8 @@ package add
 
 import (
 	"fmt"
-	"log"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	"github.com/nextlag/keeper/internal/client/usecase"
@@ -25,7 +25,7 @@ Example:
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
 		if err != nil {
-			log.Println(err)
+			color.Red("Authentication required. Error: %v", err)
 			return
 		}
 		usecase.GetClientUseCase().AddCard(userPassword, &cardForAdditing)
@@ -43,11 +43,11 @@ func init() {
 	Card.Flags().Var(&utils.JSONFlag{Target: &cardForAdditing.Meta}, "meta", `Add meta fields for entity`)
 
 	if err := Card.MarkFlagRequired("title"); err != nil {
-		log.Println(err)
+		color.Red("%v", err)
 		return
 	}
 	if err := Card.MarkFlagRequired("number"); err != nil {
-		log.Println(err)
+		color.Red("%v", err)
 		return
 	}
 }

@@ -3,6 +3,7 @@ package storage
 import (
 	"fmt"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	config "github.com/nextlag/keeper/config/client"
@@ -17,6 +18,7 @@ Usage: %s sync`, config.Load().App.Name),
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
 		if err != nil {
+			color.Red("Authentication required. Error: %v", err)
 			return
 		}
 		usecase.GetClientUseCase().Sync(userPassword)

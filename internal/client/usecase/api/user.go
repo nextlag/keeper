@@ -3,7 +3,6 @@ package api
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/fatih/color"
@@ -44,7 +43,7 @@ func (api *ClientAPI) Register(user *entity.User) error {
 		SetResult(user).
 		Post(fmt.Sprintf("%s/api/v1/auth/register", api.serverURL))
 	if err != nil {
-		log.Println(err)
+		color.Red("%v", err)
 		return err
 	}
 

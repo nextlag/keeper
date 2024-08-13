@@ -69,17 +69,17 @@ func (r *Repo) DropUserToken(email string) error {
 func (r *Repo) GetUserPasswordHash() (string, error) {
 	var existedUser models.User
 
-	user, err := r.GetTempUser()
+	tempUser, err := r.GetTempUser()
 	if err != nil {
-		return "", fmt.Errorf("failed to get temp email: %v", err)
+		return "", err
 	}
 
-	result := r.db.Where("email = ?", user.Email).First(&existedUser)
+	result := r.db.Where("email = ?", tempUser.Email).First(&existedUser)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			return "", fmt.Errorf("user with email %s not found", user.Email)
+			return "", fmt.Errorf("user with email %s not found", tempUser.Email)
 		}
-		return "", fmt.Errorf("failed to query user with email %s: %v", user.Email, result.Error)
+		return "", fmt.Errorf("failed to query user with email %s: %v", tempUser.Email, result.Error)
 	}
 
 	return existedUser.Password, nil

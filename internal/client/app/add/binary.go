@@ -2,8 +2,8 @@ package add
 
 import (
 	"fmt"
-	"log"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	"github.com/nextlag/keeper/internal/client/usecase"
@@ -22,6 +22,7 @@ Example:
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
 		if err != nil {
+			color.Red("Authentication required. Error: %v", err)
 			return
 		}
 		usecase.GetClientUseCase().AddBinary(userPassword, &binaryForAdditing)
@@ -36,11 +37,11 @@ func init() {
 	Binary.Flags().Var(&utils.JSONFlag{Target: &binaryForAdditing.Meta}, "meta", `Add meta fields for entity`)
 
 	if err := Binary.MarkFlagRequired("title"); err != nil {
-		log.Println(err)
+		color.Red("%v", err)
 		return
 	}
 	if err := Binary.MarkFlagRequired("file"); err != nil {
-		log.Println(err)
+		color.Red("%v", err)
 		return
 	}
 }

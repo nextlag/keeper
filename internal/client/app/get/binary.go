@@ -2,9 +2,9 @@ package get
 
 import (
 	"fmt"
-	"log"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	"github.com/nextlag/keeper/internal/client/usecase"
@@ -28,8 +28,8 @@ Usage: %s get binary -i binary_id -f some_file`, App),
 
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
 		if err != nil {
-			fmt.Printf("Error getting temporary password: %v\n", err)
-			os.Exit(1)
+			color.Red("Authentication required. Error: %v", err)
+			return
 		}
 
 		usecase.GetClientUseCase().GetBinary(userPassword, getBinaryID, filePath)
@@ -46,11 +46,11 @@ func init() {
 	Binary.Flags().StringVarP(&filePath, "file", "f", "", "User file")
 
 	if err := Binary.MarkFlagRequired("id"); err != nil {
-		log.Println(err)
+		color.Red("%v", err)
 		return
 	}
 	if err := Binary.MarkFlagRequired("file"); err != nil {
-		log.Println(err)
+		color.Red("%v", err)
 		return
 	}
 }

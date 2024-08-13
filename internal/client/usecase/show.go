@@ -16,6 +16,7 @@ const (
 	showBinaries = "b"
 )
 
+// ShowVault displays the user's vault contents based on the specified option.
 func (uc *ClientUseCase) ShowVault(userPassword, showVaultOption string) {
 	if !uc.verifyPassword(userPassword) {
 		return
@@ -38,6 +39,7 @@ func (uc *ClientUseCase) ShowVault(userPassword, showVaultOption string) {
 	}
 }
 
+// showCards prints out a list of cards to the console.
 func (uc *ClientUseCase) showCards(cards []viewsets.CardForList) {
 	color.Yellow("Users cards:")
 	yellow := color.New(color.FgYellow).SprintFunc()
@@ -50,6 +52,7 @@ func (uc *ClientUseCase) showCards(cards []viewsets.CardForList) {
 	fmt.Printf("Total %s cards\n", yellow(len(cards)))
 }
 
+// showLogins prints out a list of logins to the console.
 func (uc *ClientUseCase) showLogins(logins []viewsets.LoginForList) {
 	color.Yellow("Users logins:")
 	yellow := color.New(color.FgYellow).SprintFunc()
@@ -61,6 +64,8 @@ func (uc *ClientUseCase) showLogins(logins []viewsets.LoginForList) {
 	}
 	fmt.Printf("Total %s logins\n", yellow(len(logins)))
 }
+
+// showNotes prints out a list of notes to the console.
 func (uc *ClientUseCase) showNotes(notes []viewsets.NoteForList) {
 	color.Yellow("Users notes:")
 	yellow := color.New(color.FgYellow).SprintFunc()
@@ -71,6 +76,8 @@ func (uc *ClientUseCase) showNotes(notes []viewsets.NoteForList) {
 	}
 	fmt.Printf("Total %s notes\n", yellow(len(notes)))
 }
+
+// showBinaries prints out a list of binary files to the console.
 func (uc *ClientUseCase) showBinaries(binaries []viewsets.BinaryForList) {
 	color.Yellow("Users files:")
 	yellow := color.New(color.FgYellow).SprintFunc()

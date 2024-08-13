@@ -2,8 +2,8 @@ package get
 
 import (
 	"fmt"
-	"log"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 
 	"github.com/nextlag/keeper/internal/client/usecase"
@@ -19,6 +19,7 @@ Usage: %s get login -i <login_id>`, App),
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
 		if err != nil {
+			color.Red("Authentication required. Error: %v", err)
 			return
 		}
 		usecase.GetClientUseCase().ShowLogin(userPassword, getLoginID)
@@ -31,7 +32,7 @@ func init() {
 	Login.Flags().StringVarP(&getLoginID, "id", "i", "", "Card id")
 
 	if err := Login.MarkFlagRequired("id"); err != nil {
-		log.Println(err)
+		color.Red("%v", err)
 		return
 	}
 }

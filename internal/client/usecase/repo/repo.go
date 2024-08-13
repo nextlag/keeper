@@ -4,6 +4,7 @@ import (
 	"github.com/fatih/color"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"github.com/nextlag/keeper/internal/client/usecase/repo/models"
 )
@@ -14,6 +15,7 @@ type Repo struct {
 
 func New(dbFileName string) *Repo {
 	db, err := gorm.Open(sqlite.Open(dbFileName), &gorm.Config{})
+	db.Logger = db.Logger.LogMode(logger.Silent)
 	if err != nil {
 		color.Red("Load error %s", err.Error())
 	}
