@@ -24,7 +24,8 @@ Example:
 	Run: func(cmd *cobra.Command, args []string) {
 		userPassword, err := usecase.GetClientUseCase().GetTempPass()
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			return
 		}
 		usecase.GetClientUseCase().AddLogin(userPassword, &loginForAdditing)
 	},
@@ -38,6 +39,7 @@ func init() {
 	Login.Flags().Var(&utils.JSONFlag{Target: &loginForAdditing.Meta}, "meta", `Add meta fields for entity`)
 
 	if err := Login.MarkFlagRequired("title"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }

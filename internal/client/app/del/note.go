@@ -31,6 +31,7 @@ func init() {
 	Note.Flags().StringVarP(&delNoteID, "id", "i", "", "Note id")
 
 	if err := Note.MarkFlagRequired("id"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }

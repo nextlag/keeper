@@ -21,7 +21,8 @@ func (uc *ClientUseCase) AddCard(userPassword string, card *entity.Card) {
 		return
 	}
 	if err = uc.repo.AddCard(card); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	color.Green("Card %q added, id: %v", card.Name, card.ID)
 }
@@ -79,15 +80,18 @@ func (uc *ClientUseCase) DelCard(userPassword, cardID string) {
 	cardUUID, err := uuid.Parse(cardID)
 	if err != nil {
 		color.Red(err.Error())
-		log.Fatalf("ClientUseCase - uuid.Parse - %v", err)
+		log.Printf("ClientUseCase - uuid.Parse - %v", err)
+		return
 	}
 
-	if err := uc.repo.DelCard(cardUUID); err != nil {
-		log.Fatalf("ClientUseCase - repo.DelCard - %v", err)
+	if err = uc.repo.DelCard(cardUUID); err != nil {
+		log.Printf("ClientUseCase - repo.DelCard - %v", err)
+		return
 	}
 
-	if err := uc.clientAPI.DelCard(accessToken, cardID); err != nil {
-		log.Fatalf("ClientUseCase - repo.DelCard - %v", err)
+	if err = uc.clientAPI.DelCard(accessToken, cardID); err != nil {
+		log.Printf("ClientUseCase - repo.DelCard - %v", err)
+		return
 	}
 
 	color.Green("Card %q removed", cardID)

@@ -101,6 +101,7 @@ func Load() (*Config, error) {
 			cfg.ConfigPath = configPath
 			err = configFromYAML()
 			if err != nil {
+				log.Printf("error loading config from YAML: %v", err)
 				return
 			}
 		}

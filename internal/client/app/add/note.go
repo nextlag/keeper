@@ -38,6 +38,7 @@ func init() {
 	Note.Flags().Var(&utils.JSONFlag{Target: &noteForAdditing.Meta}, "meta", `Add meta fields for entity`)
 
 	if err := Note.MarkFlagRequired("title"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }

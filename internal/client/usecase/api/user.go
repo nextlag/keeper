@@ -44,7 +44,8 @@ func (api *ClientAPI) Register(user *entity.User) error {
 		SetResult(user).
 		Post(fmt.Sprintf("%s/api/v1/auth/register", api.serverURL))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return err
 	}
 
 	if resp.StatusCode() == http.StatusBadRequest || resp.StatusCode() == http.StatusInternalServerError {

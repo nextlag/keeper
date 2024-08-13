@@ -14,28 +14,34 @@ import (
 func (uc *ClientUseCase) AddBinary(userPassword string, binary *entity.Binary) {
 	accessToken, err := uc.authorisationCheck(userPassword)
 	if err != nil {
-		log.Fatalf("ClientUseCase - authorisationCheck - %v", err)
+		log.Printf("ClientUseCase - authorisationCheck - %v", err)
+		return
 	}
 	file, err := os.Stat(binary.FileName)
 	if err != nil {
-		log.Fatalf("ClientUseCase - AddBinary - %v", err)
+		log.Printf("ClientUseCase - AddBinary - %v", err)
+		return
 	}
 	tmpFilePath := uc.cfg.FilesStorage.ClientLocation + file.Name()
 
 	if err = utils.EncryptFile(userPassword, binary.FileName, tmpFilePath); err != nil {
-		log.Fatalf("ClientUseCase - EncryptFile - %v", err)
+		log.Printf("ClientUseCase - EncryptFile - %v", err)
+		return
 	}
 
 	if err = uc.clientAPI.AddBinary(accessToken, binary, tmpFilePath); err != nil {
-		log.Fatalf("ClientUseCase - clientAPI.AddBinary - %v", err)
+		log.Printf("ClientUseCase - clientAPI.AddBinary - %v", err)
+		return
 	}
 
 	if err = uc.repo.AddBinary(binary); err != nil {
-		log.Fatalf("ClientUseCase - repo.AddBinary - %v", err)
+		log.Printf("ClientUseCase - repo.AddBinary - %v", err)
+		return
 	}
 	defer func() {
 		if err = os.Remove(tmpFilePath); err != nil {
-			log.Fatalf("ClientUseCase -  os.Remove - %v", err)
+			log.Printf("ClientUseCase -  os.Remove - %v", err)
+			return
 		}
 	}()
 	color.Green("Binary %v - %s saved", binary.ID, binary.FileName)
@@ -49,15 +55,18 @@ func (uc *ClientUseCase) DelBinary(userPassword, binaryID string) {
 	binaryUUID, err := uuid.Parse(binaryID)
 	if err != nil {
 		color.Red(err.Error())
-		log.Fatalf("ClientUseCase - DelBinary - uuid.Parse - %v", err)
+		log.Printf("ClientUseCase - DelBinary - uuid.Parse - %v", err)
+		return
 	}
 
 	if err = uc.repo.DelBinary(binaryUUID); err != nil {
-		log.Fatalf("ClientUseCase - repo.DelNote - %v", err)
+		log.Printf("ClientUseCase - repo.DelNote - %v", err)
+		return
 	}
 
 	if err = uc.clientAPI.DelBinary(accessToken, binaryID); err != nil {
-		log.Fatalf("ClientUseCase - clientAPI.DelBinary - %v", err)
+		log.Printf("ClientUseCase - clientAPI.DelBinary - %v", err)
+		return
 	}
 	color.Green("Binary %q removed", binaryID)
 }
@@ -70,12 +79,14 @@ func (uc *ClientUseCase) GetBinary(userPassword, binaryID, filePath string) {
 
 	binaryUUID, err := uuid.Parse(binaryID)
 	if err != nil {
-		log.Fatalf("ClientUseCase - GetBinary - uuid.Parse - %v", err)
+		log.Printf("ClientUseCase - GetBinary - uuid.Parse - %v", err)
+		return
 	}
 
 	binary, err := uc.repo.GetBinaryByID(binaryUUID)
 	if err != nil {
-		log.Fatalf("ClientUseCase - GetBinary - GetBinaryByID - %v", err)
+		log.Printf("ClientUseCase - GetBinary - GetBinaryByID - %v", err)
+		return
 	}
 
 	tmpFilePath := filePath + binary.FileName
@@ -87,11 +98,13 @@ func (uc *ClientUseCase) GetBinary(userPassword, binaryID, filePath string) {
 	}()
 
 	if err = uc.clientAPI.DownloadBinary(accessToken, tmpFilePath, &binary); err != nil {
-		log.Fatalf("ClientUseCase - GetBinary - clientAPI.DownloadBinary - %v", err)
+		log.Printf("ClientUseCase - GetBinary - clientAPI.DownloadBinary - %v", err)
+		return
 	}
 
 	if err = utils.DecryptFile(userPassword, tmpFilePath, filePath); err != nil {
-		log.Fatalf("ClientUseCase - GetBinary - EncryptFile - %v", err)
+		log.Printf("ClientUseCase - GetBinary - EncryptFile - %v", err)
+		return
 	}
 
 	color.Green("File decrypted to %s", filePath)

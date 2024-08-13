@@ -32,9 +32,10 @@ func (api *ClientAPI) addEntity(entity any, accessToken, endpoint string) error 
 		SetResult(entity).
 		Post(fmt.Sprintf("%s/%s", api.serverURL, endpoint))
 	if err != nil {
-		log.Fatalf("ClientAPI - client.R - %v ", err)
+		log.Printf("ClientAPI - client.R - %v ", err)
+		return err
 	}
-	if err := api.checkResCode(resp); err != nil {
+	if err = api.checkResCode(resp); err != nil {
 		return errServer
 	}
 
@@ -80,9 +81,10 @@ func (api *ClientAPI) delEntity(accessToken, endpoint, id string) error {
 		SetHeader("Content-Type", "application/json").
 		Delete(fmt.Sprintf("%s/%s/%s", api.serverURL, endpoint, id))
 	if err != nil {
-		log.Fatalf("ClientAPI - client.R - %v ", err)
+		log.Printf("ClientAPI - client.R - %v ", err)
+		return err
 	}
-	if err := api.checkResCode(resp); err != nil {
+	if err = api.checkResCode(resp); err != nil {
 		return errServer
 	}
 

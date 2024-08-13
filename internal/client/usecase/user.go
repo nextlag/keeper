@@ -18,14 +18,17 @@ func (uc *ClientUseCase) Login(user *entity.User) {
 	if !uc.repo.UserExistsByEmail(user.Email) {
 		err = uc.repo.AddUser(user)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			return
 		}
 	}
 	if err = uc.repo.UpdateUserToken(user, &token); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	if err = uc.repo.AddTempPass(user); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	color.Green("Got authorization token for %q", user.Email)
 }

@@ -46,9 +46,11 @@ func init() {
 	Binary.Flags().StringVarP(&filePath, "file", "f", "", "User file")
 
 	if err := Binary.MarkFlagRequired("id"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	if err := Binary.MarkFlagRequired("file"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }

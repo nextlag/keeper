@@ -36,9 +36,11 @@ func init() {
 	Binary.Flags().Var(&utils.JSONFlag{Target: &binaryForAdditing.Meta}, "meta", `Add meta fields for entity`)
 
 	if err := Binary.MarkFlagRequired("title"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	if err := Binary.MarkFlagRequired("file"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }

@@ -29,6 +29,7 @@ var getNoteID string
 func init() {
 	Note.Flags().StringVarP(&getNoteID, "id", "i", "", "Note id")
 	if err := Note.MarkFlagRequired("id"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }

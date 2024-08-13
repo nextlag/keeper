@@ -31,6 +31,7 @@ func init() {
 	Login.Flags().StringVarP(&getLoginID, "id", "i", "", "Card id")
 
 	if err := Login.MarkFlagRequired("id"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }

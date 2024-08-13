@@ -30,6 +30,7 @@ var getCardID string
 func init() {
 	Card.Flags().StringVarP(&getCardID, "id", "i", "", "Card id")
 	if err := Card.MarkFlagRequired("id"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }

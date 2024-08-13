@@ -30,6 +30,7 @@ var delLoginID string
 func init() {
 	Login.Flags().StringVarP(&delLoginID, "id", "i", "", "Card id")
 	if err := Login.MarkFlagRequired("id"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }

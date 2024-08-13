@@ -30,6 +30,7 @@ var delBinaryID string
 func init() {
 	Binary.Flags().StringVarP(&delBinaryID, "id", "i", "", "Binary id")
 	if err := Binary.MarkFlagRequired("id"); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }
